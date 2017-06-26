@@ -1,0 +1,611 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title></title>
+    <meta name="author" content="John Doe">
+    
+    <meta name="description" content="日常的普通应用中如果不是对通讯的即时性有要求，基本上大家都会选择使用AFNetworking中的基于http/https的网络通信。但是有时候比如在线聊天，游戏中的数据交互等情况，对网络通信的即时性有非常高的要求（试想一下比如FPS游戏中，击中目标的数据如果不能及时传达到目标，那整个游戏的体验基本就">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+    <meta property="og:site_name" content="Hexo"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="indigo">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">Hexo</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            Home
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            Archives
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            Reading
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            About
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            Search
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav indigo darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://ww2.sinaimg.cn/small/74990035jw1f1rjkd681bj20rs0rsdhg.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">你的大名</p>
+                        <p class="desc">Web前端/iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    Home
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    Archives
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    Categories
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    Reading
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    About
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    Search
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav indigo darken-1" id="category-menu">
+    
+
+            
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">Search</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper indigo">
+        <span class="breadcrumb">Current page(Categories)</span>
+        
+            
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>No title</h1>
+    
+
+
+            </div>
+            <time class="pink-link-context" datetime="2017-06-25T15:37:02.000Z"><a href="/2017/06/25/iOS socket简单说明/">2017-06-25</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+
+            <div class="toc pink-link-context hide-on-med-and-down">
+    
+</div>
+
+
+            <div class="entry pink-link-context">
+                <p>日常的普通应用中如果不是对通讯的即时性有要求，基本上大家都会选择使用AFNetworking中的基于http/https的网络通信。但是有时候比如在线聊天，游戏中的数据交互等情况，对网络通信的即时性有非常高的要求（试想一下比如FPS游戏中，击中目标的数据如果不能及时传达到目标，那整个游戏的体验基本就是一塌糊涂），那么就会使用网络嵌套字socket编程，不同于http的单向的按次来算的信息发送，socket编程会要求客户端进程和服务器端进程建立起稳定的连接，然后不断进行数据交互，直到连接断开。</p>
+<p>这里先介绍一下socket编程的相关资料</p>
+<p>### socket相关知识</p>
+<p>HTTP和socket的区别：HTTP是一个基于TCP/IP之上的应用层协议，主要解决的是如何包装和解析数据的部分。HTTP协议规定了客户端和服务器端互相通信的规则，本身是短连接并且基于请求-响应这种方案。针对其无状态特性，一般使用的时候会通过session技术来解决问题。</p>
+<p>而socket并不是一个协议，只是一个对TCP/IP协议的封装接口，通过调用socket才能使用TCP/IP协议，和HTTP的通信状态不同的是，socket连接属于长连接，一旦建立了连接，服务器端可以将信息推送到客户端。</p>
+<p>创建socket连接的时候，可以指定传输层协议，可以是TCP或者UDP，当用TCP连接，该socket就是个TCP连接，反之就是UDP连接。</p>
+<p>socket的基本原理:socket至少需要一对套接字，分别是clientSocket和serverSocket。连接分为三个步骤：</p>
+<p>(1) 服务器监听：服务器并不具体定位客户端的套接字，而是时刻处于监听状态；</p>
+<p>(2) 客户端请求：客户端的套接字描述要连接的服务器的套接字，提供地址和端口号，然后向服务器套接字提出连接请求；</p>
+<p>(3) 连接确认：当服务器套接字接到客户端套接字发来的请求后，就响应客户端套接字的请求，并建立一个新的线程，把服务器端的套接字的描述发给客户端。一旦客户端确认了此描述，就正式建立连接。而服务器套接字继续处于监听状态，继续接收其他客户端套接字的连接请求。</p>
+<p>socket连接的特性具体表现为长连接：通常情况下socket连接就是TCP连接，因此socket连接一单建立，通讯双方开始互发数据内容，直到连接断开。在实际应用中，由于网络节点过多，在传输过程中会被节点断开连接，因此要通过轮询高速网络，该节点处于活跃状态。</p>
+<p>socket使用的库函数：</p>
+<p>创建套接字:<figure class="highlight plain"><figcaption><span>// 建立套接字并建立和地址的联系, bind</span><a href="//">建立服务端监听, listen // 建立服务器和客户端的连接```</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">客户端请求连接： ``` connect // 服务器端等待对应编号的socket上接收客户连接请求， accept // 发送接收数据</div></pre></td></tr></table></figure></p>
+<p>面向连接： <figure class="highlight plain"><figcaption><span>read```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">释放套接字： ``` close</div></pre></td></tr></table></figure></p>
+<p>### iOS中使用套接字</p>
+<p>在iOS中以NSStream来管理数据流，通过Apple自己提供的API来对数据流的状态变化进行相对的管理操控。在socket的层面上，也是通过基于C语言的socket API来完成基本的嵌套字交互。</p>
+<p>但是实际使用中很多人会使用开源的CocoaAsyncSocket这个框架来管理iOS上的嵌套字调用。</p>
+<p>CocoaAsyncSocket:</p>
+<p>这是基于BSD-Socket写的一个框架，给iOS以及MacOS提供了易于使用，强大的异步套接字库。将复杂的底层socket和stream操作向上以OC接口封装。</p>
+<p>先前的框架中使用了两种方法处理底层操作：runloops版本和GCD版本，但是现在只包含GCD版本。而GCD版本中又根据TCP和UDP来分为GCDAsyncSocket和GCDAsyncUdpSocket两个类来处理（不得不吐槽一个文件里装了所有的对应功能，看起来真不太适应=。=）。</p>
+<p>简单的socket调用操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">// 建立一个socket对象：</div><div class="line"></div><div class="line">\_socket = [GCDAsyncSocket alloc]]initWithDelegate:self delegateQueue:dispatch\_get\_global\_queue(DISPATCH\_QUEUE\_PRIORITY\_DEFAULT,0)];</div><div class="line"></div><div class="line">// 连接至指定host</div><div class="line"></div><div class="line">NSError \*error = nil;</div><div class="line"></div><div class="line">[\_socket connectToHost:@&quot;111.111.111.111&quot; onPort:1111 error:&amp;error];</div><div class="line"></div><div class="line">// delegate</div><div class="line"></div><div class="line">- (void)socket:(GCDAsyncSocket \*)sock didConnectToHost:(NSString \*)host port:(unit16\_t)port &#123;</div><div class="line"></div><div class="line"> // 代理，完成连接之后调用的方法，由调用者完成</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)socketDidDisconnect:(GCDAsyncSocket \*)sock withError:(NSError \*)err &#123;</div><div class="line"></div><div class="line"> // 断开连接之后调用的方法，同样由调用者完成</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)socket:(GCDAsyncSocket \*)sock didWriteDataWithTag:(long)tag &#123;</div><div class="line"></div><div class="line"> // 数据发送成功的时候调用的方法</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">...........</div></pre></td></tr></table></figure>
+<p>一个GCDAsyncSocket对象就负责一次socket通信，确定了连接的主机和端口号之后就可以创建一个socket线程并将其加入到GCD队列中。具体的真实环境下的socket调用，后面细讲，这里只说明一下大致的调用方法。</p>
+<p>由于GCDAsyncSocket的代码量比较庞大，所以先看其头文件，看一下它整体的分为哪些功能模块：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div><div class="line">228</div><div class="line">229</div><div class="line">230</div><div class="line">231</div><div class="line">232</div><div class="line">233</div><div class="line">234</div><div class="line">235</div><div class="line">236</div><div class="line">237</div><div class="line">238</div><div class="line">239</div><div class="line">240</div><div class="line">241</div><div class="line">242</div><div class="line">243</div><div class="line">244</div><div class="line">245</div><div class="line">246</div><div class="line">247</div><div class="line">248</div><div class="line">249</div><div class="line">250</div><div class="line">251</div><div class="line">252</div><div class="line">253</div><div class="line">254</div><div class="line">255</div><div class="line">256</div><div class="line">257</div><div class="line">258</div><div class="line">259</div><div class="line">260</div><div class="line">261</div><div class="line">262</div><div class="line">263</div><div class="line">264</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">@interface GCDAsyncSocket : NSObject</div><div class="line"></div><div class="line">// 初始化方法</div><div class="line"></div><div class="line">- (instancetype)init;</div><div class="line"></div><div class="line">- (instancetype)initWithSocketQueue:(nullable dispatch\_queue\_t)sq;</div><div class="line"></div><div class="line">- (instancetype)initWithDelegate:(nullable id\&lt;GCDAsyncSocketDelegate\&gt;)aDelegate delegateQueue:(nullable dispatch\_queue\_t)dq;</div><div class="line"></div><div class="line">- (instancetype)initWithDelegate:(nullable id\&lt;GCDAsyncSocketDelegate\&gt;)aDelegate delegateQueue:(nullable dispatch\_queue\_t)dq socketQueue:(nullable dispatch\_queue\_t)sq;</div><div class="line"></div><div class="line">// Accepting 方法：告诉socket开始监听并且从对应端口的连接上接收信息</div><div class="line"></div><div class="line">- (BOOL)acceptOnPort:(uint16\_t)port error:(NSError \*\*)errPtr;</div><div class="line"></div><div class="line">- (BOOL)acceptOnInterface:(nullable NSString \*)interface port:(uint16\_t)port error:(NSError \*\*)errPtr;</div><div class="line"></div><div class="line">- (BOOL)acceptOnUrl:(NSURL \*)url error:(NSError \*\*)errPtr;</div><div class="line"></div><div class="line">// Connect 方法：连接到对应的host上的端口(系统底层会启用TCP三次握手来确认连接成功)</div><div class="line"></div><div class="line">- (BOOL)connectToHost:(NSString \*)host onPort:(uint16\_t)port error:(NSError \*\*)errPtr;</div><div class="line"></div><div class="line">- (BOOL)connectToHost:(NSString \*)host</div><div class="line"></div><div class="line"> onPort:(uint16\_t)port</div><div class="line"></div><div class="line"> withTimeout:(NSTimeInterval)timeout</div><div class="line"></div><div class="line"> error:(NSError \*\*)errPtr; // 增加了过期时间</div><div class="line"></div><div class="line">- (BOOL)connectToHost:(NSString \*)host</div><div class="line"></div><div class="line"> onPort:(uint16\_t)port</div><div class="line"></div><div class="line"> viaInterface:(nullable NSString \*)interface</div><div class="line"></div><div class="line"> withTimeout:(NSTimeInterval)timeout</div><div class="line"></div><div class="line"> error:(NSError \*\*)errPtr;</div><div class="line"></div><div class="line">- (BOOL)connectToAddress:(NSData \*)remoteAddr error:(NSError \*\*)errPtr;</div><div class="line"></div><div class="line">- (BOOL)connectToAddress:(NSData \*)remoteAddr withTimeout:(NSTimeInterval)timeout error:(NSError \*\*)errPtr;</div><div class="line"></div><div class="line">- (BOOL)connectToAddress:(NSData \*)remoteAddr</div><div class="line"></div><div class="line"> viaInterface:(nullable NSString \*)interface</div><div class="line"></div><div class="line"> withTimeout:(NSTimeInterval)timeout</div><div class="line"></div><div class="line"> error:(NSError \*\*)errPtr;</div><div class="line"></div><div class="line">- (BOOL)connectToUrl:(NSURL \*)url withTimeout:(NSTimeInterval)timeout error:(NSError \*\*)errPtr;</div><div class="line"></div><div class="line">// Disconnect 方法：断开连接是同步进行的，调用的时候就马上断开,任何挂起的read和write操作全部都会取消</div><div class="line"></div><div class="line">- (void)disconnect;</div><div class="line"></div><div class="line">- (void)disconnectAfterReading; // 可以等到所有的read操作完成后再断开</div><div class="line"></div><div class="line">- (void)disconnectAfterWriting; // 同上，等write</div><div class="line"></div><div class="line">- (void)disconnectAfterReadingAndWriting; // 不需要再解释了吧=。=</div><div class="line"></div><div class="line">// Diagnostics 参数：判断一个socket是否断开连接还是在连接中，一个断开连接的socket其实是可以被重复利用，再次拿来连接和监听使用的。这里的部分全部是property，并不包含诊断所用的方法，但是这些参数是判断socket当前状态的关键</div><div class="line"></div><div class="line">@property (atomic, readonly) BOOL isDisconnected;</div><div class="line"></div><div class="line">@property (atomic, readonly) BOOL isConnected; // 当处于connect过程中时有可能两种状态都不是</div><div class="line"></div><div class="line">@property (atomic, readonly, nullable) NSString \*connectedHost;</div><div class="line"></div><div class="line">@property (atomic, readonly) uint16\_t connectedPort;</div><div class="line"></div><div class="line">@property (atomic, readonly, nullable) NSURL \*connectedUrl;</div><div class="line"></div><div class="line">@property (atomic, readonly, nullable) NSString \*localHost;</div><div class="line"></div><div class="line">@property (atomic, readonly) uint16\_t localPort; // 如果disconnect，那么对应的端口或者url就应该是0或者nil</div><div class="line"></div><div class="line">@property (atomic, readonly, nullable) NSData \*connectedAddress;</div><div class="line"></div><div class="line">@property (atomic, readonly, nullable) NSData \*localAddress;</div><div class="line"></div><div class="line">@property (atomic, readonly) BOOL isIPv4;</div><div class="line"></div><div class="line">@property (atomic, readonly) BOOL isIPv6;</div><div class="line"></div><div class="line">@property (atomic, readonly) BOOL isSecure;// socket是否被SSL/TLS保护</div><div class="line"></div><div class="line">// Reading方法：read和write方法是不会阻塞的（异步）。当一个read完成的时候，socket:didReadData:withTag:方法会分发到delegateQueue上，同理write也有对应的方法分发。</div><div class="line"></div><div class="line">- (void)readDataWithTimeout:(NSTimeInterval)timeout tag:(long)tag;// 开始读取socket中可读取的字节</div><div class="line"></div><div class="line">- (void)readDataWithTimeout:(NSTimeInterval)timeout</div><div class="line"></div><div class="line">  buffer:(nullable NSMutableData \*)buffer</div><div class="line"></div><div class="line">  bufferOffset:(NSUInteger)offset</div><div class="line"></div><div class="line"> tag:(long)tag;</div><div class="line"></div><div class="line">- (void)readDataWithTimeout:(NSTimeInterval)timeout</div><div class="line"></div><div class="line"> buffer:(nullable NSMutableData \*)buffer</div><div class="line"></div><div class="line"> bufferOffset:(NSUInteger)offset</div><div class="line"></div><div class="line"> maxLength:(NSUInteger)length</div><div class="line"></div><div class="line"> tag:(long)tag;// buffer是可以根据数据自动变化大小的</div><div class="line"></div><div class="line">- (void)readDataToLength:(NSUInteger)length withTimeout:(NSTimeInterval)timeout tag:(long)tag;</div><div class="line"></div><div class="line">- (void)readDataToLength:(NSUInteger)length</div><div class="line"></div><div class="line"> withTimeout:(NSTimeInterval)timeout</div><div class="line"></div><div class="line"> buffer:(nullable NSMutableData \*)buffer</div><div class="line"></div><div class="line"> bufferOffset:(NSUInteger)offset</div><div class="line"></div><div class="line"> tag:(long)tag;</div><div class="line"></div><div class="line">- (void)readDataToData:(NSData \*)data withTimeout:(NSTimeInterval)timeout tag:(long)tag;</div><div class="line"></div><div class="line">- (void)readDataToData:(NSData \*)data</div><div class="line"></div><div class="line"> withTimeout:(NSTimeInterval)timeout</div><div class="line"></div><div class="line"> buffer:(nullable NSMutableData \*)buffer</div><div class="line"></div><div class="line"> bufferOffset:(NSUInteger)offset</div><div class="line"></div><div class="line"> tag:(long)tag;</div><div class="line"></div><div class="line">- (void)readDataToData:(NSData \*)data withTimeout:(NSTimeInterval)timeout maxLength:(NSUInteger)length tag:(long)tag;</div><div class="line"></div><div class="line">- (void)readDataToData:(NSData \*)data</div><div class="line"></div><div class="line"> withTimeout:(NSTimeInterval)timeout</div><div class="line"></div><div class="line"> buffer:(nullable NSMutableData \*)buffer</div><div class="line"></div><div class="line"> bufferOffset:(NSUInteger)offset</div><div class="line"></div><div class="line"> maxLength:(NSUInteger)length</div><div class="line"></div><div class="line"> tag:(long)tag;</div><div class="line"></div><div class="line">- (float)progressOfReadReturningTag:(nullable long \*)tagPtr bytesDone:(nullable NSUInteger \*)donePtr total:(nullable NSUInteger \*)totalPtr;</div><div class="line"></div><div class="line">// Writing 方法： </div><div class="line"></div><div class="line">- (void)writeData:(NSData \*)data withTimeout:(NSTimeInterval)timeout tag:(long)tag;</div><div class="line"></div><div class="line">- (float)progressOfWriteReturningTag:(nullable long \*)tagPtr bytesDone:(nullable NSUInteger \*)donePtr total:(nullable NSUInteger \*)totalPtr;</div><div class="line"></div><div class="line">// Security 方法：使用SSL/LTS来保证连接的安全性</div><div class="line"></div><div class="line">- (void)startTLS:(nullable NSDictionary \&lt;NSString\*,NSObject\*\&gt;\*)tlsSettings;</div><div class="line"></div><div class="line">// 一个方法，但是内容比较复杂，字典包含很多可选择的key，比如GCDAsyncSocketManuallyEvaluateTrust， - GCDAsyncSocketUseCFStreamForTLS， - kCFStreamSSLPeerName等</div><div class="line"></div><div class="line">/\* 高级方法 ：传统的socket在对话结束之前是不会关闭的，但是技术上可以让远端的点关闭write stream，然后本地的socket就会发现已经没有信息被读入了，但是它任然处于可以被写入信息的状态，并且远程端点仍然可以继续接受本地发送过去的信息。</div><div class="line"></div><div class="line"> 所以需要能让本地的客户端能够主动关闭write stream，并且通知服务器端说“我们不会再发送更多信息过去了”。</div><div class="line"></div><div class="line"> 更糟糕的是，从TCP的层面，并不能分清楚到底是一段read stream结束还是整个socket结束了，它们都会让TCP栈收到一个FIN包，唯一的区别方法只能是看有没有继续发送的数据（如果是socket结束了，服务器会发送一个RST包）。</div><div class="line"></div><div class="line"> 为了解决这个问题，APPLE的方法是当read stream被关闭之后，系统API马上请求将socket也关闭，听起来很简单粗暴，但是实际上挺简单有用的。下面这些参数保证了这些逻辑</div><div class="line"></div><div class="line"> \*/</div><div class="line"></div><div class="line"> @property (atomic, assign, readwrite) BOOL autoDisconnectOnClosedReadStream;// 默认是YES，如果服务器是自己维护的，或许可以考虑改为no，并且完成socketDidCloseReadStream方法。</div><div class="line"></div><div class="line"> // GCDAsyncSocket通过一个内含的serial dispatch\_queue来维护现成安全，通常由实例本身来维护这个队列，然而也可能在初始化这个实例的时候就将队列作为参数交给它了。这样外部能通过操控socket的线程优点度来完成一些有技巧性的操作=。=但是也会带来一些死锁的烦恼，所以需要谨慎操作，比如当改变了一个实例的targetQueue,但是一些操作需要在以前的queue上执行的时候。这个问题主要怪GCD的API没有办法找到一个queue的targetQueue。</div><div class="line"></div><div class="line"> - (void)markSocketQueueTargetQueue:(dispatch\_queue\_t)socketQueuesPreConfiguredTargetQueue;</div><div class="line"></div><div class="line">- (void)unmarkSocketQueueTargetQueue:(dispatch\_queue\_t)socketQueuesPreviouslyConfiguredTargetQueue;</div><div class="line"></div><div class="line">- (void)performBlock:(dispatch\_block\_t)block;</div><div class="line"></div><div class="line">- (int)socketFD;</div><div class="line"></div><div class="line">- (int)socket4FD;</div><div class="line"></div><div class="line">- (int)socket6FD;</div><div class="line"></div><div class="line">\#if TARGET\_OS\_IPHONE</div><div class="line"></div><div class="line">- (nullable CFReadStreamRef)readStream;</div><div class="line"></div><div class="line">- (nullable CFWriteStreamRef)writeStream;</div><div class="line"></div><div class="line">- (BOOL)enableBackgroundingOnSocket;</div><div class="line"></div><div class="line">- (nullable SSLContextRef)sslContext;</div><div class="line"></div><div class="line">// 辅助功能：一些辅助性的功能函数，全都是class method，并且推荐在background thread中使用</div><div class="line"></div><div class="line">+ (nullable NSMutableArray \*)lookupHost:(NSString \*)host port:(uint16\_t)port error:(NSError \*\*)errPtr; </div><div class="line"></div><div class="line">+ (nullable NSString \*)hostFromAddress:(NSData \*)address;</div><div class="line"></div><div class="line">+ (uint16\_t)portFromAddress:(NSData \*)address;</div><div class="line"></div><div class="line">+ (BOOL)isIPv4Address:(NSData \*)address;</div><div class="line"></div><div class="line">+ (BOOL)isIPv6Address:(NSData \*)address;</div><div class="line"></div><div class="line">+ (BOOL)getHost:( NSString \* \_\_nullable \* \_\_nullable)hostPtr port:(nullable uint16\_t \*)portPtr fromAddress:(NSData \*)address;</div><div class="line"></div><div class="line">+ (BOOL)getHost:(NSString \* \_\_nullable \* \_\_nullable)hostPtr port:(nullable uint16\_t \*)portPtr family:(nullable sa\_family\_t \*)afPtr fromAddress:(NSData \*)address;</div><div class="line"></div><div class="line">// 最后是delegate</div><div class="line"></div><div class="line">@protocol GCDAsyncSocketDelegate \&lt;NSObject\&gt;</div><div class="line"></div><div class="line">@optional</div><div class="line"></div><div class="line">- (nullable dispatch\_queue\_t)newSocketQueueForConnectionFromAddress:(NSData \*)address onSocket:(GCDAsyncSocket \*)sock;// 在socket:didAcceptNewSocket:之前就会调用，为新接受的socket提供socketQueue,如果没有实现或者返回Nil那么新的socket就会自己创建默认queue</div><div class="line"></div><div class="line">- (void)socket:(GCDAsyncSocket \*)sock didAcceptNewSocket:(GCDAsyncSocket \*)newSocket; // 当一个socket接受一个连接时调用，创建另外一个socket来处理这个连接。必须retian这个新的socket以免被release的时候丢失连接，这个新的socket默认使用相同的delegateQueue</div><div class="line"></div><div class="line">- (void)socket:(GCDAsyncSocket \*)sock didConnectToHost:(NSString \*)host port:(uint16\_t)port; </div><div class="line"></div><div class="line">- (void)socket:(GCDAsyncSocket \*)sock didConnectToUrl:(NSURL \*)url;</div><div class="line"></div><div class="line">- (void)socket:(GCDAsyncSocket \*)sock didReadData:(NSData \*)data withTag:(long)tag;</div><div class="line"></div><div class="line">- (void)socket:(GCDAsyncSocket \*)sock didReadPartialDataOfLength:(NSUInteger)partialLength tag:(long)tag;</div><div class="line"></div><div class="line">- (void)socket:(GCDAsyncSocket \*)sock didWriteDataWithTag:(long)tag;</div><div class="line"></div><div class="line">- (void)socket:(GCDAsyncSocket \*)sock didWritePartialDataOfLength:(NSUInteger)partialLength tag:(long)tag;</div><div class="line"></div><div class="line">// 这些方法名上都很直观就是了=。=</div><div class="line"></div><div class="line">- (NSTimeInterval)socket:(GCDAsyncSocket \*)sock shouldTimeoutReadWithTag:(long)tag</div><div class="line"></div><div class="line"> elapsed:(NSTimeInterval)elapsed</div><div class="line"></div><div class="line"> bytesDone:(NSUInteger)length;// 如果一个read操作在超时之后还没有完成，这个方法能让用户自由拓展超时时间，注意一个操作有可能调用这个函数很多次，elapsed是超过的总时间</div><div class="line"></div><div class="line">- (NSTimeInterval)socket:(GCDAsyncSocket \*)sock shouldTimeoutWriteWithTag:(long)tag</div><div class="line"></div><div class="line"> elapsed:(NSTimeInterval)elapsed</div><div class="line"></div><div class="line"> bytesDone:(NSUInteger)length; // 同上，这里是write操作的超时处理</div><div class="line"></div><div class="line">- (void)socketDidCloseReadStream:(GCDAsyncSocket \*)sock; //当read stream被关闭但是write stream仍然可以操作时</div><div class="line"></div><div class="line">- (void)socketDidDisconnect:(GCDAsyncSocket \*)sock withError:(nullable NSError \*)err;</div><div class="line"></div><div class="line">- (void)socketDidSecure:(GCDAsyncSocket \*)sock; // 当SSL/TLS诊断完成后调用（如果没有成功socket会直接关闭）</div><div class="line"></div><div class="line">- (void)socket:(GCDAsyncSocket \*)sock didReceiveTrust:(SecTrustRef)trust</div><div class="line"></div><div class="line"> completionHandler:(void (^)(BOOL shouldTrustPeer))completionHandler;</div></pre></td></tr></table></figure>
+<p>#### TCP/IP浅谈</p>
+<p>知道了socket其实是TCP/UDP的底层API实现之后，我觉得有必要稍微了解一下TCP/IP协议的特性。当然这里就不得不提到大多数人都会看的那本最经典的\&lt;\<tcp ip详解\="">>，但是里面的内容太过于充实，TCP/IP整个协议群如果真的想认真了解，无疑是一件无比繁重的工作，光是看着目录里那些冗长的协议名就已经要了我半条命=。=所以按照我的粗浅了解，这里只能归纳一下一些众所周知的TCP/IP特性：</tcp></p>
+<p>1. TCP Header：</p>
+<p> 众所周知，网络传输的其实是信息流，端口之间不断发送和接受数据流，问题的关键在于必须有一个很明确的方法解读这些数据，比如怎么把很多次传过来的数据拼成本来应该是一个完整的数据。这时候就会考虑到给每个报文段加上序号，告诉系统接受到的信息从哪里开始是描述性的数据，从哪里开始是真是有用的数据内容，然后一段数据和系统里已经有的数据如何拼凑成一个整体。这些约定的解读方法全部在TCP Header中实现了。</p>
+<p> 包含source port（16位）和destination port（16位），sequence number(32位)报文段的序号来表示顺序，acknowledgment number（32）代表发送方已接受到的报文段，并且期望接受到的下一个报文段的开始序号。这里我们可以看出TCP协议并不关心报文段的个数，而是传输的字节的个数，毕竟我们是按照字节的序号进行数据拼接。</p>
+<p> 其次有一些对齐位，保留位等标记。重点是后面的flag位:包含urgent,ack,push,reset,syn和fin这六位。urgent表示本报文为紧急数据，reset是异常连接结束或端口错误的标记，而ack确认，syn同步和fin结束是三次握手中的关键标记位。push表示TCP不再等待其它报文段到达，马上交给上层应用层。</p>
+<p> window窗口数据，是流量控制的关键部分；check sum验证报文段是否受损；options中包括占位符，计算往返时间使用的时间戳还有传输的最大比特MTU。</p>
+<p>2. 三次握手</p>
+<p> 三次握手只能由客户端向服务端发起，第一次客户端发送SYN为1以及序列号seq1，表示想建立连接；然后服务端返回ACK,SYN都为1，序列号seq2，确认序列号seq1+1，表示也想建立联系；第三步由客户端接收后发送ACK为1，并且返回确认序号seq2+1。至此建立连接。</p>
+<p> 试想一下如果没有三次握手，有可能客户端的第一个报文经过了很长的时间才到达服务器端，这个应该被认为失效的报文不仅没有失效，反而会开启一个新的连接，这样就会出错。所以三次握手可以确保传输数据的两方都处于正常状态下才开始进行传输。</p>
+<p> 那么如果第三次失败了的话会直接取消连接吗？并不会，服务器端一般会有一个默认的等待间隔，一般是1s，再重新发送一次确认报文，这样重复5次，每次的间隔时间都比上一次更长（一般是两倍），全部失败之后才选择放弃连接。</p>
+<p>3. 四次挥手</p>
+<p> 用来断开连接的过程，两方都可以发起。第一次发送方发送FIN为1，ACK为1，以及序列号seq1。第二步接收方发送ACK为1，确认序列号seq1+1,表示正在结束连接；第三部还是接收方发送FIN为1，ACK为1，序列号为seq2，请求结束另一方的连接;最后发送方收到后发送ACK为1，确认序列号seq2+1，断开连接。</p>
+<p> 其实我们可以发现这是一个两方重复的过程，因为要断开两边各自的通信所以两边换了一下角色完成了同样的工作：发送FIN,ACK和序列号，然后等待对方回复ACK和序列号+1，这样就断开了一端的连接。完成两端一共就四次挥手了，很好理解。如果不到四次的话，肯定有一端的关闭没有完全确认，可能会造成有一端关闭了通讯但是另一端一直在接着传输数据的这种错误，也就是俗称的半关闭状态。</p>
+<p>4. 流量控制</p>
+<p> 流量控制实际上是发送方和接收方处理速度匹配的过程。实际上当一端收到报文的时候并不是直接就对报文的内容进行处理，而是会将数据放在缓冲中等待应用程序取出。这样的情况下如果传输过程中一端没有及时处理完报文段，就会造成数据缓冲溢出。所以我们需要流量控制，接收方会将自己的缓冲剩余空间rwnd告诉发送方，发送方为了控制速度，只能再发送得到的剩余空间容量之内的报文段。由于TCP的确认方式，发送方得到的容量不会限制已发送而未确认的报文段，所以有可能报文段已经在接收方的缓冲中但是发送方并不知道，只有将要发送的报文才能得到限制。</p>
+<p> 而当容量剩余为0时并不会停止发送报文，TCP准备了一个计时器，当填满缓冲的时候会启动计时器，然后不断发送剩余空间探测报文（window probe），直到有多的剩余空间。</p>
+<p>5. 拥塞控制</p>
+<p> TCP并不只是单纯的完成握手和数据对接这些工作，它还负责调控网络传输的速率。试想一下如果所有的网络传输进程全部一股脑地把东西全部怼到接收方，肯定会出事。而TCP就有一系列的判断方法来处理这些事情，由于我们知道TCP并不能从全局上判断网络环境状况，所以它只能通过当前进程通信的状态来调整自己的节奏。</p>
+<p> TCP对是否发生拥塞情况有一套自己的判断方法：只要出现超时重传和3次冗余ACK引起的快速重传就认为是网络拥塞了；而网络拥塞也有程度的区分，如果超时重传就认为是拥塞程度强，快速重传就认为程度相对比较弱；而ACK只要不出现冗余，那么就认为一切顺利；而当每次发生拥塞后，TCP会记录下导致发生拥塞的报文段的数量的一半，下次如果发生了这个数量的冗余，就判定为快要拥塞了；而对于出现了快速重传的情况，说明发生了拥塞但是并不严重，那么就适当降低cwnd，表示“出了问题，请小心一点”。</p>
+<p> 可以认为TCP对拥塞的调控就是在“慢启动”，“拥塞避免”和“快速恢复”这三个状态中来回切换，没遇到问题的时候就不停指数加速，有可能拥塞的时候就放慢加速的速度，出现不严重的拥塞就减速，出现非常严重的拥塞就直接从零开始。</p>
+
+                
+
+
+<p class="pink-link-context">
+    <a href="/2017/05/09/hello-world/" rel="next" title="Hello World">
+    Next: Hello World
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large pink">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect green" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse yellow darken-1"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer indigo darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">Social</h5>
+                
+                    <a class="social-link" href="http://weibo.com/1956184117" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/raytaylorlin" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">Links</h5>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="https://github.com/raytaylorlin" target="_blank">Github地址（测试友情链接）</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright pink-link-context">
+        <div class="container">
+            © 2016 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">Blog powered by <a href="https://hexo.io">Hexo</a> | Theme <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('pink lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-reading, .menu-about').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>
