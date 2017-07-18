@@ -10,8 +10,8 @@
     <title>SDWebImage解析 | </title>
     <meta name="author" content="John Doe">
     
-    <meta name="description" content="SDWebImage解析SDWebImage是开发中常用的网络加载图片的库，使用频率高到令人发指。本身优秀的接口封装和底层的内存管理都让开发者免去了很多麻烦，那么作为一个开发者，有必要对这么一个每天都要打交道的库有一些更深入的了解。这里我记录下自己阅读源码的心得，算是做个笔记。
-12345sd_se">
+    <meta name="description" content="SDWebImage是开发中常用的网络加载图片的库，使用频率高到令人发指。本身优秀的接口封装和底层的内存管理都让开发者免去了很多麻烦，那么作为一个开发者，有必要对这么一个每天都要打交道的库有一些更深入的了解。这里我记录下自己阅读源码的心得，算是做个笔记。
+12345sd_setImageWithUR">
     
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -255,12 +255,12 @@
 
 
             <div class="toc pink-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#SDWebImage解析"><span class="section table-of-contents-text">SDWebImage解析</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#补充说明：NSURLCache的执行策略"><span class="section table-of-contents-text">补充说明：NSURLCache的执行策略</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#总结SDWebImage的流程"><span class="section table-of-contents-text">总结SDWebImage的流程</span></a></li></ol></li></ol></li></ol>
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#补充说明：NSURLCache的执行策略"><span class="section table-of-contents-text">补充说明：NSURLCache的执行策略</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#总结SDWebImage的流程"><span class="section table-of-contents-text">总结SDWebImage的流程</span></a></li></ol>
 </div>
 
 
             <div class="entry pink-link-context">
-                <h2 id="SDWebImage解析"><a href="#SDWebImage解析" class="headerlink" title="SDWebImage解析"></a>SDWebImage解析</h2><p>SDWebImage是开发中常用的网络加载图片的库，使用频率高到令人发指。本身优秀的接口封装和底层的内存管理都让开发者免去了很多麻烦，那么作为一个开发者，有必要对这么一个每天都要打交道的库有一些更深入的了解。这里我记录下自己阅读源码的心得，算是做个笔记。</p>
+                <p>SDWebImage是开发中常用的网络加载图片的库，使用频率高到令人发指。本身优秀的接口封装和底层的内存管理都让开发者免去了很多麻烦，那么作为一个开发者，有必要对这么一个每天都要打交道的库有一些更深入的了解。这里我记录下自己阅读源码的心得，算是做个笔记。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">          placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                   options:(SDWebImageOptions)options</div><div class="line">                  progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                 completed:(nullable SDExternalCompletionBlock)completedBlock</div></pre></td></tr></table></figure>
 <p>而这个方法里面是直接调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sd_internalSetImageWithURL:(nullable NSURL *)url</div><div class="line">                  placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                           options:(SDWebImageOptions)options</div><div class="line">                      operationKey:(nullable NSString *)operationKey</div><div class="line">                     setImageBlock:(nullable SDSetImageBlock)setImageBlock</div><div class="line">                          progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                         completed:(nullable SDExternalCompletionBlock)completedBlock</div></pre></td></tr></table></figure></p>
 <p>这个方法首先第一步就是检测是否用了相同的请求，在UIView的webCacheOperation category中，实现方法</p>

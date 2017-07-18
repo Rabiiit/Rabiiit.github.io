@@ -10,7 +10,7 @@
     <title>AFNetworking的安全策略 | </title>
     <meta name="author" content="John Doe">
     
-    <meta name="description" content="AFNetworking的安全策略上面我们说到，AFNetworking3.x是对NSURLSession的一层包装，包括delegate的实现和回调，还有请求接口的包装。不过这只是一部分基本功能，实际上还有一些同样很复杂并且重要的部分。比如现在我们看到的就是其中的安全策略。本质上AFNetwork">
+    <meta name="description" content="上面我们说到，AFNetworking3.x是对NSURLSession的一层包装，包括delegate的实现和回调，还有请求接口的包装。不过这只是一部分基本功能，实际上还有一些同样很复杂并且重要的部分。比如现在我们看到的就是其中的安全策略。本质上AFNetworking的安全策略是根据https来">
     
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -248,22 +248,22 @@
             
     <div class="tags-row">
         
+            <a href="/tags/源码解析/" class="chip pink lighten-1">源码解析</a>
+        
             <a href="/tags/TCP-IP/" class="chip pink lighten-1">TCP/IP</a>
         
             <a href="/tags/HTTPS/" class="chip pink lighten-1">HTTPS</a>
-        
-            <a href="/tags/源码解析/" class="chip pink lighten-1">源码解析</a>
         
     </div>
 
 
             <div class="toc pink-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#AFNetworking的安全策略"><span class="section table-of-contents-text">AFNetworking的安全策略</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#补充证书和证书链"><span class="section table-of-contents-text">补充证书和证书链</span></a></li></ol></li></ol></li></ol>
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#补充证书和证书链"><span class="section table-of-contents-text">补充证书和证书链</span></a></li></ol>
 </div>
 
 
             <div class="entry pink-link-context">
-                <h2 id="AFNetworking的安全策略"><a href="#AFNetworking的安全策略" class="headerlink" title="AFNetworking的安全策略"></a>AFNetworking的安全策略</h2><p>上面我们说到，AFNetworking3.x是对NSURLSession的一层包装，包括delegate的实现和回调，还有请求接口的包装。不过这只是一部分基本功能，实际上还有一些同样很复杂并且重要的部分。比如现在我们看到的就是其中的安全策略。<br>本质上AFNetworking的安全策略是根据https来完成的。先简单讲讲https和http的差别：<br>由于超文本传输协议http协议以明文的方法传送内容，不提供任何数据加密，所以很容易被攻击者截取到http传输的内容，在这个基础上，开发了新的https协议，即加入了SSL安全套接字方法，依靠证书来验证服务器的身份，这样在普通http传输的过程中传输的信息就是经过了证书加密之后的数据，提高了安全性。<br>简单总结一下就是：</p>
+                <p>上面我们说到，AFNetworking3.x是对NSURLSession的一层包装，包括delegate的实现和回调，还有请求接口的包装。不过这只是一部分基本功能，实际上还有一些同样很复杂并且重要的部分。比如现在我们看到的就是其中的安全策略。<br>本质上AFNetworking的安全策略是根据https来完成的。先简单讲讲https和http的差别：<br>由于超文本传输协议http协议以明文的方法传送内容，不提供任何数据加密，所以很容易被攻击者截取到http传输的内容，在这个基础上，开发了新的https协议，即加入了SSL安全套接字方法，依靠证书来验证服务器的身份，这样在普通http传输的过程中传输的信息就是经过了证书加密之后的数据，提高了安全性。<br>简单总结一下就是：</p>
 <ol>
 <li>用户发起请求，服务器响应并返回一个证书，包括基本信息和公钥</li>
 <li>用户拿到证书之后验证是否合法</li>
@@ -290,16 +290,16 @@
 
                 
 <p class="pink-link-context">
-    <a href="/2017/07/01/CocoaAsyncSocket部分功能解析/" rel="next" title="CocoaAsyncSocket部分功能解析">
-    Prev: CocoaAsyncSocket部分功能解析
+    <a href="/2017/07/01/AFNetworking基本模块/" rel="next" title="AFNetworking基本模块">
+    Prev: AFNetworking基本模块
   </a>
 </p>
 
 
 
 <p class="pink-link-context">
-    <a href="/2017/07/01/AFNetworking基本模块/" rel="next" title="AFNetworking基本模块">
-    Next: AFNetworking基本模块
+    <a href="/2017/06/27/iOS socket简单说明/" rel="next" title="iOS socket简单说明">
+    Next: iOS socket简单说明
   </a>
 </p>
 

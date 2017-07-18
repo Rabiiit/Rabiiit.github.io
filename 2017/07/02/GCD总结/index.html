@@ -10,7 +10,7 @@
     <title>GCD概要 | </title>
     <meta name="author" content="John Doe">
     
-    <meta name="description" content="GCD概要Grand Central Dispatch(GCD)是异步执行任务的技术之一。一般将应用程序中技术的线程管理中使用的代码在系统级实现。开发者只需要定义想执行的任务并追加到适当的Dispatch Queue中，GCD就能生成必要的线程并计划执行任务（以上摘自苹果官方说明）。也就是说GCD给">
+    <meta name="description" content="Grand Central Dispatch(GCD)是异步执行任务的技术之一。一般将应用程序中技术的线程管理中使用的代码在系统级实现。开发者只需要定义想执行的任务并追加到适当的Dispatch Queue中，GCD就能生成必要的线程并计划执行任务（以上摘自苹果官方说明）。也就是说GCD给用户提供了">
     
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -254,12 +254,12 @@
 
 
             <div class="toc pink-link-context hide-on-med-and-down">
-    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#GCD概要"><span class="section table-of-contents-text">GCD概要</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#多线程编程"><span class="section table-of-contents-text">多线程编程</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#GCD-的-API"><span class="section table-of-contents-text">GCD 的 API</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#GCD-实现"><span class="section table-of-contents-text">GCD 实现</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol></li></ol>
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#多线程编程"><span class="section table-of-contents-text">多线程编程</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#GCD-的-API"><span class="section table-of-contents-text">GCD 的 API</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#GCD-实现"><span class="section table-of-contents-text">GCD 实现</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol>
 </div>
 
 
             <div class="entry pink-link-context">
-                <h3 id="GCD概要"><a href="#GCD概要" class="headerlink" title="GCD概要"></a>GCD概要</h3><p>Grand Central Dispatch(GCD)是异步执行任务的技术之一。一般将应用程序中技术的线程管理中使用的代码在系统级实现。开发者只需要定义想执行的任务并追加到适当的Dispatch Queue中，GCD就能生成必要的线程并计划执行任务（以上摘自苹果官方说明）。也就是说GCD给用户提供了一个非常方便的方法来实现本身非常复杂的线程管理。</p>
+                <p>Grand Central Dispatch(GCD)是异步执行任务的技术之一。一般将应用程序中技术的线程管理中使用的代码在系统级实现。开发者只需要定义想执行的任务并追加到适当的Dispatch Queue中，GCD就能生成必要的线程并计划执行任务（以上摘自苹果官方说明）。也就是说GCD给用户提供了一个非常方便的方法来实现本身非常复杂的线程管理。</p>
 <p>例如我们经常会遇到的问题，从网络中或者缓存里获取图片然后刷新UI。实际上不可能让主线程阻塞去等待图片获取，只能够将获取图片的部分放到另外的后台线程中执行，其表现就是这样：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">dispatch_async(queue, ^&#123;</div><div class="line">  // 需要长时间处理的操作，比如后台获取图片</div><div class="line">  // blablabla</div><div class="line">  // 处理结束，回到主线程来调用结果，比如刷新UI</div><div class="line">  disptach_async(dispatch_get_main_queue(), ^&#123;</div><div class="line">    // 必须要在主线程完成的操作</div><div class="line">  &#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <h4 id="多线程编程"><a href="#多线程编程" class="headerlink" title="多线程编程"></a>多线程编程</h4><p>首先先说说线程究竟是什么，假设我们写好了一段可运行的objective-c代码，那么实际上该代码会被编译器转化为CPU指令包装成一段可以在机器上执行的程序。然后CPU从应用程序指定的地址开始，一个个执行CPU命令，其中有可能会遇到跳转的情况，并不一定是在内存的顺序位置来执行。但是假如认定CPU一次只能执行一个命令，那么CPU执行的命令序列就好比一条不分叉的大道。我们把这个“1个CPU执行的无分叉的CPU命令”便称为一个线程。</p>
