@@ -7,7 +7,7 @@
 
     
 
-    <title></title>
+    <title>Objective-c中的runtime学习记录 | </title>
     <meta name="author" content="John Doe">
     
     <meta name="description" content="Objective-c中的runtime学习记录作为iOS开发者，在使用objective-c进行编程的时候，最熟悉的就是各种类，对象，消息，但是实际上类和对象的本质是什么呢？消息在运行时如何实现？这些问题如果不稍稍深入探究一下可以说永远只是浮于表面，一个合格的程序员我想应该是有动力去探究这些内核机">
@@ -15,7 +15,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    
+    <meta property="og:title" content="Objective-c中的runtime学习记录"/>
     <meta property="og:site_name" content="Hexo"/>
 
     
@@ -172,7 +172,15 @@
 
             <li class="collapse-level-0" collapse-level="0">
                 <a class="no-padding" href="/categories/网络/">
-                    网络 <span class="right">1</span></a>
+                    网络 <span class="right">5</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/系统/">
+                    系统 <span class="right">2</span></a>
                 </a>
             </li>
 
@@ -206,6 +214,10 @@
         <span class="breadcrumb">Current page(Categories)</span>
         
             
+    
+    
+    <a class="breadcrumb" href="/categories/系统/">系统</a>
+
 
         
 
@@ -221,12 +233,12 @@
             <div class="article-title">
                 
     
-        <h1>No title</h1>
+        <h1>Objective-c中的runtime学习记录</h1>
     
 
 
             </div>
-            <time class="pink-link-context" datetime="2017-07-18T11:48:21.000Z"><a href="/2017/07/18/Objective-c中的runtime学习记录/">2017-07-18</a></time>
+            <time class="pink-link-context" datetime="2017-07-02T04:00:00.000Z"><a href="/2017/07/02/Objective-c中的runtime学习记录/">2017-07-02</a></time>
 
             <span id="busuanzi_container_page_pv" class="read-times-container">
     <i class="fa fa-eye"></i>
@@ -234,6 +246,12 @@
 </span>
 
             
+    <div class="tags-row">
+        
+            <a href="/tags/runtime/" class="chip pink lighten-1">runtime</a>
+        
+    </div>
+
 
             <div class="toc pink-link-context hide-on-med-and-down">
     <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Objective-c中的runtime学习记录"><span class="section table-of-contents-text">Objective-c中的runtime学习记录</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#类对象"><span class="section table-of-contents-text">类对象</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#理解消息机制"><span class="section table-of-contents-text">理解消息机制</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#属性和方法"><span class="section table-of-contents-text">属性和方法</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#分类category关联对象"><span class="section table-of-contents-text">分类category关联对象</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol></li></ol></li></ol>
@@ -314,8 +332,8 @@
 
 
 <p class="pink-link-context">
-    <a href="/2017/07/18/GCD总结/" rel="next" title="">
-    Next: 
+    <a href="/2017/07/02/SDWebImage解析/" rel="next" title="SDWebImage解析">
+    Next: SDWebImage解析
   </a>
 </p>
 
