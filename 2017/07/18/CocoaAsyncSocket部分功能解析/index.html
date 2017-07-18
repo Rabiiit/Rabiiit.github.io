@@ -1,0 +1,603 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title></title>
+    <meta name="author" content="John Doe">
+    
+    <meta name="description" content="COCOAASYNCSOCKET部分功能解析想要全部了解CocoaAsyncSocket的代码实在是一件太过于繁重的工作=。=毕竟代码量放在那里，尝试着看一下其源码，了解底层socket API的调用，从某个具体的功能开始一个个来看吧
+首先，GCDAsyncSocket中定义了几个类，用来包装数据以">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+    <meta property="og:site_name" content="Hexo"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="indigo">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">Hexo</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            Home
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            Archives
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            Reading
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            About
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            Search
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav indigo darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://ww2.sinaimg.cn/small/74990035jw1f1rjkd681bj20rs0rsdhg.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">你的大名</p>
+                        <p class="desc">Web前端/iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    Home
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    Archives
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    Categories
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    Reading
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    About
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    Search
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav indigo darken-1" id="category-menu">
+    
+
+            
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">Search</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper indigo">
+        <span class="breadcrumb">Current page(Categories)</span>
+        
+            
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>No title</h1>
+    
+
+
+            </div>
+            <time class="pink-link-context" datetime="2017-07-18T11:48:14.000Z"><a href="/2017/07/18/CocoaAsyncSocket部分功能解析/">2017-07-18</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+
+            <div class="toc pink-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#COCOAASYNCSOCKET部分功能解析"><span class="section table-of-contents-text">COCOAASYNCSOCKET部分功能解析</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#Property"><span class="section table-of-contents-text">Property</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#初始化"><span class="section table-of-contents-text">初始化</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#Connect"><span class="section table-of-contents-text">Connect</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#参考"><span class="section table-of-contents-text">参考</span></a></li></ol></li></ol></li></ol>
+</div>
+
+
+            <div class="entry pink-link-context">
+                <h2 id="COCOAASYNCSOCKET部分功能解析"><a href="#COCOAASYNCSOCKET部分功能解析" class="headerlink" title="COCOAASYNCSOCKET部分功能解析"></a>COCOAASYNCSOCKET部分功能解析</h2><p>想要全部了解CocoaAsyncSocket的代码实在是一件太过于繁重的工作=。=毕竟代码量放在那里，尝试着看一下其源码，了解底层socket API的调用，从某个具体的功能开始一个个来看吧</p>
+<p>首先，GCDAsyncSocket中定义了几个类，用来包装数据以及缓存等功能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@interface GCDAsyncSocketPreBuffer : NSObject</div></pre></td></tr></table></figure></p>
+<h4 id="Property"><a href="#Property" class="headerlink" title="Property"></a>Property</h4><p>这个类定义了很多属性，先大致看看，后面用到的时候会详细说到。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">    uint32_t flags;</div><div class="line">	uint16_t config;</div><div class="line">	</div><div class="line">	// 一个socket实例的delegate</div><div class="line">	__weak id&lt;GCDAsyncSocketDelegate&gt; delegate;</div><div class="line">	// 处理回调的queue</div><div class="line">	dispatch_queue_t delegateQueue;</div><div class="line">	</div><div class="line">	// 本地的IPV4 socket</div><div class="line">	int socket4FD;</div><div class="line">	// 本地的IPV6 socket</div><div class="line">	int socket6FD;</div><div class="line">	// unix域的 socket</div><div class="line">	int socketUN;</div><div class="line">	// 服务器端 url</div><div class="line">	NSURL *socketUrl;</div><div class="line">	int stateIndex;</div><div class="line">	</div><div class="line">	// 对应的IPV4,IPV6,UNIX地址</div><div class="line">	NSData * connectInterface4;</div><div class="line">	NSData * connectInterface6;</div><div class="line">	NSData * connectInterfaceUN;</div><div class="line">	</div><div class="line">	// 对这个类的socket操作全部在这个串行队列中进行</div><div class="line">	dispatch_queue_t socketQueue;</div><div class="line">	</div><div class="line">	dispatch_source_t accept4Source;</div><div class="line">	dispatch_source_t accept6Source;</div><div class="line">	dispatch_source_t acceptUNSource;</div><div class="line">	dispatch_source_t connectTimer;</div><div class="line">	dispatch_source_t readSource;</div><div class="line">	dispatch_source_t writeSource;</div><div class="line">	dispatch_source_t readTimer;</div><div class="line">	dispatch_source_t writeTimer;</div><div class="line">	</div><div class="line">	// read/write数据的数组</div><div class="line">	NSMutableArray *readQueue;</div><div class="line">	NSMutableArray *writeQueue;</div><div class="line">	</div><div class="line">	// 当前正在进行的read/write包</div><div class="line">	GCDAsyncReadPacket *currentRead;</div><div class="line">	GCDAsyncWritePacket *currentWrite;</div><div class="line">	</div><div class="line">	// 当前时刻未获取的数据大小</div><div class="line">	unsigned long socketFDBytesAvailable;</div><div class="line">	</div><div class="line">	// 缓冲区，未来得及处理的数据放在这里</div><div class="line">	GCDAsyncSocketPreBuffer *preBuffer;</div><div class="line">		</div><div class="line">#if TARGET_OS_IPHONE</div><div class="line">    // 读入和写入的数据流</div><div class="line">	CFStreamClientContext streamContext;</div><div class="line">	CFReadStreamRef readStream;</div><div class="line">	CFWriteStreamRef writeStream;</div><div class="line">#endif</div><div class="line">    // 用来做SSL认证的部分</div><div class="line">	SSLContextRef sslContext;</div><div class="line">	GCDAsyncSocketPreBuffer *sslPreBuffer;</div><div class="line">	size_t sslWriteCachedLength;</div><div class="line">	OSStatus sslErrCode;</div><div class="line">    OSStatus lastSSLHandshakeError;</div><div class="line">	</div><div class="line">	void *IsOnSocketQueueOrTargetQueueKey;</div><div class="line">	</div><div class="line">	id userData;</div><div class="line">	</div><div class="line">	// 连接备选服务器的延时</div><div class="line">    NSTimeInterval alternateAddressDelay;</div></pre></td></tr></table></figure></p>
+<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><p>下面是初始化一个socket的方法，如果初始化的时候不赋予需要的delegate和delegateQueue,那么在最终调用的方法中也会默认为其赋值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div></pre></td><td class="code"><pre><div class="line">- (id)init</div><div class="line">&#123;</div><div class="line">	return [self initWithDelegate:nil delegateQueue:NULL socketQueue:NULL];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (id)initWithSocketQueue:(dispatch_queue_t)sq</div><div class="line">&#123;</div><div class="line">	return [self initWithDelegate:nil delegateQueue:NULL socketQueue:sq];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (id)initWithDelegate:(id)aDelegate delegateQueue:(dispatch_queue_t)dq</div><div class="line">&#123;</div><div class="line">	return [self initWithDelegate:aDelegate delegateQueue:dq socketQueue:NULL];</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 关键调用这个方法</div><div class="line">- (id)initWithDelegate:(id&lt;GCDAsyncSocketDelegate&gt;)aDelegate delegateQueue:(dispatch_queue_t)dq socketQueue:(dispatch_queue_t)sq</div><div class="line">&#123;</div><div class="line">	if((self = [super init]))</div><div class="line">	&#123;</div><div class="line">		delegate = aDelegate;</div><div class="line">		delegateQueue = dq;</div><div class="line">		</div><div class="line">		// 对6.0的适配，如果6.0以上是不需要GCD调用MRC的</div><div class="line">		#if !OS_OBJECT_USE_OBJC</div><div class="line">		if (dq) dispatch_retain(dq);</div><div class="line">		#endif</div><div class="line">		</div><div class="line">		// 各个变量初始化，先全部设定为无效</div><div class="line">		socket4FD = SOCKET_NULL;</div><div class="line">		socket6FD = SOCKET_NULL;</div><div class="line">		socketUN = SOCKET_NULL;</div><div class="line">		socketUrl = nil;</div><div class="line">		stateIndex = 0;</div><div class="line">		</div><div class="line">		if (sq)</div><div class="line">		&#123;</div><div class="line">		    // socketQueue不能是global的，否则报错，必须要一个非并行queue</div><div class="line">			NSAssert(sq != dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0),</div><div class="line">			         @&quot;The given socketQueue parameter must not be a concurrent queue.&quot;);</div><div class="line">			NSAssert(sq != dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0),</div><div class="line">			         @&quot;The given socketQueue parameter must not be a concurrent queue.&quot;);</div><div class="line">			NSAssert(sq != dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),</div><div class="line">			         @&quot;The given socketQueue parameter must not be a concurrent queue.&quot;);</div><div class="line">			</div><div class="line">			socketQueue = sq;</div><div class="line">			#if !OS_OBJECT_USE_OBJC</div><div class="line">			dispatch_retain(sq);</div><div class="line">			#endif</div><div class="line">		&#125;</div><div class="line">		else</div><div class="line">		&#123;</div><div class="line">		    // 没有sq就创建一个串行队列</div><div class="line">			socketQueue = dispatch_queue_create([GCDAsyncSocketQueueName UTF8String], NULL);</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		// The dispatch_queue_set_specific() and dispatch_get_specific() functions take a &quot;void *key&quot; parameter.</div><div class="line">		// From the documentation:</div><div class="line">		//</div><div class="line">		// &gt; Keys are only compared as pointers and are never dereferenced.</div><div class="line">		// &gt; Thus, you can use a pointer to a static variable for a specific subsystem or</div><div class="line">		// &gt; any other value that allows you to identify the value uniquely.</div><div class="line">		//</div><div class="line">		// We&apos;re just going to use the memory address of an ivar.</div><div class="line">		// Specifically an ivar that is explicitly named for our purpose to make the code more readable.</div><div class="line">		//</div><div class="line">		// However, it feels tedious (and less readable) to include the &quot;&amp;&quot; all the time:</div><div class="line">		// dispatch_get_specific(&amp;IsOnSocketQueueOrTargetQueueKey)</div><div class="line">		//</div><div class="line">		// So we&apos;re going to make it so it doesn&apos;t matter if we use the &apos;&amp;&apos; or not,</div><div class="line">		// by assigning the value of the ivar to the address of the ivar.</div><div class="line">		// Thus: IsOnSocketQueueOrTargetQueueKey == &amp;IsOnSocketQueueOrTargetQueueKey;</div><div class="line">		</div><div class="line">		// 这里的注释大概就是把一个指针变成二级指针，可能是为了省略&amp;操作符，不是很明白这个意义</div><div class="line">		IsOnSocketQueueOrTargetQueueKey = &amp;IsOnSocketQueueOrTargetQueueKey;</div><div class="line">		</div><div class="line">		void *nonNullUnusedPointer = (__bridge void *)self;</div><div class="line">		</div><div class="line">		// 当前队列里设置标识符，有对应的取出的函数</div><div class="line">		dispatch_queue_set_specific(socketQueue, IsOnSocketQueueOrTargetQueueKey, nonNullUnusedPointer, NULL);</div><div class="line">		</div><div class="line">		// read/write队列的最大容量都是5个</div><div class="line">		readQueue = [[NSMutableArray alloc] initWithCapacity:5];</div><div class="line">		currentRead = nil;</div><div class="line">		</div><div class="line">		writeQueue = [[NSMutableArray alloc] initWithCapacity:5];</div><div class="line">		currentWrite = nil;</div><div class="line">		</div><div class="line">		// preBuffer设置为4KB</div><div class="line">		preBuffer = [[GCDAsyncSocketPreBuffer alloc] initWithCapacity:(1024 * 4)];</div><div class="line">        alternateAddressDelay = 0.3;</div><div class="line">	&#125;</div><div class="line">	return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>基本作用都写在注释里了，大部分也就是一些参数初始化，并分配delegate和delegateQueue。需要注意的一点是，socket初始化中有三个整型变量分别是socket4FD,socket6FD和socketUN,它们初始化的时候都设置为SOCKET_NULL。前两者代表socket对IPV4,IPV6类型的地址的解析，后面的UnixSocket是一种从socket框架下发展出来的进程间通信机制，也就是说在同一个主机上进程间通信，使用UNIX Domain Socket是更有效率的。<br>因为它不需要经过网络协议栈，本质是默认可靠通信的基础下设计的，那么自然在本机上就会比其他方法快很多。<br>初始化的时候会给socket分配一个socketQueue（如果没有赋值则使用默认生成方法）,这个queue是串行队列，由于它负责所有对socket和其内部数据的操作，所以必须让它是串行的，才能保证整个实例运行时的安全性。<br>后面的比较好理解，一个是read/write的数组，每次有新的读写任务就追加到数组后面，等待何时的时间执行；而preBuffer用来保存操作的数据，比如从服务器端接收来的数据，都是先缓存在这里，然后到一定的时机才取出来和先前读取的数据拼凑在一起。</p>
+<p>以上是初始化的部分</p>
+<h4 id="Connect"><a href="#Connect" class="headerlink" title="Connect"></a>Connect</h4><p>真的不会有人拿iOS来做服务器吧=。=所以这里反正只考虑从客户端的角度来解析各个部分的方法，那么客户端连接的最开始当然就是connect指令了：</p>
+<p><img src="http://ot7rhf4gy.bkt.clouddn.com/17-7-17/22455337.jpg" alt="connect指令"></p>
+<p>上面是所有和connect功能的方法，我们从调用的角度来一步步看<br>连接服务器的方法是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[socket connectToHost:Khost onPort:Kport error:nil];</div></pre></td></tr></table></figure>
+<p>最后实际上是调用这个方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div></pre></td><td class="code"><pre><div class="line">- (BOOL)connectToHost:(NSString *)inHost</div><div class="line">               onPort:(uint16_t)port</div><div class="line">         viaInterface:(NSString *)inInterface</div><div class="line">          withTimeout:(NSTimeInterval)timeout</div><div class="line">                error:(NSError **)errPtr</div><div class="line">&#123;</div><div class="line">	LogTrace();</div><div class="line">	</div><div class="line">	// Just in case immutable objects were passed</div><div class="line">	// copy保证不会再被修改</div><div class="line">	NSString *host = [inHost copy];</div><div class="line">	NSString *interface = [inInterface copy];</div><div class="line">	</div><div class="line">	// 两个__block变量，方便在block中调用</div><div class="line">	__block BOOL result = NO;</div><div class="line">	__block NSError *preConnectErr = nil;</div><div class="line">	</div><div class="line">	// 放在autoreleasepool中，由系统来决定什么时候释放资源</div><div class="line">	dispatch_block_t block = ^&#123; @autoreleasepool &#123;</div><div class="line">		</div><div class="line">		// Check for problems with host parameter</div><div class="line">		// 对host进行检测</div><div class="line">		if ([host length] == 0)</div><div class="line">		&#123;</div><div class="line">			NSString *msg = @&quot;Invalid host parameter (nil or \&quot;\&quot;). Should be a domain name or IP address string.&quot;;</div><div class="line">			preConnectErr = [self badParamError:msg];</div><div class="line">			</div><div class="line">			// 其实就是return.......有这个必要吗</div><div class="line">			return_from_block;</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		// Run through standard pre-connect checks</div><div class="line">		// 这个方法会判断interface是否合法，如果合法就将本机的IPV4,IPV6地址设置好，有问题就直接return了</div><div class="line">		if (![self preConnectWithInterface:interface error:&amp;preConnectErr])</div><div class="line">		&#123;</div><div class="line">			return_from_block;</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		// We&apos;ve made it past all the checks.</div><div class="line">		// It&apos;s time to start the connection process.</div><div class="line">		// 上面都是参数合法性的判断，现在后面的才是真正的connect流程</div><div class="line">		flags |= kSocketStarted;</div><div class="line">		</div><div class="line">		LogVerbose(@&quot;Dispatching DNS lookup...&quot;);</div><div class="line">		</div><div class="line">		// It&apos;s possible that the given host parameter is actually a NSMutableString.</div><div class="line">		// So we want to copy it now, within this block that will be executed synchronously.</div><div class="line">		// This way the asynchronous lookup block below doesn&apos;t have to worry about it changing.</div><div class="line">		// 翻译一下就是很可能服务端的参数是一个可变字符串，所以这里采取copy的方法，在这个block中同步执行，下面采取的异步查找就不会出现字符串改变的情况了</div><div class="line">		</div><div class="line">		NSString *hostCpy = [host copy];</div><div class="line">		</div><div class="line">		// 获取状态stateIndex</div><div class="line">		int aStateIndex = stateIndex;</div><div class="line">		__weak GCDAsyncSocket *weakSelf = self;</div><div class="line">		</div><div class="line">		// 获取全局队列，并且异步执行操作</div><div class="line">		dispatch_queue_t globalConcurrentQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">		dispatch_async(globalConcurrentQueue, ^&#123; @autoreleasepool &#123;</div><div class="line">		#pragma clang diagnostic push</div><div class="line">		#pragma clang diagnostic warning &quot;-Wimplicit-retain-self&quot;</div><div class="line">			</div><div class="line">			// 获取server的地址数据，包含IPV4,IPV6</div><div class="line">			NSError *lookupErr = nil;</div><div class="line">			NSMutableArray *addresses = [[self class] lookupHost:hostCpy port:port error:&amp;lookupErr];</div><div class="line">			</div><div class="line">			// strong self，由于是异步执行，有可能面临执行时self = nil的问题，所以这里触发循环引用保证执行的时候self一定存在，而当block执行完了之后放入autoreleasepool,会在该释放的时候自然释放的，不会有问题</div><div class="line">			__strong GCDAsyncSocket *strongSelf = weakSelf;</div><div class="line">			if (strongSelf == nil) return_from_block;</div><div class="line">			</div><div class="line">			if (lookupErr)</div><div class="line">			&#123;</div><div class="line">				dispatch_async(strongSelf-&gt;socketQueue, ^&#123; @autoreleasepool &#123;</div><div class="line">					// 如果有错误，那么就进行一些数据清空等操作</div><div class="line">					[strongSelf lookup:aStateIndex didFail:lookupErr];</div><div class="line">				&#125;&#125;);</div><div class="line">			&#125;</div><div class="line">			else</div><div class="line">			&#123;</div><div class="line">			    // 正常情况</div><div class="line">				NSData *address4 = nil;</div><div class="line">				NSData *address6 = nil;</div><div class="line">				</div><div class="line">				// 遍历刚才获取的address数组</div><div class="line">				for (NSData *address in addresses)</div><div class="line">				&#123;</div><div class="line">				    // address4还未赋值并且address为IPV4类型，则赋值</div><div class="line">					if (!address4 &amp;&amp; [[self class] isIPv4Address:address])</div><div class="line">					&#123;</div><div class="line">						address4 = address;</div><div class="line">					&#125;</div><div class="line">					// address6还未赋值并且address为IPV6类型，则赋值</div><div class="line">					else if (!address6 &amp;&amp; [[self class] isIPv6Address:address])</div><div class="line">					&#123;</div><div class="line">						address6 = address;</div><div class="line">					&#125;</div><div class="line">				&#125;</div><div class="line">				</div><div class="line">				// 异步发起请求，开始连接</div><div class="line">				dispatch_async(strongSelf-&gt;socketQueue, ^&#123; @autoreleasepool &#123;</div><div class="line">					</div><div class="line">					[strongSelf lookup:aStateIndex didSucceedWithAddress4:address4 address6:address6];</div><div class="line">				&#125;&#125;);</div><div class="line">			&#125;</div><div class="line">			</div><div class="line">		#pragma clang diagnostic pop</div><div class="line">		&#125;&#125;);</div><div class="line"></div><div class="line">        // 设置超时时间，这个方法创建一个系统时钟，由GCDAsyncSocket本身来管理，如果超时了就调用方法终端dispatch queue中的操作，并以connect失败收尾</div><div class="line">		[self startConnectTimeout:timeout];</div><div class="line">		</div><div class="line">		result = YES;</div><div class="line">	&#125;&#125;;</div><div class="line">	</div><div class="line">	// 在自己的socketqueue中执行block操作</div><div class="line">	if (dispatch_get_specific(IsOnSocketQueueOrTargetQueueKey))</div><div class="line">		block();</div><div class="line">	else</div><div class="line">		dispatch_sync(socketQueue, block);</div><div class="line">	</div><div class="line">	</div><div class="line">	if (errPtr) *errPtr = preConnectErr;</div><div class="line">	return result;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>基本上就是定义了一个block，然后交给socketQueue中串行执行，具体的关键方法的作用已经注释在代码中，但是我们还是看一看一些方法细节上的实现：</p>
+<p><strong>接口检查</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div></pre></td><td class="code"><pre><div class="line">- (BOOL)preConnectWithInterface:(NSString *)interface error:(NSError **)errPtr</div><div class="line">&#123;</div><div class="line">	NSAssert(dispatch_get_specific(IsOnSocketQueueOrTargetQueueKey), @&quot;Must be dispatched on socketQueue&quot;);</div><div class="line">	</div><div class="line">	if (delegate == nil) // Must have delegate set</div><div class="line">	&#123;</div><div class="line">		if (errPtr)</div><div class="line">		&#123;</div><div class="line">			NSString *msg = @&quot;Attempting to connect without a delegate. Set a delegate first.&quot;;</div><div class="line">			*errPtr = [self badConfigError:msg];</div><div class="line">		&#125;</div><div class="line">		return NO;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	if (delegateQueue == NULL) // Must have delegate queue set</div><div class="line">	&#123;</div><div class="line">		if (errPtr)</div><div class="line">		&#123;</div><div class="line">			NSString *msg = @&quot;Attempting to connect without a delegate queue. Set a delegate queue first.&quot;;</div><div class="line">			*errPtr = [self badConfigError:msg];</div><div class="line">		&#125;</div><div class="line">		return NO;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	if (![self isDisconnected]) // Must be disconnected</div><div class="line">	&#123;</div><div class="line">		if (errPtr)</div><div class="line">		&#123;</div><div class="line">			NSString *msg = @&quot;Attempting to connect while connected or accepting connections. Disconnect first.&quot;;</div><div class="line">			*errPtr = [self badConfigError:msg];</div><div class="line">		&#125;</div><div class="line">		return NO;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	BOOL isIPv4Disabled = (config &amp; kIPv4Disabled) ? YES : NO;</div><div class="line">	BOOL isIPv6Disabled = (config &amp; kIPv6Disabled) ? YES : NO;</div><div class="line">	</div><div class="line">	if (isIPv4Disabled &amp;&amp; isIPv6Disabled) // Must have IPv4 or IPv6 enabled</div><div class="line">	&#123;</div><div class="line">		if (errPtr)</div><div class="line">		&#123;</div><div class="line">			NSString *msg = @&quot;Both IPv4 and IPv6 have been disabled. Must enable at least one protocol first.&quot;;</div><div class="line">			*errPtr = [self badConfigError:msg];</div><div class="line">		&#125;</div><div class="line">		return NO;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	if (interface)</div><div class="line">	&#123;</div><div class="line">		NSMutableData *interface4 = nil;</div><div class="line">		NSMutableData *interface6 = nil;</div><div class="line">		</div><div class="line">		[self getInterfaceAddress4:&amp;interface4 address6:&amp;interface6 fromDescription:interface port:0];</div><div class="line">		</div><div class="line">		if ((interface4 == nil) &amp;&amp; (interface6 == nil))</div><div class="line">		&#123;</div><div class="line">			if (errPtr)</div><div class="line">			&#123;</div><div class="line">				NSString *msg = @&quot;Unknown interface. Specify valid interface by name (e.g. \&quot;en1\&quot;) or IP address.&quot;;</div><div class="line">				*errPtr = [self badParamError:msg];</div><div class="line">			&#125;</div><div class="line">			return NO;</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		if (isIPv4Disabled &amp;&amp; (interface6 == nil))</div><div class="line">		&#123;</div><div class="line">			if (errPtr)</div><div class="line">			&#123;</div><div class="line">				NSString *msg = @&quot;IPv4 has been disabled and specified interface doesn&apos;t support IPv6.&quot;;</div><div class="line">				*errPtr = [self badParamError:msg];</div><div class="line">			&#125;</div><div class="line">			return NO;</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		if (isIPv6Disabled &amp;&amp; (interface4 == nil))</div><div class="line">		&#123;</div><div class="line">			if (errPtr)</div><div class="line">			&#123;</div><div class="line">				NSString *msg = @&quot;IPv6 has been disabled and specified interface doesn&apos;t support IPv4.&quot;;</div><div class="line">				*errPtr = [self badParamError:msg];</div><div class="line">			&#125;</div><div class="line">			return NO;</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		connectInterface4 = interface4;</div><div class="line">		connectInterface6 = interface6;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	// Clear queues (spurious read/write requests post disconnect)</div><div class="line">	[readQueue removeAllObjects];</div><div class="line">	[writeQueue removeAllObjects];</div><div class="line">	</div><div class="line">	return YES;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>代码上都有作者的注释，每一段的功能其实很清晰，先判断delegate和delegateQueue的合法性，然后判断是不是在非连接状态（已经connect就没有调用前置判断的意义了），是否支持IPV4,IPV6的位运算，如果interface存在，得到本机的IPV4,IPV6地址并且赋值目标变量，最后清空queue中的读写请求。<br>这个interface参数并不是一定会有的，也可能传入的是nil,那么后面的一些操作就直接跳过。inrerface的含义是本机的IP+端口号，本来是默认的localhost并且由系统自取一个空闲的端口，但是也可以用户自己设置，不过=。=这样反倒是有可能导致被另歪线程占用的端口被调用，容易出事。一般情况下都是直接选择让系统自己决定调用的端口号的。</p>
+<p>不过万一需要自己设定的情况下，后面会调用什么操作呢？会调用一个方法通过这个interface的描述来得到IPV4,IPV6地址，并且以oc能够识别的方式包装起来。注意这里interfaceAddre4Ptr和interfaceAddr6Ptr其实算是返回值，作用和引用参数一样。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div></pre></td><td class="code"><pre><div class="line">- (void)getInterfaceAddress4:(NSMutableData **)interfaceAddr4Ptr</div><div class="line">                    address6:(NSMutableData **)interfaceAddr6Ptr</div><div class="line">             fromDescription:(NSString *)interfaceDescription</div><div class="line">                        port:(uint16_t)port</div><div class="line">&#123;</div><div class="line">	NSMutableData *addr4 = nil;</div><div class="line">	NSMutableData *addr6 = nil;</div><div class="line">	</div><div class="line">	NSString *interface = nil;</div><div class="line">	</div><div class="line">	// 按“:”来拆分字符串description</div><div class="line">	NSArray *components = [interfaceDescription componentsSeparatedByString:@&quot;:&quot;];</div><div class="line">	if ([components count] &gt; 0)</div><div class="line">	&#123;</div><div class="line">		NSString *temp = [components objectAtIndex:0];</div><div class="line">		if ([temp length] &gt; 0)</div><div class="line">		&#123;</div><div class="line">			interface = temp;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	// 调用strtol函数来转换字符串，根据base参数来决定转换后成为long型变量component的位制</div><div class="line">	if ([components count] &gt; 1 &amp;&amp; port == 0)</div><div class="line">	&#123;</div><div class="line">		long portL = strtol([[components objectAtIndex:1] UTF8String], NULL, 10);</div><div class="line">		</div><div class="line">		// 端口号最大是65535</div><div class="line">		if (portL &gt; 0 &amp;&amp; portL &lt;= UINT16_MAX)</div><div class="line">		&#123;</div><div class="line">			port = (uint16_t)portL;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	// 如果interface为空，创建一个0x00000000</div><div class="line">	if (interface == nil)</div><div class="line">	&#123;</div><div class="line">		// ANY address</div><div class="line">		// memset就不用说了吧，往内存中赋值，这里把结构体sockaddr4置空</div><div class="line">		struct sockaddr_in sockaddr4;</div><div class="line">		memset(&amp;sockaddr4, 0, sizeof(sockaddr4));</div><div class="line">		</div><div class="line">		// 分别是结构体长度，addressFanily（这里是IPV4）,端口号和32位IPV4地址</div><div class="line">		sockaddr4.sin_len         = sizeof(sockaddr4);</div><div class="line">		sockaddr4.sin_family      = AF_INET;</div><div class="line">		sockaddr4.sin_port        = htons(port);</div><div class="line">		sockaddr4.sin_addr.s_addr = htonl(INADDR_ANY);</div><div class="line">		</div><div class="line">		</div><div class="line">		// 和上面一样，这里是IPV6的信息</div><div class="line">		struct sockaddr_in6 sockaddr6;</div><div class="line">		memset(&amp;sockaddr6, 0, sizeof(sockaddr6));</div><div class="line">		</div><div class="line">		sockaddr6.sin6_len       = sizeof(sockaddr6);</div><div class="line">		sockaddr6.sin6_family    = AF_INET6;</div><div class="line">		sockaddr6.sin6_port      = htons(port);</div><div class="line">		sockaddr6.sin6_addr      = in6addr_any;</div><div class="line">		</div><div class="line">		addr4 = [NSMutableData dataWithBytes:&amp;sockaddr4 length:sizeof(sockaddr4)];</div><div class="line">		addr6 = [NSMutableData dataWithBytes:&amp;sockaddr6 length:sizeof(sockaddr6)];</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	// 如果是localhost或者loopback（虚拟地址）就赋值127.0.0.1 端口port</div><div class="line">	else if ([interface isEqualToString:@&quot;localhost&quot;] || [interface isEqualToString:@&quot;loopback&quot;])</div><div class="line">	&#123;</div><div class="line">		// LOOPBACK address</div><div class="line">		</div><div class="line">		struct sockaddr_in sockaddr4;</div><div class="line">		memset(&amp;sockaddr4, 0, sizeof(sockaddr4));</div><div class="line">		</div><div class="line">		sockaddr4.sin_len         = sizeof(sockaddr4);</div><div class="line">		sockaddr4.sin_family      = AF_INET;</div><div class="line">		sockaddr4.sin_port        = htons(port);</div><div class="line">		sockaddr4.sin_addr.s_addr = htonl(INADDR_LOOPBACK);</div><div class="line">		</div><div class="line">		struct sockaddr_in6 sockaddr6;</div><div class="line">		memset(&amp;sockaddr6, 0, sizeof(sockaddr6));</div><div class="line">		</div><div class="line">		sockaddr6.sin6_len       = sizeof(sockaddr6);</div><div class="line">		sockaddr6.sin6_family    = AF_INET6;</div><div class="line">		sockaddr6.sin6_port      = htons(port);</div><div class="line">		sockaddr6.sin6_addr      = in6addr_loopback;</div><div class="line">		</div><div class="line">		addr4 = [NSMutableData dataWithBytes:&amp;sockaddr4 length:sizeof(sockaddr4)];</div><div class="line">		addr6 = [NSMutableData dataWithBytes:&amp;sockaddr6 length:sizeof(sockaddr6)];</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">    // 又不是localhost,loopback又不是赋值的就去获取本机IP，如果和interface是同名的才能给端口号</div><div class="line">	else</div><div class="line">	&#123;</div><div class="line">	    </div><div class="line">		const char *iface = [interface UTF8String];</div><div class="line">		</div><div class="line">		// 结构体指针指向本地IP</div><div class="line">		struct ifaddrs *addrs;</div><div class="line">		const struct ifaddrs *cursor;</div><div class="line">		</div><div class="line">		// 获取本地IP存放到addrs变量中，0代表成功</div><div class="line">		if ((getifaddrs(&amp;addrs) == 0))</div><div class="line">		&#123;</div><div class="line">			cursor = addrs;</div><div class="line">			while (cursor != NULL)</div><div class="line">			&#123;</div><div class="line">				if ((addr4 == nil) &amp;&amp; (cursor-&gt;ifa_addr-&gt;sa_family == AF_INET))</div><div class="line">				&#123;</div><div class="line">					// IPv4</div><div class="line">					</div><div class="line">					struct sockaddr_in nativeAddr4;</div><div class="line">					memcpy(&amp;nativeAddr4, cursor-&gt;ifa_addr, sizeof(nativeAddr4));</div><div class="line">					</div><div class="line">					// 取出描述字节，如果字符串相同则赋值给port</div><div class="line">					if (strcmp(cursor-&gt;ifa_name, iface) == 0)</div><div class="line">					&#123;</div><div class="line">						// Name match</div><div class="line">						</div><div class="line">						nativeAddr4.sin_port = htons(port);</div><div class="line">						</div><div class="line">						addr4 = [NSMutableData dataWithBytes:&amp;nativeAddr4 length:sizeof(nativeAddr4)];</div><div class="line">					&#125;</div><div class="line">					// 如果本地IP和interface的描述不相同，转换十进制再比较一遍</div><div class="line">					else</div><div class="line">					&#123;</div><div class="line">						char ip[INET_ADDRSTRLEN];</div><div class="line">						</div><div class="line">						const char *conversion = inet_ntop(AF_INET, &amp;nativeAddr4.sin_addr, ip, sizeof(ip));</div><div class="line">						</div><div class="line">						if ((conversion != NULL) &amp;&amp; (strcmp(ip, iface) == 0))</div><div class="line">						&#123;</div><div class="line">							// IP match</div><div class="line">							</div><div class="line">							nativeAddr4.sin_port = htons(port);</div><div class="line">							</div><div class="line">							addr4 = [NSMutableData dataWithBytes:&amp;nativeAddr4 length:sizeof(nativeAddr4)];</div><div class="line">						&#125;</div><div class="line">					&#125;</div><div class="line">				&#125;</div><div class="line">				</div><div class="line">				// 上面是IPV4,这里IPV6是一样的</div><div class="line">				else if ((addr6 == nil) &amp;&amp; (cursor-&gt;ifa_addr-&gt;sa_family == AF_INET6))</div><div class="line">				&#123;</div><div class="line">					// IPv6</div><div class="line">					</div><div class="line">					struct sockaddr_in6 nativeAddr6;</div><div class="line">					memcpy(&amp;nativeAddr6, cursor-&gt;ifa_addr, sizeof(nativeAddr6));</div><div class="line">					</div><div class="line">					if (strcmp(cursor-&gt;ifa_name, iface) == 0)</div><div class="line">					&#123;</div><div class="line">						// Name match</div><div class="line">						</div><div class="line">						nativeAddr6.sin6_port = htons(port);</div><div class="line">						</div><div class="line">						addr6 = [NSMutableData dataWithBytes:&amp;nativeAddr6 length:sizeof(nativeAddr6)];</div><div class="line">					&#125;</div><div class="line">					else</div><div class="line">					&#123;</div><div class="line">						char ip[INET6_ADDRSTRLEN];</div><div class="line">						</div><div class="line">						const char *conversion = inet_ntop(AF_INET6, &amp;nativeAddr6.sin6_addr, ip, sizeof(ip));</div><div class="line">						</div><div class="line">						if ((conversion != NULL) &amp;&amp; (strcmp(ip, iface) == 0))</div><div class="line">						&#123;</div><div class="line">							// IP match</div><div class="line">							</div><div class="line">							nativeAddr6.sin6_port = htons(port);</div><div class="line">							</div><div class="line">							addr6 = [NSMutableData dataWithBytes:&amp;nativeAddr6 length:sizeof(nativeAddr6)];</div><div class="line">						&#125;</div><div class="line">					&#125;</div><div class="line">				&#125;</div><div class="line">				</div><div class="line">				cursor = cursor-&gt;ifa_next;</div><div class="line">			&#125;</div><div class="line">			</div><div class="line">			freeifaddrs(addrs);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	// 把IPV4,IPV6地址赋值给参数</div><div class="line">	if (interfaceAddr4Ptr) *interfaceAddr4Ptr = addr4;</div><div class="line">	if (interfaceAddr6Ptr) *interfaceAddr6Ptr = addr6;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个方法里主要都是C语言的函数调用，毕竟socket的API这么底层，不能用OC直接操控了。这些结构体重要的成员变量基本也就看名字就明白是啥意思了，这里就不再赘述。简单藐视这个方法就是在各种情况下顺利获取IPV4,IPV6地址。</p>
+<p>有一些网络知识可能需要提及一下：<br>客户端不会出现interface为空的情况，一般是在服务器端将本机地址绑定为0，用来侦听自己各个端口上是否在接受数据；loopback是一个虚拟地址，是路由器的标志；极端情况下如果interface的地址是其他地址，需要和本机地址或者IP进行对比，如果都不相同，其实是啥都不干的。</p>
+<p>回过头来接着看connectToHost方法，里面还有一个重要操作：<figure class="highlight plain"><figcaption><span>*addresses = [[self class] lookupHost:hostCpy port:port error:&lookupErr];```</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div></pre></td><td class="code"><pre><div class="line">获取服务器端的地址数组，然后在socketQueue中异步调用```  [strongSelf lookup:aStateIndex didSucceedWithAddress4:address4 ```来发起连接。</div><div class="line"></div><div class="line">具体的获取服务器端的地址数据也是和上面一个方法一样，多是调用底层socketAPI，代码太长这里就不全部复制粘贴了，说一下重要的部分：</div><div class="line"></div><div class="line">```objective-c</div><div class="line">+ (NSMutableArray *)lookupHost:(NSString *)host port:(uint16_t)port error:(NSError **)errPtr&#123;</div><div class="line">    </div><div class="line">    /* 如果是localhost或loopback</div><div class="line">    正常创建sockaddr_in,sockaddr_in6两种机构体实例来存放数据，</div><div class="line">    参数也是默认的方法调用 */</div><div class="line">    </div><div class="line">    //如果不是</div><div class="line">        NSString *portStr = [NSString stringWithFormat:@&quot;%hu&quot;, port];</div><div class="line">		</div><div class="line">		// 这里是三个addrinfo，是一种sockaddr结构体的链表</div><div class="line">		struct addrinfo hints, *res, *res0;</div><div class="line">		</div><div class="line">		memset(&amp;hints, 0, sizeof(hints));</div><div class="line">		hints.ai_family   = PF_UNSPEC;</div><div class="line">		hints.ai_socktype = SOCK_STREAM;</div><div class="line">		hints.ai_protocol = IPPROTO_TCP;</div><div class="line">		</div><div class="line">		// 获取地址信息</div><div class="line">		int gai_error = getaddrinfo([host UTF8String], [portStr UTF8String], &amp;hints, &amp;res0);</div><div class="line">		</div><div class="line">		if (gai_error)</div><div class="line">		&#123;</div><div class="line">			error = [self gaiError:gai_error];</div><div class="line">		&#125;</div><div class="line">		else</div><div class="line">		&#123;</div><div class="line">		    // 正确获取之后遍历res0，最后把IPV4/IPV6的总数统计出来并创建对应大小的数组</div><div class="line">			NSUInteger capacity = 0;</div><div class="line">			for (res = res0; res; res = res-&gt;ai_next)</div><div class="line">			&#123;</div><div class="line">				if (res-&gt;ai_family == AF_INET || res-&gt;ai_family == AF_INET6) &#123;</div><div class="line">					capacity++;</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">			</div><div class="line">			addresses = [NSMutableArray arrayWithCapacity:capacity];</div><div class="line">			</div><div class="line">			// 重新遍历，如果是IPV4地址则加入数组中，如果是IPV6，拿到port进行转换后加入数组中</div><div class="line">			for (res = res0; res; res = res-&gt;ai_next)</div><div class="line">			&#123;</div><div class="line">				if (res-&gt;ai_family == AF_INET)</div><div class="line">				&#123;</div><div class="line">					// Found IPv4 address.</div><div class="line">					// Wrap the native address structure, and add to results.</div><div class="line">					</div><div class="line">					NSData *address4 = [NSData dataWithBytes:res-&gt;ai_addr length:res-&gt;ai_addrlen];</div><div class="line">					[addresses addObject:address4];</div><div class="line">				&#125;</div><div class="line">				else if (res-&gt;ai_family == AF_INET6)</div><div class="line">				&#123;</div><div class="line">					// Fixes connection issues with IPv6</div><div class="line">					// https://github.com/robbiehanson/CocoaAsyncSocket/issues/429#issuecomment-222477158</div><div class="line">					</div><div class="line">					// Found IPv6 address.</div><div class="line">					// Wrap the native address structure, and add to results.</div><div class="line">					</div><div class="line">					struct sockaddr_in6 *sockaddr = (struct sockaddr_in6 *)res-&gt;ai_addr;</div><div class="line">					in_port_t *portPtr = &amp;sockaddr-&gt;sin6_port;</div><div class="line">					if ((portPtr != NULL) &amp;&amp; (*portPtr == 0)) &#123;</div><div class="line">					        *portPtr = htons(port);</div><div class="line">					&#125;</div><div class="line"></div><div class="line">					NSData *address6 = [NSData dataWithBytes:res-&gt;ai_addr length:res-&gt;ai_addrlen];</div><div class="line">					[addresses addObject:address6];</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">			freeaddrinfo(res0);</div><div class="line">			</div><div class="line">			if ([addresses count] == 0)</div><div class="line">			&#123;</div><div class="line">				error = [self gaiError:EAI_FAIL];</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">    </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果host为localhost或者loopback，则和先前本机地址的方法一样生成IPV4/IPV6地址，并保存在数组中，如果不是，则根据host和port来创建地址。调用的是C的方法<figure class="highlight plain"><figcaption><span>getaddrinfo( const char *hostname, const char *service, const struct addrinfo *hints, struct addrinfo **result );``` 其中hostname代表ip,service代表port，然后把地址信息传递到result中，hints参数是一个配置参数可以为空。addrinfo是一个链表结构体，其next指向链表中的下一个节点，遍历这个链表可以得到所有的IPV4,IPV6地址，并保存在NSData变量中并装入数组里。</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">然后是刚才说到的放入到socketQueue中执行的最终的连接方法：</div><div class="line"></div><div class="line">```objective-c</div><div class="line">- (void)lookup:(int)aStateIndex didSucceedWithAddress4:(NSData *)address4 address6:(NSData *)address6</div><div class="line">&#123;</div><div class="line">	LogTrace();</div><div class="line">	</div><div class="line">	NSAssert(dispatch_get_specific(IsOnSocketQueueOrTargetQueueKey), @&quot;Must be dispatched on socketQueue&quot;);</div><div class="line">	// 必须有一个server地址（至少）</div><div class="line">	NSAssert(address4 || address6, @&quot;Expected at least one valid address&quot;);</div><div class="line">	</div><div class="line">	// 状态不一样则断开连接</div><div class="line">	if (aStateIndex != stateIndex)</div><div class="line">	&#123;</div><div class="line">		LogInfo(@&quot;Ignoring lookupDidSucceed, already disconnected&quot;);</div><div class="line">		</div><div class="line">		// The connect operation has been cancelled.</div><div class="line">		// That is, socket was disconnected, or connection has already timed out.</div><div class="line">		return;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	// Check for problems</div><div class="line">	</div><div class="line">	BOOL isIPv4Disabled = (config &amp; kIPv4Disabled) ? YES : NO;</div><div class="line">	BOOL isIPv6Disabled = (config &amp; kIPv6Disabled) ? YES : NO;</div><div class="line">	</div><div class="line">	// 如果IPV4禁用而且IPV6地址为空，报错</div><div class="line">	if (isIPv4Disabled &amp;&amp; (address6 == nil))</div><div class="line">	&#123;</div><div class="line">		NSString *msg = @&quot;IPv4 has been disabled and DNS lookup found no IPv6 address.&quot;;</div><div class="line">		</div><div class="line">		[self closeWithError:[self otherError:msg]];</div><div class="line">		return;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	// 如果IPV6禁用，IPV4地址为空，禁用</div><div class="line">	if (isIPv6Disabled &amp;&amp; (address4 == nil))</div><div class="line">	&#123;</div><div class="line">		NSString *msg = @&quot;IPv6 has been disabled and DNS lookup found no IPv4 address.&quot;;</div><div class="line">		</div><div class="line">		[self closeWithError:[self otherError:msg]];</div><div class="line">		return;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	// Start the normal connection process</div><div class="line">	</div><div class="line">	// 调用连接方法</div><div class="line">	NSError *err = nil;</div><div class="line">	if (![self connectWithAddress4:address4 address6:address6 error:&amp;err])</div><div class="line">	&#123;</div><div class="line">		[self closeWithError:err];</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个很通俗易懂，反正就是对地址进行判断，如果合适就直接连接。唯一需要说明的是<figure class="highlight plain"><figcaption><span>stateIndex```,前者是用参数传递过来的，而stateIndex是用属性传递过来的，有可能中途状态发生了变化，比如断开了连接等，那么这样stateIndex就会发生改变，和前者不能相等了，直接中断操作。然后调用另一个更深层的连接方法；</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">```objective-c</div><div class="line">// 最终进行连接的第二层方法，调用两个server地址（IPV4,IPV6）去连接</div><div class="line">- (BOOL)connectWithAddress4:(NSData *)address4 address6:(NSData *)address6 error:(NSError **)errPtr</div><div class="line">&#123;</div><div class="line">	LogTrace();</div><div class="line">	</div><div class="line">	NSAssert(dispatch_get_specific(IsOnSocketQueueOrTargetQueueKey), @&quot;Must be dispatched on socketQueue&quot;);</div><div class="line">	</div><div class="line">	LogVerbose(@&quot;IPv4: %@:%hu&quot;, [[self class] hostFromAddress:address4], [[self class] portFromAddress:address4]);</div><div class="line">	LogVerbose(@&quot;IPv6: %@:%hu&quot;, [[self class] hostFromAddress:address6], [[self class] portFromAddress:address6]);</div><div class="line">	</div><div class="line">	// Determine socket type， 判断是否倾向IPV6</div><div class="line">	</div><div class="line">	BOOL preferIPv6 = (config &amp; kPreferIPv6) ? YES : NO;</div><div class="line">	</div><div class="line">	// Create and bind the sockets</div><div class="line">    // 创建IPV4连接socket4FD</div><div class="line">    if (address4)</div><div class="line">    &#123;</div><div class="line">        LogVerbose(@&quot;Creating IPv4 socket&quot;);</div><div class="line">        </div><div class="line">        socket4FD = [self createSocket:AF_INET connectInterface:connectInterface4 errPtr:errPtr];</div><div class="line">    &#125;</div><div class="line">    // 同样，创建IPV6连接socket6FD</div><div class="line">    if (address6)</div><div class="line">    &#123;</div><div class="line">        LogVerbose(@&quot;Creating IPv6 socket&quot;);</div><div class="line">        </div><div class="line">        socket6FD = [self createSocket:AF_INET6 connectInterface:connectInterface6 errPtr:errPtr];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // 如果都为空则返回报错</div><div class="line">    if (socket4FD == SOCKET_NULL &amp;&amp; socket6FD == SOCKET_NULL)</div><div class="line">    &#123;</div><div class="line">        return NO;</div><div class="line">    &#125;</div><div class="line">	</div><div class="line">	// 主副socketFD和主副address</div><div class="line">	int socketFD, alternateSocketFD;</div><div class="line">	NSData *address, *alternateAddress;</div><div class="line">	</div><div class="line">	// 偏好IPV6的情况下主socketFD和主地址全部选IPV6相关</div><div class="line">    if ((preferIPv6 &amp;&amp; socket6FD != SOCKET_NULL) || socket4FD == SOCKET_NULL)</div><div class="line">    &#123;</div><div class="line">        socketFD = socket6FD;</div><div class="line">        alternateSocketFD = socket4FD;</div><div class="line">        address = address6;</div><div class="line">        alternateAddress = address4;</div><div class="line">    &#125;</div><div class="line">    else</div><div class="line">    &#123;</div><div class="line">        socketFD = socket4FD;</div><div class="line">        alternateSocketFD = socket6FD;</div><div class="line">        address = address4;</div><div class="line">        alternateAddress = address6;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 获取当前连接状态</div><div class="line">    int aStateIndex = stateIndex;</div><div class="line">    </div><div class="line">    // 调用socket和address去连接</div><div class="line">    [self connectSocket:socketFD address:address stateIndex:aStateIndex];</div><div class="line">    </div><div class="line">    if (alternateAddress)</div><div class="line">    &#123;</div><div class="line">        // 如果有备选，那么延时使用备选地址连接，防止主选地址失败</div><div class="line">        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(alternateAddressDelay * NSEC_PER_SEC)), socketQueue, ^&#123;</div><div class="line">            [self connectSocket:alternateSocketFD address:alternateAddress stateIndex:aStateIndex];</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">	</div><div class="line">	return YES;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>结果我们可以看到，这个也不是建立连接最主要的部分，也只是起到了从IPV4,IPV6地址获取到socketFD的过渡功能。这里创建的socket就是本地客户端自己创建的socket,靠这个进程来发起连接到远程服务器端。那么再看看具体是如何创建本机socket的方法吧：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">// 正式连接的第三步：创建socket</div><div class="line">- (int)createSocket:(int)family connectInterface:(NSData *)connectInterface errPtr:(NSError **)errPtr</div><div class="line">&#123;</div><div class="line">    /* 底层真正创建socket的函数，返回的socket句柄就是整型变量，第一个参数family表示到底是IPV4还是IPV6，第二个参数表示socket类型，到底是数据流还是数据报文（stream或者gram），最后一个参数是协议，0为系统默认，如果是stream则是TCP，如果是gram则是UDP */</div><div class="line">    int socketFD = socket(family, SOCK_STREAM, 0);</div><div class="line">    </div><div class="line">    if (socketFD == SOCKET_NULL)</div><div class="line">    &#123;</div><div class="line">        if (errPtr)</div><div class="line">            *errPtr = [self errnoErrorWithReason:@&quot;Error in socket() function&quot;];</div><div class="line">        </div><div class="line">        return socketFD;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // 创建成功的话和本地地址绑定，绑定失败就关闭socket</div><div class="line">    if (![self bindSocket:socketFD toInterface:connectInterface error:errPtr])</div><div class="line">    &#123;</div><div class="line">        [self closeSocket:socketFD];</div><div class="line">        </div><div class="line">        return SOCKET_NULL;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // Prevent SIGPIPE signals</div><div class="line">    </div><div class="line">    int nosigpipe = 1;</div><div class="line">    setsockopt(socketFD, SOL_SOCKET, SO_NOSIGPIPE, &amp;nosigpipe, sizeof(nosigpipe));</div><div class="line">    </div><div class="line">    return socketFD;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到创建socket也是调用的iOS底层的socket接口，很简单易懂，有一点要提一下的就是这个方法最后的SIGPIPE:<br>简单描述一下就是SIGPIPE就是在一个socket通信中，如果一端向另一个已经关闭的端口发送两次write，第二次的write将会生成SIGPIPE信号，直接结束进程。一般不想直接遇到这种情况就结束进程，那么就得想办法不生成SIGPIPE信号或者忽视SIGPIPE信号。<br>iOS中可以很方便地处理这个SIGPIPE问题，就是如这个方法最后调用的setsockpot函数，可以直接更改socket的设置，我们看到这里设定了SO_NOSIGPIPE，意味着不会触发SIGPIPE信号量，这样就不会中途结束进程了。具体的socket通信中信号的问题请参考更详细的资料。<br>总结一下这个方法做了三件事：1.创建socket 2.将socket和本地地址绑定 3.禁用SIGPIPE信号量防止进程中断<br>到了这里，socket是创建好了，又多个一个新操作：将socket和本机地址进行绑定</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">// 绑定一个socket到本地地址</div><div class="line">- (BOOL)bindSocket:(int)socketFD toInterface:(NSData *)connectInterface error:(NSError **)errPtr</div><div class="line">&#123;</div><div class="line">    // Bind the socket to the desired interface (if needed)</div><div class="line">    if (connectInterface)</div><div class="line">    &#123;</div><div class="line">        LogVerbose(@&quot;Binding socket...&quot;);</div><div class="line">        </div><div class="line">        // 需要绑定的port得大于0</div><div class="line">        if ([[self class] portFromAddress:connectInterface] &gt; 0)</div><div class="line">        &#123;</div><div class="line">            // Since we&apos;re going to be binding to a specific port,</div><div class="line">            // we should turn on reuseaddr to allow us to override sockets in time_wait.</div><div class="line">            </div><div class="line">            int reuseOn = 1;</div><div class="line">            </div><div class="line">            // 这里的设定是，即使socket调用了close也不会马上清除这个socket线程，而是会在一定的时间内等待是不是可以再次重用</div><div class="line">            setsockopt(socketFD, SOL_SOCKET, SO_REUSEADDR, &amp;reuseOn, sizeof(reuseOn));</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        const struct sockaddr *interfaceAddr = (const struct sockaddr *)[connectInterface bytes];</div><div class="line">        </div><div class="line">        // 绑定出错的处理</div><div class="line">        int result = bind(socketFD, interfaceAddr, (socklen_t)[connectInterface length]);</div><div class="line">        if (result != 0)</div><div class="line">        &#123;</div><div class="line">            if (errPtr)</div><div class="line">                *errPtr = [self errnoErrorWithReason:@&quot;Error in bind() function&quot;];</div><div class="line">            </div><div class="line">            return NO;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    return YES;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到这个方法也挺简单易懂，就是调用socket自己的bind函数，三个参数分别为socket,绑定地址以及地址大小。有多的一点就是设置了socket的复用。<br>上面进行了这么多的准备工作，我们拿到了本机地址，通过IPV4/IPV6地址建立了socket,然后把socket和本机地址进行绑定，现在终于能够开始正式的连接了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div></pre></td><td class="code"><pre><div class="line">// 真的是最终的连接方法：</div><div class="line">- (void)connectSocket:(int)socketFD address:(NSData *)address stateIndex:(int)aStateIndex</div><div class="line">&#123;</div><div class="line">    // If there already is a socket connected, we close socketFD and return</div><div class="line">    if (self.isConnected)</div><div class="line">    &#123;</div><div class="line">        [self closeSocket:socketFD];</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // Start the connection process in a background queue</div><div class="line">    </div><div class="line">    __weak GCDAsyncSocket *weakSelf = self;</div><div class="line">    </div><div class="line">    // 全局queue</div><div class="line">    dispatch_queue_t globalConcurrentQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">    dispatch_async(globalConcurrentQueue, ^&#123;</div><div class="line">#pragma clang diagnostic push</div><div class="line">#pragma clang diagnostic warning &quot;-Wimplicit-retain-self&quot;</div><div class="line">        </div><div class="line">        // 调用connect函数，它会阻塞线程，所以这里是异步线程中执行，客户端向服务器发送连接请求</div><div class="line">        int result = connect(socketFD, (const struct sockaddr *)[address bytes], (socklen_t)[address length]);</div><div class="line">        </div><div class="line">        // 如果self还存在的话。。</div><div class="line">        __strong GCDAsyncSocket *strongSelf = weakSelf;</div><div class="line">        if (strongSelf == nil) return_from_block;</div><div class="line">        </div><div class="line">        // 在socketQueue中开启异步线程执行</div><div class="line">        dispatch_async(strongSelf-&gt;socketQueue, ^&#123; @autoreleasepool &#123;</div><div class="line">            // 如果状态是已经连接，就关闭直接返回</div><div class="line">            if (strongSelf.isConnected)</div><div class="line">            &#123;</div><div class="line">                [strongSelf closeSocket:socketFD];</div><div class="line">                return_from_block;</div><div class="line">            &#125;</div><div class="line">            // result == 0说明连接成功，-1是失败</div><div class="line">            if (result == 0)</div><div class="line">            &#123;</div><div class="line">                // 由于我们是用ipv4,ipv6两个方案来创建socket,一旦创建成功，就把另一个多余的给关闭</div><div class="line">                [self closeUnusedSocket:socketFD];</div><div class="line">                </div><div class="line">                // 调用连接成功后的后续操作</div><div class="line">                [strongSelf didConnect:aStateIndex];</div><div class="line">            &#125;</div><div class="line">            else</div><div class="line">            &#123;</div><div class="line">                // 连接失败，各种错误回报</div><div class="line">                [strongSelf closeSocket:socketFD];</div><div class="line">                </div><div class="line">                // If there are no more sockets trying to connect, we inform the error to the delegate</div><div class="line">                if (strongSelf.socket4FD == SOCKET_NULL &amp;&amp; strongSelf.socket6FD == SOCKET_NULL)</div><div class="line">                &#123;</div><div class="line">                    NSError *error = [strongSelf errnoErrorWithReason:@&quot;Error in connect() function&quot;];</div><div class="line">                    [strongSelf didNotConnect:aStateIndex error:error];</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;&#125;);</div><div class="line">        </div><div class="line">#pragma clang diagnostic pop</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    LogVerbose(@&quot;Connecting...&quot;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其实也就是调用了socket的connect函数，这个函数式阻塞的，会让其执行的线程一直等待到有结果，所以肯定要使用全局并发队列，然后再新的线程中进行操作，得到结果后回到socketQueue进行后续的操作。<br>后面其实还有一些关于连接成功后source,stream的初始化操作，但是限于篇幅就不在这里展开说明了。后面说到I/O的内容的时候再来细致讨论吧。<br>总体而言CocoaAsyncSocket这个框架是在iOS自带的socket API的基础上做了数据包装和通信错误验证的各种操作，其主要的操作基本上都在socketQueue中执行，根据不同情况选择是同步还是异步线程执行。<br>后续能说的还很多，这里说了这么多只是包装过的socket中connect的部分操作，解读起来已经非常耗时了，不得不佩服大神的技术水平。所以说学习大神的代码真是让人受益匪浅。</p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p>1.涂耀辉 <a href="http://www.jianshu.com/p/0a11b2d0f4ae" target="_blank" rel="external">iOS即时通讯进阶 - CocoaAsyncSocket源码解析(Connect篇)</a></p>
+<p>2.CocoaAsyncSocket源码</p>
+
+                
+<p class="pink-link-context">
+    <a href="/2017/07/18/GCD总结/" rel="next" title="">
+    Prev: 
+  </a>
+</p>
+
+
+
+<p class="pink-link-context">
+    <a href="/2017/07/18/AFNetworking的安全策略/" rel="next" title="">
+    Next: 
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large pink">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect green" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse yellow darken-1"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer indigo darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">Social</h5>
+                
+                    <a class="social-link" href="http://weibo.com/1956184117" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/raytaylorlin" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">Links</h5>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="https://github.com/raytaylorlin" target="_blank">Github地址（测试友情链接）</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright pink-link-context">
+        <div class="container">
+            © 2016 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">Blog powered by <a href="https://hexo.io">Hexo</a> | Theme <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('pink lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-reading, .menu-about').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

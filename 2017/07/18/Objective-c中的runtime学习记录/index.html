@@ -1,0 +1,633 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title></title>
+    <meta name="author" content="John Doe">
+    
+    <meta name="description" content="Objective-c中的runtime学习记录作为iOS开发者，在使用objective-c进行编程的时候，最熟悉的就是各种类，对象，消息，但是实际上类和对象的本质是什么呢？消息在运行时如何实现？这些问题如果不稍稍深入探究一下可以说永远只是浮于表面，一个合格的程序员我想应该是有动力去探究这些内核机">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+    <meta property="og:site_name" content="Hexo"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="indigo">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">Hexo</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            Home
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            Archives
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            Reading
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            About
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            Search
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav indigo darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://ww2.sinaimg.cn/small/74990035jw1f1rjkd681bj20rs0rsdhg.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">你的大名</p>
+                        <p class="desc">Web前端/iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    Home
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    Archives
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    Categories
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    Reading
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    About
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    Search
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav indigo darken-1" id="category-menu">
+    
+
+            
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">Search</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper indigo">
+        <span class="breadcrumb">Current page(Categories)</span>
+        
+            
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>No title</h1>
+    
+
+
+            </div>
+            <time class="pink-link-context" datetime="2017-07-18T11:48:21.000Z"><a href="/2017/07/18/Objective-c中的runtime学习记录/">2017-07-18</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+
+            <div class="toc pink-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#Objective-c中的runtime学习记录"><span class="section table-of-contents-text">Objective-c中的runtime学习记录</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#类对象"><span class="section table-of-contents-text">类对象</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#理解消息机制"><span class="section table-of-contents-text">理解消息机制</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#属性和方法"><span class="section table-of-contents-text">属性和方法</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#分类category关联对象"><span class="section table-of-contents-text">分类category关联对象</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol></li></ol></li></ol>
+</div>
+
+
+            <div class="entry pink-link-context">
+                <h2 id="Objective-c中的runtime学习记录"><a href="#Objective-c中的runtime学习记录" class="headerlink" title="Objective-c中的runtime学习记录"></a>Objective-c中的runtime学习记录</h2><p>作为iOS开发者，在使用objective-c进行编程的时候，最熟悉的就是各种类，对象，消息，但是实际上类和对象的本质是什么呢？消息在运行时如何实现？这些问题如果不稍稍深入探究一下可以说永远只是浮于表面，一个合格的程序员我想应该是有动力去探究这些内核机制的实现的。<br>所以这里就来说说关于OC对象，消息和运行期的事情（参考Effective Objective-c 2.0）</p>
+<h4 id="类对象"><a href="#类对象" class="headerlink" title="类对象"></a>类对象</h4><p>首先要说的应该是稍微了解一点objective-c的程序员都了解的事情：<strong>在objective-c中，不管是对象还是类，其本质都是C的结构体</strong>。所有的类和对象结构体都包含一个 isa_t 联合体的指针（早前的文档中称为isa指针，但是现在已经变为专门的联合体isa_t了），可以看一下这个 isa_t 联合体的结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line">union isa_t </div><div class="line">&#123;</div><div class="line">    isa_t() &#123; &#125;</div><div class="line">    isa_t(uintptr_t value) : bits(value) &#123; &#125;</div><div class="line"></div><div class="line">    Class cls;</div><div class="line">    uintptr_t bits;</div><div class="line"></div><div class="line">#if SUPPORT_PACKED_ISA</div><div class="line"></div><div class="line">    // extra_rc must be the MSB-most field (so it matches carry/overflow flags)</div><div class="line">    // nonpointer must be the LSB (fixme or get rid of it)</div><div class="line">    // shiftcls must occupy the same bits that a real class pointer would</div><div class="line">    // bits + RC_ONE is equivalent to extra_rc + 1</div><div class="line">    // RC_HALF is the high bit of extra_rc (i.e. half of its range)</div><div class="line"></div><div class="line">    // future expansion:</div><div class="line">    // uintptr_t fast_rr : 1;     // no r/r overrides</div><div class="line">    // uintptr_t lock : 2;        // lock for atomic property, @synch</div><div class="line">    // uintptr_t extraBytes : 1;  // allocated with extra bytes</div><div class="line"></div><div class="line"># if __arm64__</div><div class="line">#   define ISA_MASK        0x0000000ffffffff8ULL</div><div class="line">#   define ISA_MAGIC_MASK  0x000003f000000001ULL</div><div class="line">#   define ISA_MAGIC_VALUE 0x000001a000000001ULL</div><div class="line">    struct &#123;</div><div class="line">        uintptr_t nonpointer        : 1;</div><div class="line">        uintptr_t has_assoc         : 1;</div><div class="line">        uintptr_t has_cxx_dtor      : 1;</div><div class="line">        uintptr_t shiftcls          : 33; // MACH_VM_MAX_ADDRESS 0x1000000000</div><div class="line">        uintptr_t magic             : 6;</div><div class="line">        uintptr_t weakly_referenced : 1;</div><div class="line">        uintptr_t deallocating      : 1;</div><div class="line">        uintptr_t has_sidetable_rc  : 1;</div><div class="line">        uintptr_t extra_rc          : 19;</div><div class="line">#       define RC_ONE   (1ULL&lt;&lt;45)</div><div class="line">#       define RC_HALF  (1ULL&lt;&lt;18)</div><div class="line">    &#125;;</div><div class="line"></div><div class="line"># elif __x86_64__</div><div class="line">#   define ISA_MASK        0x00007ffffffffff8ULL</div><div class="line">#   define ISA_MAGIC_MASK  0x001f800000000001ULL</div><div class="line">#   define ISA_MAGIC_VALUE 0x001d800000000001ULL</div><div class="line">    struct &#123;</div><div class="line">        uintptr_t nonpointer        : 1;</div><div class="line">        uintptr_t has_assoc         : 1;</div><div class="line">        uintptr_t has_cxx_dtor      : 1;</div><div class="line">        uintptr_t shiftcls          : 44; // MACH_VM_MAX_ADDRESS 0x7fffffe00000</div><div class="line">        uintptr_t magic             : 6;</div><div class="line">        uintptr_t weakly_referenced : 1;</div><div class="line">        uintptr_t deallocating      : 1;</div><div class="line">        uintptr_t has_sidetable_rc  : 1;</div><div class="line">        uintptr_t extra_rc          : 8;</div><div class="line">#       define RC_ONE   (1ULL&lt;&lt;56)</div><div class="line">#       define RC_HALF  (1ULL&lt;&lt;7)</div><div class="line">    &#125;;</div></pre></td></tr></table></figure></p>
+<p>乍看起来并不好懂，前面的部分比较简单，结构体本身的默认构造函数，以及指向目标类的Class 指针（这个Class 本身就是 objc_class结构体类型的指针，后面再说）。毕竟 isa 指针就是用来指向一个对象或者类所属的类的指针，这没有什么疑问。<br>后面的分为<strong>arm64</strong> 架构和 <strong>x86_84</strong> 架构上的实现，这取决于不同的机器的指令集。但是在这里我们只要知道这些该有的字段全部都有，只是长度不同而已就行了，两种架构上的机制其实大同小异。所以我们那<strong>x86_64</strong>架构来分析就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">struct &#123;</div><div class="line">        uintptr_t nonpointer        : 1;</div><div class="line">        uintptr_t has_assoc         : 1;</div><div class="line">        uintptr_t has_cxx_dtor      : 1;</div><div class="line">        uintptr_t shiftcls          : 44; </div><div class="line">        uintptr_t magic             : 6;</div><div class="line">        uintptr_t weakly_referenced : 1;</div><div class="line">        uintptr_t deallocating      : 1;</div><div class="line">        uintptr_t has_sidetable_rc  : 1;</div><div class="line">        uintptr_t extra_rc          : 8;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<p>这是isa_t中的isa结构体，一共占据64位的内存空间，可以看到不同的字段有不同的长度，它们也对应不同的数据含义。<br>首先我们看一下当一个对象初始化的时候，调用了一个函数(简化过后)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">inline void </div><div class="line">objc_object::initIsa(Class cls, bool nonpointer, bool hasCxxDtor) </div><div class="line">&#123; </div><div class="line">    if (!nonpointer) &#123;</div><div class="line">        isa.cls = cls;</div><div class="line">    &#125; else &#123;</div><div class="line">        isa_t newisa(0);</div><div class="line"></div><div class="line">#if SUPPORT_INDEXED_ISA</div><div class="line">        newisa.bits = ISA_INDEX_MAGIC_VALUE;</div><div class="line">        newisa.has_cxx_dtor = hasCxxDtor;</div><div class="line">        newisa.indexcls = (uintptr_t)cls-&gt;classArrayIndex();</div><div class="line">#else</div><div class="line">        newisa.bits = ISA_MAGIC_VALUE;</div><div class="line">        newisa.has_cxx_dtor = hasCxxDtor;</div><div class="line">        newisa.shiftcls = (uintptr_t)cls &gt;&gt; 3;</div><div class="line">#endif</div><div class="line">        isa = newisa;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里为什么会出现两个判断呢？如果isa不是nonpointer，也就是单纯的指针（Class）类型，那么久直接将isa赋值为cls。否则就是isa_t类型，应该先初始化一个所有位为0的指针isa_t。基本上这也是不同版本的处理方式。查看SUPPORT_INDEX_ISA的宏，发现是<strong>ARM_ARCH_7K</strong> &gt; 2这样的判断，不太明白具体是指什么方面的架构=。=可能是对Watch的优化吧。<br>不过我们基本上只关心else之后的内容。<br>可以看到，先将 newisa的bits赋值为常量ISA_MAGIC_VALUE,里面包含的是magic 和 nonpointer 的值。然后标记“是否有c++析构函数”，最后将移位后的 cls 存入 shiftcls。</p>
+<ul>
+<li>上面说的 nonpointer 字段用来表示isa_t的类型，如果是0，表示这个isa_t中不包含结构体，访问对象的isa会直接返回一个 cls 的指针。而 nonpointer如果是1,表示 isa 不是指针，cls的信息只是作为一部分，这些类的指针的信息就保存在shiftcls中。（也就是说两个对象的isa 有可能根本结构上就不一样）<br>而 magic 用来判断当前对象是真的对象还是没有初始化的空间。</li>
+<li>而has_cxx_dtor 这个字段表示当前对象是否有C++或objc的析构器，如果没有就会快速释放内存。</li>
+<li>内容最多的 shiftcls,前面我们说了，类本身也是一个结构体，一个对象的isa指针最重要的功能就是能找到其类对象。这里调用<figure class="highlight plain"><figcaption><span>= (unintptr_t)cls >> 3;``` 将当前地址右移三位是为了字节对齐，objc中的类指针的地址后三位一定是0，所以这里省去后三位能节省内存消耗。在MAC的系统上，使用47位作为指针（IPhone上只用了33位），所以减去三位，我们就明白shiftcls为什么占用44位的空间了。</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">* 通常我们不会直接查找 isa 结构体，而是使用系统提供的ISA()方法来间接获取。</div><div class="line">* 其他的字段还有：``` has_assoc```对象含有或者曾经含有关联引用，如果没有就能更快地释放内存；``` weakly_referenced``` 对象呗指向或者曾经指向一个ARC的弱变量，没有弱引用的对象可以更快释放内存；``` deallocating``` 对象正在释放内存;``` has_sidetable_rc```对象的引用计数超过最大容量；``` extra_rc```当对象的引用计数超过1的时候会将多的部分保存在这个字段里，比如5就保存4，如果超过最大就告诉has_sidetable_rc超过了。</div><div class="line"></div><div class="line">说完了isa，再具体回到类对象这个概念，先看看class结构体的样子：</div><div class="line"></div><div class="line">```objective-c</div><div class="line">struct objc_class : objc_object &#123;</div><div class="line">    // Class ISA;</div><div class="line">    isa_t isa; // 在objc_object中定义</div><div class="line">    Class superclass;</div><div class="line">    cache_t cache;             // formerly cache pointer and vtable</div><div class="line">    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags</div></pre></td></tr></table></figure></li>
+</ul>
+<p>所以这里很明白的看出来，objc中的类也是一个对象，所以我们才说有类对象这个概念，不过不像普通的对象能生成很多次，这里的类对象的初始化全部由系统来控制，也只会创建一个而已。<br>关于objc中的类，有一点很重要的事情：在objc中，对象的方法并没有存储在对象的结构体中，当实例方法被调用的时候，它必须通过自己持有的 isa 来查找对应的类，然后再这里的 class_data_bits_t 结构体中查找对应方法的实现。并且每个objc_class 也有指向父类的指针 super_class来查找继承的方法，（这一条消息传递转发是objc的基础，展开讲很复杂，后面详细说明）。<br>可以想想到查找到最后一定要有一个终点，objc引入了 <em><strong>元类</strong></em> 这个概念来保证无论是类还是对象都能通过相同的机制查找方法。我们知道对象的 isa 指向的是其类，而类的 isa 呢？类的 isa 指向的是其“元类 metaclass”（千万不要把元类和父类弄混）。实例方法查找对象的 isa , 而类方法查找类的 isa。<br>有一张很经典的图片能够完美概括对象，类和元类的关系：</p>
+<p><img src="http://ot7rhf4gy.bkt.clouddn.com/17-7-17/74388345.jpg" alt="metaclass"></p>
+<h4 id="理解消息机制"><a href="#理解消息机制" class="headerlink" title="理解消息机制"></a>理解消息机制</h4><p>上面我们对objc中所谓的类和对象的实现有了基本的认识，接下来看objc中非常重要的机制————消息。<br>在对象上调用方法是objc中经常使用的功能,用objc的术语来说就是“消息传递”，消息有名称（name）和选择子（selector），可以接受参数，而且可能还有返回值。这个消息传递有什么特别之处呢？我们得先来说说objc的超集C：C语言使用静态绑定（static binding），也就是说在编译期就能决定运行时所调用的函数，比如我们有两个函数printHello和printWorld，在编译代码的时候就已经知道程序中包含这两个函数了，然后直接生成调用这个两个函数的指令，而函数地址也是硬编码到指令中的。</p>
+<p>而在objc中，如果向某对象传递信息，那就会使用动态绑定机制来决定需要调用的方法。在底层，所有方法都是普通的C语言函数，然而对象只有在运行的时候收到消息之后才能决定该调用哪个方法。比如我们有下列一个方法调用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">id returnValue = [someObject messageName:parameter];</div></pre></td></tr></table></figure>
+<p>编译器看到这个消息之后将其转换为一条标准的C语言函数调用，所调用的函数乃是消息传递机制中的核心函数，叫做objc_msgSend，其函数原型如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void objc_msgSend(id self, SEL cmd, ...)</div></pre></td></tr></table></figure></p>
+<p>这个函数的参数是可变的，第一个参数表示消息的接受者，放到这里就是someObject，第二个参数是选择子selector，在这里就是messageName，后续的参数就是消息中的各种参数，按照顺序依次加入。那么实际上我们在objc中调用的方法，被编译器转换后的样子是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">id returnValue = objc_msgSend(someObject, @selector(messageName:), parameter);</div></pre></td></tr></table></figure></p>
+<p>objc_msgSend函数会根据接收者与选择子的类型来调用适当的方法。为了完成此操作，更改方法需要再接收者所属的类中搜寻其“方法列表（list of methods）”，如果能够找到对应的方法，就直接跳转至实现代码。如果找不到，就沿着继承机制向上查找，等找到合适的再跳转，如果最终还是找不到，就只能执行消息转发。<br>所幸的是objc_msgSend调用了一个方法之后会将匹配结果缓存在快速映射表（fast map）里，每个类都有一个这样的缓存，这样后续再执行同样的方法的时候速度就会快很多。</p>
+<p>当然objc_msgSend还有一些其他的形态用来处理一些特殊情况：(1) objc_msgSend_stret，如果待发送的消息要返回结构体，就交由这个函数来处理，只有在CPU的寄存器能够容纳的下消息返回类型的时候，这个函数才能处理此消息 (2) objc_msgSend_fpret, 如果消息返回的是浮点数，那么交给这个函数来处理，因为某些架构的CPU中调用函数时，需要对“浮点数寄存器”做特殊处理，所以必须调用特殊的函数 (3) objc_msgSendSuper, 这个看名字就知道，给超类发送消息的时候调用。</p>
+<p>其实我们说的选择子也并不是真正调用的函数本身，实际上编译器会把每个对象的方法全部编译为C函数，然后将函数指针保存在每个类都有的表格中。选择子只是一个从表格中查询到具体函数的键而已。</p>
+<p>下面接着说消息转发机制，上面我们已经知道了，消息会通过objc_msgSend函数通知给接收者执行具体方法，但是很多时候并不是那么顺利就能在类的方法列表或者其父类中找到对应的方法的。objc有一套对应的机制来处理消息的转发，尽量使消息能够被合理地处理，毕竟如果没有找到处理消息的办法就会导致程序崩溃，所以必须尽量避免这种情况发生。</p>
+<p>消息转发分为两大阶段，第一阶段先征询接收者所属的类，看其是否能动态添加方法，以处理当前未知的selector，这叫做“动态方法解析”。第二阶段涉及“完整的消息转发机制”。我们当然希望能在第一阶段就把问题解决掉，但是总还是会遇到进入第二阶段的情况，这又细分为两小步。首先看看其他对象有没有能处理这个消息的，可以就转发给它，如果没有则启动完整的消息转发机制，将消息有关的细节封装到NSInvocation中，最后一次让接收者解决当前的问题。</p>
+<p><strong><strong>动态方法解析</strong></strong>：对象在收到无法解读的消息之后，首先将调用其所属的下列类方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">+ (BOOL)resolveInstanceMethod:(SEL)selector</div></pre></td></tr></table></figure>
+<p>如果是类方法就调用resolveClassMethod，本质是差不多的，都是本类为了解决无法识别的选择子的问题而提前准备的方法，比如CoreData中实现dynamic属性，因为存取方法在不用等待运行期才能确定，所以可以提前写在上面所说的方法的实现中，当进入动态方法解析的部分时，直接调用实现就行了。不过这种方法，只在当我们预先知道怎么处理特定选择子的情况下才有用。</p>
+<p><strong>备用接收者</strong>：如果动态方法解析不行，接收者还有第二次机会能处理未知的选择子，系统会让它寻找其他能处理的接收者，需要实现的方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (id)forwardingTargetForSelector:(SEL)selector;</div></pre></td></tr></table></figure>
+<p>同样也是像上面一样，得预先准备好哪些类能处理对应的selector，如果最终返回nil表示找不到能够执行的其他类（这个机制能够用来模拟出多重继承的一些特性，一个对象可以将方法转发给几个不同的对象来执行，从外界看来和多重继承很像）。但是实际上很多时候我们也没办法提前知道什么类能够处理转发问题。</p>
+<p><strong>完整消息转发</strong>：如果上面两个方案都没法解决问题，那么只能调用完整的消息转发机制了。先创建NSInvocation对象，把信息相关的全部细节封装其中。然后系统调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">- (void)forwardInvocation:(NSInvocation *)invocation;</div></pre></td></tr></table></figure>
+<p>这个方法只需要改变调用目标就行了，但是仅仅这样改变和前面的备用接收者没什么差别，所以通常会连消息的内容也会稍作改变，比如追加参数或者改变选择子等等。<br>最终我们可以看到消息的转发机制如下图所示</p>
+<p>这些操作，越靠后的代价越大，所以尽量能在前面解决就在前面解决。（但是我怎么觉得多的反而是靠这些机制实现其他的特性=。=）</p>
+<p><img src="http://ot7rhf4gy.bkt.clouddn.com/17-7-17/60468445.jpg" alt="消息转发流程"></p>
+<h4 id="属性和方法"><a href="#属性和方法" class="headerlink" title="属性和方法"></a>属性和方法</h4><p>最开始我们介绍了isa和类对象的概念，回想起来还有具体的结构没有细说，先来回忆一下objc_class的结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">struct objc_class : objc_object &#123;</div><div class="line">    // Class ISA;</div><div class="line">    Class superclass;</div><div class="line">    cache_t cache;             // formerly cache pointer and vtable</div><div class="line">    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags</div></pre></td></tr></table></figure></p>
+<p>其中bits就是存储类的方法、属性、遵循的协议等信息的地方。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">struct class_data_bits_t &#123;</div><div class="line"></div><div class="line">    // Values are the FAST_ flags above.</div><div class="line">    uintptr_t bits;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>class_data_bits_t结构体只含有一个64位的bits用来存储和类有关的信息，而objc_class中的注释写到class_data_bits_t相当于class_rw_t加上rr/alloc的flag。也就是说bits为我们提供了便携方法能够返回其中的 class_rw_t* 指针</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// objc_class</div><div class="line">class_rw_t *data() &#123; </div><div class="line">        return bits.data();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">// class_data_bits_t </div><div class="line">class_rw_t* data() &#123;</div><div class="line">        return (class_rw_t *)(bits &amp; FAST_DATA_MASK);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>将bits 和 FAST_DATA_MASK 作位运算，只取其中的[3,47]位转换成 class_rw_t* 返回。objc类中的属性、方法还有遵循的协议都保存在 class_rw_t 中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">struct class_rw_t &#123;</div><div class="line">    // Be warned that Symbolication knows the layout of this structure.</div><div class="line">    uint32_t flags;</div><div class="line">    uint32_t version;</div><div class="line"></div><div class="line">    const class_ro_t *ro;</div><div class="line"></div><div class="line">    method_array_t methods;</div><div class="line">    property_array_t properties;</div><div class="line">    protocol_array_t protocols;</div><div class="line"></div><div class="line">    Class firstSubclass;</div><div class="line">    Class nextSiblingClass;</div><div class="line">&#125;；</div></pre></td></tr></table></figure>
+<p>其中class_ro_t结构体又存储了当前类在编译时就确定的属性，方法和遵循的协议。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">struct class_ro_t &#123;</div><div class="line">    uint32_t flags;</div><div class="line">    uint32_t instanceStart;</div><div class="line">    uint32_t instanceSize;</div><div class="line">#ifdef __LP64__</div><div class="line">    uint32_t reserved;</div><div class="line">#endif</div><div class="line"></div><div class="line">    const uint8_t * ivarLayout;</div><div class="line">    </div><div class="line">    const char * name;</div><div class="line">    method_list_t * baseMethodList;</div><div class="line">    protocol_list_t * baseProtocols;</div><div class="line">    const ivar_list_t * ivars;</div><div class="line"></div><div class="line">    const uint8_t * weakIvarLayout;</div><div class="line">    property_list_t *baseProperties;</div><div class="line"></div><div class="line">    method_list_t *baseMethods() const &#123;</div><div class="line">        return baseMethodList;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>这个流程是这样的：在编译期间 clss_ro_t 就已经确定了，objc_class中的bits的data中保存着具体数据，然后等runtime开始加载，程序真正执行的时候调用 realizeClass 方法，将 class_ro_t 中的数据转换到 class_rw_t 结构体中，然后重新设置结构体 ro 和 flag。不过这之后 class_rw_t 中的方法、属性以及协议列表还是为空，需要调用 methodizeClass 方法来把空缺的内容填满。 <strong>简单来说就是 class_ro_t 是编译期记录的原始数据，而 class_rw_t 是通过运行期通过前者得到的真实被访问的数据</strong>。</p>
+<p>存放实例变量的结构体 ivar_t 的具体构造如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">struct ivar_t &#123;</div><div class="line">    int32_t *offset;</div><div class="line">    const char *name;</div><div class="line">    const char *type;</div><div class="line">    // alignment is sometimes -1; use alignment() instead</div><div class="line">    uint32_t alignment_raw;</div><div class="line">    uint32_t size;</div><div class="line">    uint32_t alignment() const &#123;</div><div class="line">        if (alignment_raw == ~(uint32_t)0) return 1U &lt;&lt; WORD_SHIFT;</div><div class="line">        return 1 &lt;&lt; alignment_raw;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>其中name表示实例变量的名字，type表示实例变量的类型，size表示实例变量的大小，而offset为实例变量距离对象的首地址的偏移量。<br>在 class_ro_t 结构体中有两个非常重要的变量 instanceStart 和 instanceSize，前者是对象开始存放实例变量的地址的偏移量，后者是对象的大小（isa_t + ivarInt + propertyInt），实际操作中取出实例变量都是靠对象的偏移量计算来得到的。</p>
+<p>再来看看保存方法的结构体：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">struct method_t &#123;</div><div class="line">    SEL name;</div><div class="line">    const char *types;</div><div class="line">    IMP imp;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>变量的名称很通俗易懂，就不展开讨论了。总结来说在runtime运行刚开始保存一个类的信息的都是 class_ro_t，然后调用 realizeClass 方法才将其转换成 class_rw_t 结构体。但是为什么要这样操作呢？<br>类在内存中的位置是编译期间决定的，在之后修改代码，也不能改变内存的位置，但是由于objc是动态语言，在运行时会添加各种新的属性，方法和协议，所以不能一开始就将这些保存信息的数据放到和类在内存中相同的地方。必须在别的地方创建了能在运行时添加方法的 class_rw_t 结构后再将其和类放到一起。所以说是先有了 class_ro_t 之后才能创建 class_rw_t。</p>
+<h4 id="分类category关联对象"><a href="#分类category关联对象" class="headerlink" title="分类category关联对象"></a>分类category关联对象</h4><p>最后来看看，runtime如何给已经存在的类动态添加特征，这是objc中很突出的特点。<br>一般当我们想为某个类添加方法的时候会使用category，从这里可以看出它和extension的不同：category不能添加实例变量，这表明它并不是类的一部分，因为在运行期添加实例变量会打破类的布局，造成灾难性的结果。<br>我们看看category的结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">typedef struct category_t &#123;</div><div class="line">    const char *name;</div><div class="line">    classref_t cls;</div><div class="line">    struct method_list_t *instanceMethods;</div><div class="line">    struct method_list_t *classMethods;</div><div class="line">    struct protocol_list_t *protocols;</div><div class="line">    struct property_list_t *instanceProperties;</div><div class="line">&#125; category_t;</div></pre></td></tr></table></figure></p>
+<p>包含了类的名字，类本身，category要添加的实例方法的列表，category要添加的类方法的列表，添加的协议的列表，还有添加的所有属性。<br>objc开始运行时的入口方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">void _objc_init(void)</div><div class="line">&#123;</div><div class="line">    static bool initialized = false;</div><div class="line">    if (initialized) return;</div><div class="line">    initialized = true;</div><div class="line">    </div><div class="line">    // fixme defer initialization until an objc-using image is found?</div><div class="line">    environ_init();</div><div class="line">    tls_init();</div><div class="line">    static_init();</div><div class="line">    lock_init();</div><div class="line">    exception_init();</div><div class="line"></div><div class="line">    _dyld_objc_notify_register(&amp;map_2_images, load_images, unmap_image);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>而最后一个函数的调用中就将category加入到了类上，再看objc_runtime_new.mm文件中_read_images方法，最后有这么一个片段；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line">for (EACH_HEADER) &#123;</div><div class="line">        category_t **catlist = </div><div class="line">            _getObjc2CategoryList(hi, &amp;count);</div><div class="line">        bool hasClassProperties = hi-&gt;info()-&gt;hasCategoryClassProperties();</div><div class="line"></div><div class="line">        for (i = 0; i &lt; count; i++) &#123;</div><div class="line">            category_t *cat = catlist[i];</div><div class="line">            Class cls = remapClass(cat-&gt;cls);</div><div class="line"></div><div class="line">            if (!cls) &#123;</div><div class="line">                // Category&apos;s target class is missing (probably weak-linked).</div><div class="line">                // Disavow any knowledge of this category.</div><div class="line">                catlist[i] = nil;</div><div class="line">                if (PrintConnecting) &#123;</div><div class="line">                    _objc_inform(&quot;CLASS: IGNORING category \?\?\?(%s) %p with &quot;</div><div class="line">                                 &quot;missing weak-linked target class&quot;, </div><div class="line">                                 cat-&gt;name, cat);</div><div class="line">                &#125;</div><div class="line">                continue;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            // Process this category. </div><div class="line">            // First, register the category with its target class. </div><div class="line">            // Then, rebuild the class&apos;s method lists (etc) if </div><div class="line">            // the class is realized. </div><div class="line">            bool classExists = NO;</div><div class="line">            if (cat-&gt;instanceMethods ||  cat-&gt;protocols  </div><div class="line">                ||  cat-&gt;instanceProperties) </div><div class="line">            &#123;</div><div class="line">                // 给class本身添加各种列表</div><div class="line">                addUnattachedCategoryForClass(cat, cls, hi);</div><div class="line">                if (cls-&gt;isRealized()) &#123;</div><div class="line">                    remethodizeClass(cls);</div><div class="line">                    classExists = YES;</div><div class="line">                &#125;</div><div class="line">                if (PrintConnecting) &#123;</div><div class="line">                    _objc_inform(&quot;CLASS: found category -%s(%s) %s&quot;, </div><div class="line">                                 cls-&gt;nameForLogging(), cat-&gt;name, </div><div class="line">                                 classExists ? &quot;on existing class&quot; : &quot;&quot;);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            // 给class的isa也添加各种列表</div><div class="line">            if (cat-&gt;classMethods  ||  cat-&gt;protocols  </div><div class="line">                ||  (hasClassProperties &amp;&amp; cat-&gt;_classProperties)) </div><div class="line">            &#123;</div><div class="line">                addUnattachedCategoryForClass(cat, cls-&gt;ISA(), hi);</div><div class="line">                if (cls-&gt;ISA()-&gt;isRealized()) &#123;</div><div class="line">                    remethodizeClass(cls-&gt;ISA());</div><div class="line">                &#125;</div><div class="line">                if (PrintConnecting) &#123;</div><div class="line">                    _objc_inform(&quot;CLASS: found category +%s(%s)&quot;, </div><div class="line">                                 cls-&gt;nameForLogging(), cat-&gt;name);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div></pre></td></tr></table></figure>
+<p>这个拿到的catlist就是编译器准备的category_t结构体的数组（一个类可能有不止一个categoty），上面的代码实际上完成的工作就是(1)将categoty的实例方法、属性和协议添加到类上 (2)将category的类方法和协议添加到类的metaclass上。上面的代码中，addUntachedCategoryForClass这个函数只是把类和category做了一个关联映射，而remethodizeClass才是真正将category添加到类上面的核心：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div></pre></td><td class="code"><pre><div class="line">static void remethodizeClass(Class cls)</div><div class="line">&#123;</div><div class="line">    category_list *cats;</div><div class="line">    bool isMeta;</div><div class="line"></div><div class="line">    runtimeLock.assertWriting();</div><div class="line"></div><div class="line">    isMeta = cls-&gt;isMetaClass();</div><div class="line"></div><div class="line">    // Re-methodizing: check for more categories</div><div class="line">    if ((cats = unattachedCategoriesForClass(cls, false/*not realizing*/))) &#123;</div><div class="line">        if (PrintConnecting) &#123;</div><div class="line">            _objc_inform(&quot;CLASS: attaching categories to class &apos;%s&apos; %s&quot;, </div><div class="line">                         cls-&gt;nameForLogging(), isMeta ? &quot;(meta)&quot; : &quot;&quot;);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        attachCategories(cls, cats, true /*flush caches*/);        </div><div class="line">        free(cats);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">而这里又交给另一个函数来处理：</div><div class="line">static void </div><div class="line">attachCategories(Class cls, category_list *cats, bool flush_caches)</div><div class="line">&#123;</div><div class="line">    if (!cats) return;</div><div class="line">    if (PrintReplacedMethods) printReplacements(cls, cats);</div><div class="line"></div><div class="line">    bool isMeta = cls-&gt;isMetaClass();</div><div class="line"></div><div class="line">    // fixme rearrange to remove these intermediate allocations</div><div class="line">    method_list_t **mlists = (method_list_t **)</div><div class="line">        malloc(cats-&gt;count * sizeof(*mlists));</div><div class="line">    property_list_t **proplists = (property_list_t **)</div><div class="line">        malloc(cats-&gt;count * sizeof(*proplists));</div><div class="line">    protocol_list_t **protolists = (protocol_list_t **)</div><div class="line">        malloc(cats-&gt;count * sizeof(*protolists));</div><div class="line"></div><div class="line">    // Count backwards through cats to get newest categories first</div><div class="line">    int mcount = 0;</div><div class="line">    int propcount = 0;</div><div class="line">    int protocount = 0;</div><div class="line">    int i = cats-&gt;count;</div><div class="line">    bool fromBundle = NO;</div><div class="line">    while (i--) &#123;</div><div class="line">        auto&amp; entry = cats-&gt;list[i];</div><div class="line"></div><div class="line">        method_list_t *mlist = entry.cat-&gt;methodsForMeta(isMeta);</div><div class="line">        if (mlist) &#123;</div><div class="line">            mlists[mcount++] = mlist;</div><div class="line">            fromBundle |= entry.hi-&gt;isBundle();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        property_list_t *proplist = </div><div class="line">            entry.cat-&gt;propertiesForMeta(isMeta, entry.hi);</div><div class="line">        if (proplist) &#123;</div><div class="line">            proplists[propcount++] = proplist;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        protocol_list_t *protolist = entry.cat-&gt;protocols;</div><div class="line">        if (protolist) &#123;</div><div class="line">            protolists[protocount++] = protolist;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    auto rw = cls-&gt;data();</div><div class="line"></div><div class="line">    prepareMethodLists(cls, mlists, mcount, NO, fromBundle);</div><div class="line">    rw-&gt;methods.attachLists(mlists, mcount);</div><div class="line">    free(mlists);</div><div class="line">    if (flush_caches  &amp;&amp;  mcount &gt; 0) flushCaches(cls);</div><div class="line"></div><div class="line">    rw-&gt;properties.attachLists(proplists, propcount);</div><div class="line">    free(proplists);</div><div class="line"></div><div class="line">    rw-&gt;protocols.attachLists(protolists, protocount);</div><div class="line">    free(protolists);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个方法中主要是将category的实例方法列表、属性列表和协议列表分别拼成三个大的列表，j更深入的方法教给attachLists函数来完成：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">void attachLists(List* const * addedLists, uint32_t addedCount) &#123;</div><div class="line">        if (addedCount == 0) return;</div><div class="line"></div><div class="line">        if (hasArray()) &#123;</div><div class="line">            // many lists -&gt; many lists</div><div class="line">            uint32_t oldCount = array()-&gt;count;</div><div class="line">            uint32_t newCount = oldCount + addedCount;</div><div class="line">            setArray((array_t *)realloc(array(), array_t::byteSize(newCount)));</div><div class="line">            array()-&gt;count = newCount;</div><div class="line">            memmove(array()-&gt;lists + addedCount, array()-&gt;lists, </div><div class="line">                    oldCount * sizeof(array()-&gt;lists[0]));</div><div class="line">            memcpy(array()-&gt;lists, addedLists, </div><div class="line">                   addedCount * sizeof(array()-&gt;lists[0]));</div><div class="line">        &#125;</div><div class="line">        else if (!list  &amp;&amp;  addedCount == 1) &#123;</div><div class="line">            // 0 lists -&gt; 1 list</div><div class="line">            list = addedLists[0];</div><div class="line">        &#125; </div><div class="line">        else &#123;</div><div class="line">            // 1 list -&gt; many lists</div><div class="line">            List* oldList = list;</div><div class="line">            uint32_t oldCount = oldList ? 1 : 0;</div><div class="line">            uint32_t newCount = oldCount + addedCount;</div><div class="line">            setArray((array_t *)malloc(array_t::byteSize(newCount)));</div><div class="line">            array()-&gt;count = newCount;</div><div class="line">            if (oldList) array()-&gt;lists[addedCount] = oldList;</div><div class="line">            memcpy(array()-&gt;lists, addedLists, </div><div class="line">                   addedCount * sizeof(array()-&gt;lists[0]));</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>这里有个关键的部分就是categoty中的元素并没有替换掉原来已经存在的类的方法，而是在原基础上添加。考虑到实际查找方法的顺序，其实这样category添加的方法，如果和类的原方法重名的话，是category方法会被调用。这样看上去就像是category中的方法“覆盖”掉了原方法一样，但是要注意的是实际上机制并不是单纯的覆盖。</p>
+<p>既然说到了category，就不得不提到能给类添加变量的方法—-关联对象（Associated Object）了。使用关联对象的函数原型如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy);</div></pre></td></tr></table></figure></p>
+<p>一路查找下去：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy) &#123;</div><div class="line">    _object_set_associative_reference(object, (void *)key, value, policy);</div><div class="line">&#125;</div><div class="line"></div><div class="line">void _object_set_associative_reference(id object, void *key, id value, uintptr_t policy) &#123;</div><div class="line">    // retain the new value (if any) outside the lock.</div><div class="line">    ObjcAssociation old_association(0, nil);</div><div class="line">    id new_value = value ? acquireValue(value, policy) : nil;</div><div class="line">    &#123;</div><div class="line">        AssociationsManager manager;</div><div class="line">        AssociationsHashMap &amp;associations(manager.associations());</div><div class="line">        disguised_ptr_t disguised_object = DISGUISE(object);</div><div class="line">        if (new_value) &#123;</div><div class="line">            // break any existing association.</div><div class="line">            AssociationsHashMap::iterator i = associations.find(disguised_object);</div><div class="line">            if (i != associations.end()) &#123;</div><div class="line">                // secondary table exists</div><div class="line">                ObjectAssociationMap *refs = i-&gt;second;</div><div class="line">                ObjectAssociationMap::iterator j = refs-&gt;find(key);</div><div class="line">                if (j != refs-&gt;end()) &#123;</div><div class="line">                    old_association = j-&gt;second;</div><div class="line">                    j-&gt;second = ObjcAssociation(policy, new_value);</div><div class="line">                &#125; else &#123;</div><div class="line">                    (*refs)[key] = ObjcAssociation(policy, new_value);</div><div class="line">                &#125;</div><div class="line">            &#125; else &#123;</div><div class="line">                // create the new association (first time).</div><div class="line">                ObjectAssociationMap *refs = new ObjectAssociationMap;</div><div class="line">                associations[disguised_object] = refs;</div><div class="line">                (*refs)[key] = ObjcAssociation(policy, new_value);</div><div class="line">                object-&gt;setHasAssociatedObjects();</div><div class="line">            &#125;</div><div class="line">        &#125; else &#123;</div><div class="line">            // setting the association to nil breaks the association.</div><div class="line">            AssociationsHashMap::iterator i = associations.find(disguised_object);</div><div class="line">            if (i !=  associations.end()) &#123;</div><div class="line">                ObjectAssociationMap *refs = i-&gt;second;</div><div class="line">                ObjectAssociationMap::iterator j = refs-&gt;find(key);</div><div class="line">                if (j != refs-&gt;end()) &#123;</div><div class="line">                    old_association = j-&gt;second;</div><div class="line">                    refs-&gt;erase(j);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    // release the old value (outside of the lock).</div><div class="line">    if (old_association.hasValue()) ReleaseValue()(old_association);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这其中涉及到几个类，分别有不同的作用:(1)AssociationsManager–它管理一个自旋锁到哈希表的单例映射，通过associations()方法可以去到管理的AssociationHashMap单例 (2)AssociationsHashMap–一个无序哈希表，存储的是对象的地址到ObjectAssociationMap的映射 (3)ObjectAssiciationMap–存储了key到被关联对象ObjcAssociation的映射 (4)ObjcAssociation–存储关联对象的信息。<br>简单解释上面函数的流程就是先获取AssociationsManager，然后通过associations()方法获得AssociationsHashMap单例（全部的关联变量都由这一个单例负责维护），然后通过需要添加变量的对象object的地址来取得它对应的一个子哈希表（AssociationsHashMap中的一条，里面全部是这个对象的关联对象），进而看有没有已经存在的关联变量的记录，如果有就覆盖，如果没有就新添加一个关联变量。</p>
+<p>知道了set的流程，其实get和remove也显而易见了，只要知道关键在于两层哈希表就行了。同样我们也能理解到，其实关联对象并不是直接在内存上和本对象那么紧密，只是将关联对象放在了一个全局的哈希表中方便维护查找而已，结果上看也不是真正的添加了一个实例变量。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上粗浅地谈了一下关于runtime源码中自己了解到的类和对象以及属性方法的底层实现机制。参考了很多别人的博客和文档，还有开源的runtime的方法。实际上也只是皮毛而已，还需要更深入的了解和探索。</p>
+<p>参考：</p>
+<p>1.Draveness大神的博客： <a href="http://draveness.me/isa.html" target="_blank" rel="external">从NSObject的初始化了解isa</a></p>
+<p>2.Effective Objective-c 2.0</p>
+<p>3.runtime 源码</p>
+
+                
+
+
+<p class="pink-link-context">
+    <a href="/2017/07/18/GCD总结/" rel="next" title="">
+    Next: 
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large pink">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect green" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse yellow darken-1"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer indigo darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">Social</h5>
+                
+                    <a class="social-link" href="http://weibo.com/1956184117" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/raytaylorlin" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">Links</h5>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="https://github.com/raytaylorlin" target="_blank">Github地址（测试友情链接）</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright pink-link-context">
+        <div class="container">
+            © 2016 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">Blog powered by <a href="https://hexo.io">Hexo</a> | Theme <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('pink lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-reading, .menu-about').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,628 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title></title>
+    <meta name="author" content="John Doe">
+    
+    <meta name="description" content="AFNetworking基本模块AFNetworking主要分为5个模块
+
+通信模块（AFURLSessionManager, AFHTTPSessionManager）
+网络状态监听
+安全模块 
+通信序列化/反序列化模块
+UIKit相关
+
+实际上AFNetworking是对原生的NSURLSess">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+    <meta property="og:site_name" content="Hexo"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="indigo">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">Hexo</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            Home
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            Archives
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            Reading
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            About
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            Search
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav indigo darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://ww2.sinaimg.cn/small/74990035jw1f1rjkd681bj20rs0rsdhg.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">你的大名</p>
+                        <p class="desc">Web前端/iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    Home
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    Archives
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    Categories
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    Reading
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    About
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    Search
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav indigo darken-1" id="category-menu">
+    
+
+            
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">Search</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper indigo">
+        <span class="breadcrumb">Current page(Categories)</span>
+        
+            
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>No title</h1>
+    
+
+
+            </div>
+            <time class="pink-link-context" datetime="2017-07-18T06:00:56.000Z"><a href="/2017/07/18/AFNetworking基本模块/">2017-07-18</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+
+            <div class="toc pink-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#AFNetworking基本模块"><span class="section table-of-contents-text">AFNetworking基本模块</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#序列-反序列RequestSerialization"><span class="section table-of-contents-text">序列/反序列RequestSerialization</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#具体编码方法"><span class="section table-of-contents-text">具体编码方法</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#AFURLSessionManager核心解析"><span class="section table-of-contents-text">AFURLSessionManager核心解析</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#AFNetworking好处"><span class="section table-of-contents-text">AFNetworking好处</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry pink-link-context">
+                <h2 id="AFNetworking基本模块"><a href="#AFNetworking基本模块" class="headerlink" title="AFNetworking基本模块"></a>AFNetworking基本模块</h2><p>AFNetworking主要分为5个模块</p>
+<ul>
+<li>通信模块（AFURLSessionManager, AFHTTPSessionManager）</li>
+<li>网络状态监听</li>
+<li>安全模块 </li>
+<li>通信序列化/反序列化模块</li>
+<li>UIKit相关</li>
+</ul>
+<p>实际上AFNetworking是对原生的NSURLSession进行的封装，上面所说的四个部分并不是并列的关系，所有请求逻辑全部交由AFURLSessionManager来处理，其他的网络监听，安全和序列化/反序列化全是为AFURLSessionManager服务或者说是以其为基础的。至于AFHTTPSessionManager本身也是继承自URLSessionManager的一层封装，本身并不干活，只是将请求逻辑分发给其父类去做。</p>
+<p>如上所说，用户对接的其实是AFHTTPSessionManager类，当需要实例化网络请求的时候，一般使用下面的方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">+ (instancetype)manager;</div><div class="line">  - (instancetype)initWithBaseURL:(nullable NSURL *)url;</div><div class="line">  - (instancetype)initWithBaseURL:(nullable NSURL *)url</div><div class="line">             sessionConfiguration:(nullable NSURLSessionConfiguration</div><div class="line">  *)configuration;</div><div class="line">  </div><div class="line">其中</div><div class="line">- (instancetype)initWithBaseURL:(NSURL *)url</div><div class="line">           sessionConfiguration:(NSURLSessionConfiguration *)configuration</div><div class="line">&#123;</div><div class="line">    self = [super initWithSessionConfiguration:configuration];</div><div class="line">    if (!self) &#123;</div><div class="line">        return nil;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 对传进来的url进行判断，判断结束是否有“/”</div><div class="line">    if ([[url path] length] &gt; 0 &amp;&amp; ![[url absoluteString] hasSuffix:@&quot;/&quot;]) &#123;</div><div class="line">        url = [url URLByAppendingPathComponent:@&quot;&quot;];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    self.baseURL = url;</div><div class="line"></div><div class="line">    self.requestSerializer = [AFHTTPRequestSerializer serializer];</div><div class="line">    self.responseSerializer = [AFJSONResponseSerializer serializer];</div><div class="line"></div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>而其实这个初始化的调用，也是先调用了父类AFURLSessionManager的初始化方法,这个后面再说。</p>
+<p>在AFHTTPSessionManager中，基本是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">- (NSURLSessionDataTask *)GET:(NSString *)URLString</div><div class="line">                   parameters:(id)parameters</div><div class="line">                      success:(void (^)(NSURLSessionDataTask *task, id responseObject))success</div><div class="line">                      failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure</div></pre></td></tr></table></figure></p>
+<p>这样的方法，将GET,POST,PUT,DELETE等指令全部包装起来，交给AFURLSessionManager来完成。一般都很简单地只是将请求交给父类，获取对应的NSURLSessionTask然后调用其resume方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">- (NSURLSessionDataTask *)GET:(NSString *)URLString</div><div class="line">                   parameters:(id)parameters</div><div class="line">                     progress:(void (^)(NSProgress * _Nonnull))downloadProgress</div><div class="line">                      success:(void (^)(NSURLSessionDataTask * _Nonnull, id _Nullable))success</div><div class="line">                      failure:(void (^)(NSURLSessionDataTask * _Nullable, NSError * _Nonnull))failure</div><div class="line">&#123;</div><div class="line"></div><div class="line">    NSURLSessionDataTask *dataTask = [self dataTaskWithHTTPMethod:@&quot;GET&quot;</div><div class="line">                                                        URLString:URLString</div><div class="line">                                                       parameters:parameters</div><div class="line">                                                   uploadProgress:nil</div><div class="line">                                                 downloadProgress:downloadProgress</div><div class="line">                                                          success:success</div><div class="line">                                                          failure:failure];</div><div class="line">    </div><div class="line">    // 正式开始网络请求</div><div class="line">    [dataTask resume];</div><div class="line"></div><div class="line">    return dataTask;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>比如这个GET方法的包装，就是这样一个流程。<br>AFHTTPSessionManager还有另一个功能就是把调用者发起得请求转换编码成最后需要的request,然后再由父类进行真正的网络请求</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">- (NSURLSessionDataTask *)dataTaskWithHTTPMethod:(NSString *)method</div><div class="line">                                       URLString:(NSString *)URLString</div><div class="line">                                      parameters:(id)parameters</div><div class="line">                                  uploadProgress:(nullable void (^)(NSProgress *uploadProgress)) uploadProgress</div><div class="line">                                downloadProgress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgress</div><div class="line">                                         success:(void (^)(NSURLSessionDataTask *, id))success</div><div class="line">                                         failure:(void (^)(NSURLSessionDataTask *, NSError *))failure&#123;</div><div class="line">NSError *serializationError = nil;</div><div class="line"></div><div class="line">    // 将需要的部件放到一起组成一个request</div><div class="line">    NSMutableURLRequest *request = [self.requestSerializer multipartFormRequestWithMethod:@&quot;POST&quot; URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters constructingBodyWithBlock:block error:&amp;serializationError];</div><div class="line">    if (serializationError) &#123;</div><div class="line">        if (failure) &#123;</div><div class="line">            // 如果解析错误就直接返回</div><div class="line">            dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^&#123;</div><div class="line">                failure(nil, serializationError);</div><div class="line">            &#125;);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        return nil;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">__block NSURLSessionDataTask *dataTask = nil;</div><div class="line"></div><div class="line">    // 若成功则用这个request生成一个dataTask实例交给回调方法</div><div class="line">    dataTask = [self dataTaskWithRequest:request</div><div class="line">                          uploadProgress:uploadProgress</div><div class="line">                        downloadProgress:downloadProgress</div><div class="line">                       completionHandler:^(NSURLResponse * __unused response, id responseObject, NSError *error) &#123;</div><div class="line">        if (error) &#123;</div><div class="line">            if (failure) &#123;</div><div class="line">                failure(dataTask, error);</div><div class="line">            &#125;</div><div class="line">        &#125; else &#123;</div><div class="line">            if (success) &#123;</div><div class="line">                success(dataTask, responseObject);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如上面的代码就是调用转化编码的请求，如果没有报错，那么后续就会对这个request作为参数来发起网络请求。</p>
+<h4 id="序列-反序列RequestSerialization"><a href="#序列-反序列RequestSerialization" class="headerlink" title="序列/反序列RequestSerialization"></a>序列/反序列RequestSerialization</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">- (NSMutableURLRequest *)requestWithMethod:(NSString *)method</div><div class="line">                                 URLString:(NSString *)URLString</div><div class="line">                                parameters:(id)parameters</div><div class="line">                                     error:(NSError *__autoreleasing *)error</div><div class="line">&#123;</div><div class="line">    NSParameterAssert(method);</div><div class="line">    NSParameterAssert(URLString);</div><div class="line"></div><div class="line">    NSURL *url = [NSURL URLWithString:URLString];</div><div class="line"></div><div class="line">    NSParameterAssert(url);</div><div class="line"></div><div class="line">    // 通过url来创建一个request实例</div><div class="line">    NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:url];</div><div class="line">    </div><div class="line">    // 将HTTP请求类型作为参数赋给request</div><div class="line">    mutableRequest.HTTPMethod = method;</div><div class="line"></div><div class="line">    // 循环参数列表</div><div class="line">    for (NSString *keyPath in AFHTTPRequestSerializerObservedKeyPaths()) &#123;</div><div class="line">        if ([self.mutableObservedChangedKeyPaths containsObject:keyPath]) &#123;</div><div class="line">            [mutableRequest setValue:[self valueForKeyPath:keyPath] forKey:keyPath];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 将parameters编码之后交给request</div><div class="line">    mutableRequest = [[self requestBySerializingRequest:mutableRequest withParameters:parameters error:error] mutableCopy];</div><div class="line"></div><div class="line">	return mutableRequest;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面就是初始化一个request的对应方法，值得一说的是，将parameter进行编码的部分，本质是将本来包含了各种dictionary以及array的完整dictionary中的所有参数全部“拉伸”开来变成一个字符串，然后根据网络请求的类型来决定是将这个字符串参数放到URL后面还是直接封装到HTTP请求体body中。<br>补充一下其中具体的细节：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">static NSArray * AFHTTPRequestSerializerObservedKeyPaths() &#123;</div><div class="line">    static NSArray *_AFHTTPRequestSerializerObservedKeyPaths = nil;</div><div class="line">    static dispatch_once_t onceToken;</div><div class="line">    dispatch_once(&amp;onceToken, ^&#123;</div><div class="line">        _AFHTTPRequestSerializerObservedKeyPaths = @[NSStringFromSelector(@selector(allowsCellularAccess)), NSStringFromSelector(@selector(cachePolicy)), NSStringFromSelector(@selector(HTTPShouldHandleCookies)), NSStringFromSelector(@selector(HTTPShouldUsePipelining)), NSStringFromSelector(@selector(networkServiceType)), NSStringFromSelector(@selector(timeoutInterval))];</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    return _AFHTTPRequestSerializerObservedKeyPaths;</div><div class="line">&#125; // 这是一个C的函数，本质就是封装了一些属性的名字</div></pre></td></tr></table></figure>
+<p>mutableObservedChangedKeyPaths是类的一个属性，负责将RequestSerializer类和NSURLRequest的相关属性进行KVO监听：</p>
+<p>具体的实现机制就是在init时初始化一个mutableObservedChangedKeyPaths空的set，并且为AFHTTPRequestSerializerObservedKeyPaths()中所有属性同名的set方法添加oberser。然后每当set方法被调用的时候就添加到mutableObservedChangedKeyPaths中，这样其实我们很容易看出来循环参数列表的作用：就是将可能调用的request属性中确实调用了的部分给取出来作为一个数组。</p>
+<h4 id="具体编码方法"><a href="#具体编码方法" class="headerlink" title="具体编码方法"></a>具体编码方法</h4><p>然后所有元素都有了，剩下来的就是具体的编码方法了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line">- (NSURLRequest *)requestBySerializingRequest:(NSURLRequest *)request</div><div class="line">                               withParameters:(id)parameters</div><div class="line">                                        error:(NSError *__autoreleasing *)error</div><div class="line">&#123;</div><div class="line">    NSParameterAssert(request);</div><div class="line"></div><div class="line">    NSMutableURLRequest *mutableRequest = [request mutableCopy];</div><div class="line"></div><div class="line">    // 补全request对象，使用httpheader这个参数</div><div class="line">    [self.HTTPRequestHeaders enumerateKeysAndObjectsUsingBlock:^(id field, id value, BOOL * __unused stop) &#123;</div><div class="line">        if (![request valueForHTTPHeaderField:field]) &#123;</div><div class="line">            [mutableRequest setValue:value forHTTPHeaderField:field];</div><div class="line">        &#125;</div><div class="line">    &#125;];</div><div class="line"></div><div class="line">    // 对参数parameter进行编码</div><div class="line">    NSString *query = nil;</div><div class="line">    if (parameters) &#123;</div><div class="line">        // 如果存在自定义的解析方法就直接调用</div><div class="line">        if (self.queryStringSerialization) &#123;</div><div class="line">            NSError *serializationError;</div><div class="line">            query = self.queryStringSerialization(request, parameters, &amp;serializationError);</div><div class="line"></div><div class="line">            if (serializationError) &#123;</div><div class="line">                if (error) &#123;</div><div class="line">                    *error = serializationError;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                return nil;</div><div class="line">            &#125;</div><div class="line">        &#125; else &#123; // 否则使用默认的方法</div><div class="line">            switch (self.queryStringSerializationStyle) &#123;</div><div class="line">                case AFHTTPRequestQueryStringDefaultStyle:</div><div class="line">                    query = AFQueryStringFromParameters(parameters);</div><div class="line">                    break;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 将编码完成的参数和URL合并起来,或者作为HTTP的body。判断该request中是否包含了GET、HEAD、DELETE（都包含在HTTPMethodsEncodingParametersInURI）。因为这几个method的quey是拼接到url后面的。而POST、PUT是把query拼接到http body中的</div><div class="line">    if ([self.HTTPMethodsEncodingParametersInURI containsObject:[[request HTTPMethod] uppercaseString]]) &#123;</div><div class="line">        if (query &amp;&amp; query.length &gt; 0) &#123;</div><div class="line">            mutableRequest.URL = [NSURL URLWithString:[[mutableRequest.URL absoluteString] stringByAppendingFormat:mutableRequest.URL.query ? @&quot;&amp;%@&quot; : @&quot;?%@&quot;, query]];</div><div class="line">        &#125;</div><div class="line">    &#125; else &#123;</div><div class="line">        // #2864: an empty string is a valid x-www-form-urlencoded payload</div><div class="line">        if (!query) &#123;</div><div class="line">            query = @&quot;&quot;;</div><div class="line">        &#125;</div><div class="line">        if (![mutableRequest valueForHTTPHeaderField:@&quot;Content-Type&quot;]) &#123;</div><div class="line">            [mutableRequest setValue:@&quot;application/x-www-form-urlencoded&quot; forHTTPHeaderField:@&quot;Content-Type&quot;];</div><div class="line">        &#125;</div><div class="line">        [mutableRequest setHTTPBody:[query dataUsingEncoding:self.stringEncoding]];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return mutableRequest;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面可以看到，对一个request进行编码的流程首先是根据已有的HTTPRequestHeaders这个参数来对request的参数进行补全，HTTPRequestHeaders是一个dictionary,首先遍历这个dictionary，如果request这个URLRequest对象不包含某个key，那么就添加一个对应的键值对给它。<br>然后是最重要的，query的编码部分，顺着query = AFQueryStringFromParameters(parameters) 这个部分找下去可以找到最终的编码规则：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">NSString * AFQueryStringFromParameters(NSDictionary *parameters) &#123;</div><div class="line">    NSMutableArray *mutablePairs = [NSMutableArray array];</div><div class="line">    for (AFQueryStringPair *pair in AFQueryStringPairsFromDictionary(parameters)) &#123;</div><div class="line">        [mutablePairs addObject:[pair URLEncodedStringValue]];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return [mutablePairs componentsJoinedByString:@&quot;&amp;&quot;];</div><div class="line">&#125;</div><div class="line"></div><div class="line">NSArray * AFQueryStringPairsFromDictionary(NSDictionary *dictionary) &#123;</div><div class="line">    return AFQueryStringPairsFromKeyAndValue(nil, dictionary);</div><div class="line">&#125;</div><div class="line"></div><div class="line">NSArray * AFQueryStringPairsFromKeyAndValue(NSString *key, id value) &#123;</div><div class="line">    NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];</div><div class="line"></div><div class="line">    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@&quot;description&quot; ascending:YES selector:@selector(compare:)];</div><div class="line"></div><div class="line">    if ([value isKindOfClass:[NSDictionary class]]) &#123;</div><div class="line">        NSDictionary *dictionary = value;</div><div class="line">        // Sort dictionary keys to ensure consistent ordering in query string, which is important when deserializing potentially ambiguous sequences, such as an array of dictionaries</div><div class="line">        for (id nestedKey in [dictionary.allKeys sortedArrayUsingDescriptors:@[ sortDescriptor ]]) &#123;</div><div class="line">            id nestedValue = dictionary[nestedKey];</div><div class="line">            if (nestedValue) &#123;</div><div class="line">                [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue((key ? [NSString stringWithFormat:@&quot;%@[%@]&quot;, key, nestedKey] : nestedKey), nestedValue)];</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125; else if ([value isKindOfClass:[NSArray class]]) &#123;</div><div class="line">        NSArray *array = value;</div><div class="line">        for (id nestedValue in array) &#123;</div><div class="line">            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@&quot;%@[]&quot;, key], nestedValue)];</div><div class="line">        &#125;</div><div class="line">    &#125; else if ([value isKindOfClass:[NSSet class]]) &#123;</div><div class="line">        NSSet *set = value;</div><div class="line">        for (id obj in [set sortedArrayUsingDescriptors:@[ sortDescriptor ]]) &#123;</div><div class="line">            [mutableQueryStringComponents addObjectsFromArray:AFQueryStringPairsFromKeyAndValue(key, obj)];</div><div class="line">        &#125;</div><div class="line">    &#125; else &#123;</div><div class="line">        [mutableQueryStringComponents addObject:[[AFQueryStringPair alloc] initWithField:key value:value]];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return mutableQueryStringComponents;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>先将parameter整个dictionary进行处理，上面最后一个方法是一个递归调用，如果参数是dictionary，那么对其中每一个元素进行拆分，得到一个dic[key]=value这样的对，并保存在一个临时数组中；如果参数是数组，那么拆分后得到array[]= value这样的对，也保存在临时数组中…这样将parameter中所有最小元素全部拆分成为键值对保存在一个最终的数组中之后，便利数组，每个对间隔插入“&amp;”，最后成为一个字符串，就是最终网络请求使用的query。</p>
+<p>具体变化如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@&#123;</div><div class="line">   @&quot;name&quot; : @&quot;heqian&quot;,</div><div class="line">   @&quot;phone&quot;: @&#123;@&quot;mobile&quot;: @&quot;123&quot;, @&quot;home&quot;: @456&#125;,</div><div class="line">   @&quot;game&quot;: @[@&quot;dark souls&quot;, @&quot;tales of zelda&quot;],</div><div class="line">   @&quot;nums&quot;: [NSSet setWithObjects:@&quot;1&quot;, @&quot;2&quot;, nil]</div><div class="line">&#125;</div><div class="line">最终会变化为</div><div class="line">name=heqian&amp;phone[mobile]=123&amp;phone[home]=456&amp;game[]=dark souls&amp;game[]=tales of zelda</div><div class="line">  &amp;nums=1&amp;num=2</div></pre></td></tr></table></figure>
+<p>完成query的编码之后，根据请求的种类，来判断是直接拼接在URL之后，还是应该放在HTTP请求的body中。</p>
+<h4 id="AFURLSessionManager核心解析"><a href="#AFURLSessionManager核心解析" class="headerlink" title="AFURLSessionManager核心解析"></a>AFURLSessionManager核心解析</h4><p>初始化方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">- (instancetype)initWithSessionConfiguration:(NSURLSessionConfiguration *)configuration &#123;</div><div class="line">    self = [super init];</div><div class="line">    if (!self) &#123;</div><div class="line">        return nil;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (!configuration) &#123;</div><div class="line">        configuration = [NSURLSessionConfiguration defaultSessionConfiguration];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    self.sessionConfiguration = configuration;</div><div class="line"></div><div class="line">    // queue并发线程设置为1</div><div class="line">    self.operationQueue = [[NSOperationQueue alloc] init];</div><div class="line">    self.operationQueue.maxConcurrentOperationCount = 1;</div><div class="line"></div><div class="line">    // 设置delegate，等于是包装了一次NSURLSession，它所需要的代理全部交给AFURLSessionManager来处理</div><div class="line">    self.session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];</div><div class="line"></div><div class="line">    // 响应转码</div><div class="line">    self.responseSerializer = [AFJSONResponseSerializer serializer];</div><div class="line"></div><div class="line">    // 安全策略</div><div class="line">    self.securityPolicy = [AFSecurityPolicy defaultPolicy];</div><div class="line"></div><div class="line">#if !TARGET_OS_WATCH</div><div class="line">    self.reachabilityManager = [AFNetworkReachabilityManager sharedManager];</div><div class="line">#endif</div><div class="line"></div><div class="line">    // 设置存储NSURL task与AFURLSessionManagerTaskDelegate的词典，在AFNet中，每一个task都会被匹配一个AFURLSessionManagerTaskDelegate 来做task的delegate事件处理</div><div class="line">    self.mutableTaskDelegatesKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init];</div><div class="line"></div><div class="line">    // 加锁，防止线程冲突</div><div class="line">    self.lock = [[NSLock alloc] init];</div><div class="line">    self.lock.name = AFURLSessionManagerLockName;</div><div class="line"></div><div class="line">    // 将task关联的代理全部置为空</div><div class="line">    [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) &#123;</div><div class="line">        for (NSURLSessionDataTask *task in dataTasks) &#123;</div><div class="line">            [self addDelegateForDataTask:task uploadProgress:nil downloadProgress:nil completionHandler:nil];</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        for (NSURLSessionUploadTask *uploadTask in uploadTasks) &#123;</div><div class="line">            [self addDelegateForUploadTask:uploadTask progress:nil completionHandler:nil];</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        for (NSURLSessionDownloadTask *downloadTask in downloadTasks) &#123;</div><div class="line">            [self addDelegateForDownloadTask:downloadTask progress:nil destination:nil completionHandler:nil];</div><div class="line">        &#125;</div><div class="line">    &#125;];</div><div class="line"></div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>基本是很普通的对参数的初始化，值得说明的是（1）self.mutableTaskDelegatesKeyedByTaskIdentifier = [[NSMutableDictionary alloc] init] 这个dictionary,在AFNetworking中每一个task都会匹配一个taskDelegate来做task的事件处理，上面的处理中在创建了dictionary之后还创建了对应的NSLock，理所当然是为了保证多线程的情况下操作dictionary不会发生错误 （2）为什么要清空session中的所有task,我们知道在初始化的时候session中应该不会有任何task才对。但是实际上后台也在运行一个session，当任务从后台的session返回的时候，是可以重新恢复到session中的，只要对应的ID相同。所以有这么一种可能，创建了新的session之后，后台session返回了刚刚处理完的task,然后无意中填充到这个新的session中，这样的情况下，我们就必须清空所有task。</p>
+<p>之前在序列化中提到有一系列方法能返回task:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">- (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request</div><div class="line">                               uploadProgress:(nullable void (^)(NSProgress *uploadProgress)) uploadProgressBlock</div><div class="line">                             downloadProgress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgressBlock</div><div class="line">                            completionHandler:(nullable void (^)(NSURLResponse *response, id _Nullable responseObject,  NSError * _Nullable error))completionHandler &#123;</div><div class="line"></div><div class="line">    __block NSURLSessionDataTask *dataTask = nil;</div><div class="line">    </div><div class="line">    // 这里因为IOS8以下存在一个BUG，在并发队列中创建task可能导致不正确的completionHandlers回调，[#2093]( https://github.com/AFNetworking/AFNetworking/issues/2093 “#2093”),这里直接做了串行处理，保证每个task的completionHandler都是正确的</div><div class="line">    url_session_manager_create_task_safely(^&#123;</div><div class="line">        dataTask = [self.session dataTaskWithRequest:request];</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    [self addDelegateForDataTask:dataTask uploadProgress:uploadProgressBlock downloadProgress:downloadProgressBlock completionHandler:completionHandler];</div><div class="line"></div><div class="line">    return dataTask;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>基本上这类的方法都是两个步骤：（1）调用session方法，通过request参数来生成task，上面的串行处理url_session_manager_create_task_safely只是一个判断系统是否会出现BUG的一个包装而已，如果是IOS8以上（包括8），不存在这个BUG那么就可以直接执行。<br>（2）给每个task对象创建一个对应的delegate,实际上这个delegate系统是整个类中最核心的部分</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">- (void)addDelegateForDataTask:(NSURLSessionDataTask *)dataTask</div><div class="line">                uploadProgress:(nullable void (^)(NSProgress *uploadProgress)) uploadProgressBlock</div><div class="line">              downloadProgress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgressBlock</div><div class="line">             completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler</div><div class="line">&#123;</div><div class="line">    // 为dataTask生成一个对应的taskDelegate,并且由AFURLSessionManager自己来管理</div><div class="line">    AFURLSessionManagerTaskDelegate *delegate = [[AFURLSessionManagerTaskDelegate alloc] initWithTask:dataTask];</div><div class="line">    delegate.manager = self;</div><div class="line">    delegate.completionHandler = completionHandler;</div><div class="line"></div><div class="line">    // 关键元素taskDescriptionForSessionTasks用来发送开始和挂起通知时用到，这就是task和manager的关联纽带</div><div class="line">    dataTask.taskDescription = self.taskDescriptionForSessionTasks;</div><div class="line">    </div><div class="line">    // 将delegate对象与dataTask建立关系</div><div class="line">    [self setDelegate:delegate forTask:dataTask];</div><div class="line"></div><div class="line">    // 设置delegate的两个进度block</div><div class="line">    delegate.uploadProgressBlock = uploadProgressBlock;</div><div class="line">    delegate.downloadProgressBlock = downloadProgressBlock;</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (void)setDelegate:(AFURLSessionManagerTaskDelegate *)delegate</div><div class="line">            forTask:(NSURLSessionTask *)task</div><div class="line">&#123;</div><div class="line">    NSParameterAssert(task);</div><div class="line">    NSParameterAssert(delegate);</div><div class="line"></div><div class="line">    // 加锁保证线程安全</div><div class="line">    [self.lock lock];</div><div class="line">    </div><div class="line">    // dictionary以taskIdentifier作为key，将delegate放入其中</div><div class="line">    self.mutableTaskDelegatesKeyedByTaskIdentifier[@(task.taskIdentifier)] = delegate;</div><div class="line">    </div><div class="line">    // 添加task到nofification中，监听其动态</div><div class="line">    [self addNotificationObserverForTask:task];</div><div class="line">    </div><div class="line">    // 解锁</div><div class="line">    [self.lock unlock];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上就主要作用是把task和其代理建立起关联，并且保存在manager的字典中，<br>到这里准备工作就做好了，之前在AFHTTPSessionManager中我们看到，返回一个task之后，直接调用了resume方法，其实就是开启了任务<br>而在初始化方法中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">self.session = [NSURLSession</div><div class="line">  sessionWithConfiguration:self.sessionConfiguration delegate:self</div><div class="line">  delegateQueue:self.operationQueue];</div></pre></td></tr></table></figure>
+<p>其实是把AFURLSessionManager作为了所有task的delegate。</p>
+<p>我们可以看到AFURLSessionManager自己完成了4个delegate的实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">NSURLSessionDelegate</div><div class="line">NSURLSessionTaskDelegate</div><div class="line">NSURLSessionDataDelegate</div><div class="line">NSURLSessionDownloadDelegate</div></pre></td></tr></table></figure>
+<p>这样就将复杂的NSURLSession的各种delegate做了一个综合的处理，最后通过AFURLSessionManager转发到自定义delegate的方法就变得非常清晰了，只有比如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">- (void)URLSession:(NSURLSession *)session</div><div class="line">              task:(NSURLSessionTask *)task</div><div class="line">didCompleteWithError:(NSError *)error</div><div class="line">&#123;</div><div class="line">    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:task];</div><div class="line"></div><div class="line">    // delegate may be nil when completing a task in the background</div><div class="line">    if (delegate) &#123;</div><div class="line">        [delegate URLSession:session task:task didCompleteWithError:error];</div><div class="line"></div><div class="line">        [self removeDelegateForTask:task];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (self.taskDidComplete) &#123;</div><div class="line">        self.taskDidComplete(session, task, error);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>和<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">- (void)URLSession:(NSURLSession *)session</div><div class="line">          dataTask:(NSURLSessionDataTask *)dataTask</div><div class="line">    didReceiveData:(NSData *)data</div><div class="line">&#123;</div><div class="line"></div><div class="line">    AFURLSessionManagerTaskDelegate *delegate = [self delegateForTask:dataTask];</div><div class="line">    [delegate URLSession:session dataTask:dataTask didReceiveData:data];</div><div class="line"></div><div class="line">    if (self.dataTaskDidReceiveData) &#123;</div><div class="line">        self.dataTaskDidReceiveData(session, dataTask, data);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这样的方法中会需要将消息转发出去让自定义的delegate来完成。值得一提的是，这些protocol并不是并列的关系<br>在NSURLSession的声明文件中我们可以看到，NSURLSessionDelegate 继承自NSObject，而NSURLSessionTaskDelegate继承自NSURLSessionDelegate,另外三个protocol则全部继承自NSURLSessionTaskDelegate。那么当一个delegate需要执行操作的时候，它会通过这个继承的顺序依次查找protocol的实现，另外AFNetworking重写了respondsToSelector:(SEL)selector这个方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">- (BOOL)respondsToSelector:(SEL)selector &#123;</div><div class="line">    if (selector == @selector(URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler:)) &#123;</div><div class="line">        return self.taskWillPerformHTTPRedirection != nil;</div><div class="line">    &#125; else if (selector == @selector(URLSession:dataTask:didReceiveResponse:completionHandler:)) &#123;</div><div class="line">        return self.dataTaskDidReceiveResponse != nil;</div><div class="line">    &#125; else if (selector == @selector(URLSession:dataTask:willCacheResponse:completionHandler:)) &#123;</div><div class="line">        return self.dataTaskWillCacheResponse != nil;</div><div class="line">    &#125; else if (selector == @selector(URLSessionDidFinishEventsForBackgroundURLSession:)) &#123;</div><div class="line">        return self.didFinishEventsForBackgroundURLSession != nil;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return [[self class] instancesRespondToSelector:selector];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面的self.taskWillPerformHTTPRedirection,self.dataTaskDidReceiveResponse等全是自定义的回调block，如果没有对block进行赋值，那么方法回调也没有什么意义。<br>在AFURLSessionManager中声明了许多这样的block</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionDidBecomeInvalidBlock sessionDidBecomeInvalid;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionDidReceiveAuthenticationChallengeBlock sessionDidReceiveAuthenticationChallenge;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionDidFinishEventsForBackgroundURLSessionBlock didFinishEventsForBackgroundURLSession;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionTaskWillPerformHTTPRedirectionBlock taskWillPerformHTTPRedirection;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionTaskDidReceiveAuthenticationChallengeBlock taskDidReceiveAuthenticationChallenge;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionTaskNeedNewBodyStreamBlock taskNeedNewBodyStream;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionTaskDidSendBodyDataBlock taskDidSendBodyData;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionTaskDidCompleteBlock taskDidComplete;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionDataTaskDidReceiveResponseBlock dataTaskDidReceiveResponse;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionDataTaskDidBecomeDownloadTaskBlock dataTaskDidBecomeDownloadTask;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionDataTaskDidReceiveDataBlock dataTaskDidReceiveData;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionDataTaskWillCacheResponseBlock dataTaskWillCacheResponse;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionDownloadTaskDidFinishDownloadingBlock downloadTaskDidFinishDownloading;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionDownloadTaskDidWriteDataBlock downloadTaskDidWriteData;</div><div class="line">@property (readwrite, nonatomic, copy) AFURLSessionDownloadTaskDidResumeBlock downloadTaskDidResume;</div></pre></td></tr></table></figure>
+<p>它们通过set方法进行赋值（这样的好处在于，使用者可以通过set方法的接口来了解对应block需要的参数）</p>
+<h3 id="AFNetworking好处"><a href="#AFNetworking好处" class="headerlink" title="AFNetworking好处"></a>AFNetworking好处</h3><p>由于苹果推出的NSURLSession帮助我们完成了任务的调度功能，所以AFNetworking3.0不像2.0的时候一样有了那么多的底层功能，但是实际上它还是完成了很多能节省开发者大量时间的任务。比如request拼接，请求的格式转换，各种delegate的封装，并且在完成任务之后的回调上进行了很多判断。如果这些工作全部交给开发者自己在NSURLSession的基础上完成，那么毫无疑问工作量会大大增加。</p>
+
+                
+<p class="pink-link-context">
+    <a href="/2017/07/18/SDWebImage解析/" rel="next" title="">
+    Prev: 
+  </a>
+</p>
+
+
+
+<p class="pink-link-context">
+    <a href="/2017/06/25/iOS socket简单说明/" rel="next" title="">
+    Next: 
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large pink">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect green" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse yellow darken-1"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer indigo darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">Social</h5>
+                
+                    <a class="social-link" href="http://weibo.com/1956184117" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/raytaylorlin" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">Links</h5>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="https://github.com/raytaylorlin" target="_blank">Github地址（测试友情链接）</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright pink-link-context">
+        <div class="container">
+            © 2016 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">Blog powered by <a href="https://hexo.io">Hexo</a> | Theme <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('pink lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-reading, .menu-about').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

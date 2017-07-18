@@ -1,0 +1,709 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title></title>
+    <meta name="author" content="John Doe">
+    
+    <meta name="description" content="GCD概要Grand Central Dispatch(GCD)是异步执行任务的技术之一。一般将应用程序中技术的线程管理中使用的代码在系统级实现。开发者只需要定义想执行的任务并追加到适当的Dispatch Queue中，GCD就能生成必要的线程并计划执行任务（以上摘自苹果官方说明）。也就是说GCD给">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+    <meta property="og:site_name" content="Hexo"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="indigo">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">Hexo</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            Home
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            Archives
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            Reading
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            About
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            Search
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav indigo darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://ww2.sinaimg.cn/small/74990035jw1f1rjkd681bj20rs0rsdhg.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">你的大名</p>
+                        <p class="desc">Web前端/iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    Home
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    Archives
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    Categories
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    Reading
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    About
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    Search
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav indigo darken-1" id="category-menu">
+    
+
+            
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">Search</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper indigo">
+        <span class="breadcrumb">Current page(Categories)</span>
+        
+            
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>No title</h1>
+    
+
+
+            </div>
+            <time class="pink-link-context" datetime="2017-07-18T11:48:16.000Z"><a href="/2017/07/18/GCD总结/">2017-07-18</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+
+            <div class="toc pink-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#GCD概要"><span class="section table-of-contents-text">GCD概要</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#多线程编程"><span class="section table-of-contents-text">多线程编程</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#GCD-的-API"><span class="section table-of-contents-text">GCD 的 API</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#GCD-实现"><span class="section table-of-contents-text">GCD 实现</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry pink-link-context">
+                <h3 id="GCD概要"><a href="#GCD概要" class="headerlink" title="GCD概要"></a>GCD概要</h3><p>Grand Central Dispatch(GCD)是异步执行任务的技术之一。一般将应用程序中技术的线程管理中使用的代码在系统级实现。开发者只需要定义想执行的任务并追加到适当的Dispatch Queue中，GCD就能生成必要的线程并计划执行任务（以上摘自苹果官方说明）。也就是说GCD给用户提供了一个非常方便的方法来实现本身非常复杂的线程管理。</p>
+<p>例如我们经常会遇到的问题，从网络中或者缓存里获取图片然后刷新UI。实际上不可能让主线程阻塞去等待图片获取，只能够将获取图片的部分放到另外的后台线程中执行，其表现就是这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">dispatch_async(queue, ^&#123;</div><div class="line">  // 需要长时间处理的操作，比如后台获取图片</div><div class="line">  // blablabla</div><div class="line">  // 处理结束，回到主线程来调用结果，比如刷新UI</div><div class="line">  disptach_async(dispatch_get_main_queue(), ^&#123;</div><div class="line">    // 必须要在主线程完成的操作</div><div class="line">  &#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h4 id="多线程编程"><a href="#多线程编程" class="headerlink" title="多线程编程"></a>多线程编程</h4><p>首先先说说线程究竟是什么，假设我们写好了一段可运行的objective-c代码，那么实际上该代码会被编译器转化为CPU指令包装成一段可以在机器上执行的程序。然后CPU从应用程序指定的地址开始，一个个执行CPU命令，其中有可能会遇到跳转的情况，并不一定是在内存的顺序位置来执行。但是假如认定CPU一次只能执行一个命令，那么CPU执行的命令序列就好比一条不分叉的大道。我们把这个“1个CPU执行的无分叉的CPU命令”便称为一个线程。</p>
+<p>当然现在的计算机和移动设备基本不会有真的单个CPU执行指令的方法，即使是一个CPU单元，也可以在逻辑上执行不同的两段代码，只是不在同一个瞬间而已。但是即使如此，我们刚才所说的线程的概念也并不会改变。</p>
+<p>OS X和iOS的核心XNU内核在发生操作系统事件时，会切换执行路径，当前执行中的状态，比如寄存器中的信息会保存在专用的内存块中，等需要接着执行这个路径的时候再从内存块中取出寄存器的信息，继续执行，这被称为“上下文切换”。使用了这个技术，可以让CPU在不同的线程中多次切换当前执行的线程，看起来像是并列执行一样，如果真的有多个CPU单元在运作，那么就不仅仅是看上去像了，而是真的同时有多个路径（线程）在执行，这就是多线程技术。</p>
+<p>但是事实上，多线程技术在执行上会遇到很多问题，比如不同线程竞争同一资源，或者两个线程互相等待陷入死锁，或者太多线程导致大量内存的消耗等等。但是很多情况是必须采取多线程技术的，比如上面说的更新UI只能在主线程中执行，所以非常耗时的请求则必须放在其他线程中完成后再返回主线程，否则就会使主线程阻塞。问题的关键就是如何使用好多线程技术，防止其带来问题。</p>
+<h4 id="GCD-的-API"><a href="#GCD-的-API" class="headerlink" title="GCD 的 API"></a>GCD 的 API</h4><ol>
+<li><p>Dispatch Queue</p>
+<p>来自于苹果官方的说明：开发者要做的只是定义想执行的任务并追加到适当的Dispatch Queue中就行了。</p>
+<p>这句话用代码表示如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">dispatch_async(queue,^&#123;</div><div class="line">  /*</div><div class="line">   *想执行的任务</div><div class="line">   */</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>使用block语法定义想执行的任务，通过dispatch_asybc函数将block交由dispatch_queue中执行，这就是GCD中多线程调用的基本逻辑。</p>
+<p>Dispatch Queue如其名所说，是执行处理的等待队列，将block作为队列中的单元追加到Dispatch Queue中，按照FIFO的顺序进行处理。</p>
+<p>有两种Dispatch Queue，一种是一次只能执行一个block的Serial Dispatch Queue（串行）和不等待前一个block执行完毕就开始执行下一个的Concurrent Dispatch Queue（并发）。比如我们有blk0~bkl9一共10段代码，如果一次交由serial dispatch queue执行，最后完成的顺序也应该是0~9；但是如果交由concurrent dispatch queue，就说不准了。因为前者只会在一个线程中依次调用这10段代码，并且是串行调用；而后者会给每个blk分配合适的线程，10个blk可能是同时执行的，所以完成的顺序也不一样。</p>
+<p>那么如何才能得到Dispatch Queue呢？</p>
+</li>
+<li><p>dispatch_queue_create</p>
+<p>第一种方法是通过GCD的API生成Dispatch Queue。以下代码生成了一个Serial Dispatch Queue：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t mySerialDispatchQueue = dispatch_queue_create(&quot;com.example.gcd.MySerialDispatchQueue&quot;,NULL);</div></pre></td></tr></table></figure>
+<p>上面我们说到，Serial Dispatch Queue一次只能执行一个block，而Concurrent Dispatch Queue能并行执行多个block，而这两种dispatch queue的资源分配是又系统决定的。但是可以调用dispatch_queue_create生成任意多个Dispatch Queue。</p>
+<p>也就是说假如我们生成了4个Serial Dispatch Queue,然后添加操作进入，其实实际上看起来等于是把4个block放入了一个Concurrent Dispatch Queue中异步执行了一样。需要说明的是，一旦生成了一个Serial Dispatch Queue，系统就会为其生成一个固定的线程。当然也很容易理解一旦调用大量的线程操作，带来的资源消耗也是非常巨大的。</p>
+<p>而Concurrent Dispatch Queue，由于无论生成多少，都是由系统来管理有效的线程，所以反而并不会像前者一样带来那么大的资源开销。如果是处理不会发生数据竞争的操作，这样反而更好。</p>
+<p>讲回dispatch_queue_create函数，第一个参数指定Dispatch Queue的名字（方便调试的时候能分辨出来），如果生成Serial Dispatch Queue，第二个参数就是NULL。如果生成Concurrent Dispatch Queue，第二个参数中就应该指明。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t myConcurrentDispatchQueue = dispatch_queue_create(&quot;com.example.gcd.MyConcurrentDispatchQueue&quot;, DISPATCH_QUEUE_CONCURRENT);</div></pre></td></tr></table></figure>
+<p>有一点让人注意的是，6.0之前在创建了一个dispatch_queue，是需要调用dispatch_release来释放的，但是6.0之后的ARC就不需要了。</p>
+</li>
+<li><p>Main Dispatch Queue / Global Dispatch Queue</p>
+<p>根据日常的使用，其实自己创建Dispatch Queue是很少用到的，如果用到的量并不大的话，其实系统提供给我们的几个Dispatch Queue就已经足够了。</p>
+<p>Main Dispatch Queue正如同名字一样，是在主线程中执行的，所以自然是Serial Dispatch Queue。被追加到Main Dispatch Queue中的处理在主线程的runloop中执行。</p>
+<p>另一个Global Dispatch Queue则是所有应用程度都能使用的Concurrent Dispatch Queue，像我们上面说的，无论生成多少个Concurrent Dispatch Queue,所调用的线程资源都是由系统自动分配的，所以基本上我们直接调用Global Dispatch Queue就行了，没有必要再单独生成Concurrent Dispatch Queue了。</p>
+<p>Global Dispatch Queue分为4种优先级执行，从高到低分别是High Priority, Default Priority, Low Priority,Background Priority。区分了追加到队列中等待执行的block的优先级。但是即使是最高优先级，也并不意味着会马上执行内容，到底什么时候执行，最终还是看系统的资源调度。</p>
+<p>| 名称                    | Dispatch Queue种类      | 说明    |<br>| :——————– | :——————– | :—- |<br>| Main Dispatch Queue   | Serial Dispatch Queue | 主线程执行 |<br>| Global DQ(High)       | Concurrent DQ         | 高优先级  |<br>| Global DQ(Default)    | Concurrent DQ         | 默认优先级 |<br>| Global DQ(Low)        | Concurrent DQ         | 低优先级  |<br>| Global DQ(Background) | Concurrent DQ         | 后台优先级 |</p>
+</li>
+<li><p>Dispatch_set_target_queue</p>
+<p>由dispatch_queue_create函数生成的Dispatch Queue无论是Serial Dispatch Queue还是Concurrent Dispatch Queue都使用与默认优先级Global Dispatch Queue相同执行优先级的线程。想要变更优先级就调用dispatch_set_target_queue这个函数。如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t mySerialDispatchQueue = dipatch_queue_create(&quot;com.example.gcd.MySerialDispatchQueue&quot;, NULL);</div><div class="line">dispatch_queue_t globalDispatchQueueBackground = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);</div><div class="line">dispatch_set_target_queue(mySerialDispatchQueue, globalDispatchQueueBackground);</div></pre></td></tr></table></figure>
+<p>可以看到，dispatch_set_target_queue函数的第一个参数是要改变优先级的Dispatch Queue，第二个参数是具有目标优先级的Dispatch Queue。第一个参数只能是自己创建的Dispatch Queue，而不能是调用的系统自带的Main Dispatch Queue和Global Dispatch Queue。</p>
+</li>
+<li><p>dispatch_after</p>
+<p>有时候会有这样的需求：想让目标在几秒钟之后再进行处理。这种情况GCD也准备了相应的接口给我们：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 3ull * NSEC_PER_SEC);</div><div class="line">dispatch_after(time, dispatch_get_main_queue(), ^&#123;</div><div class="line">  NSLog(@&quot;waited at least three seconds&quot;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>注意这个函数的机制并不是说三秒之后调用这个block，而是三秒之后将block追加到Dispatch Queue，也就是说并不能通过这个方法严格地确保固定时间之后block被执行，毕竟就算将block追加到dispatch中，不管是Serial类型还是Concurrent类型都没有办法保证马上执行完毕。</p>
+</li>
+<li><p>Dispatch Group</p>
+<p>在追加到Dispatch Queue中的多个处理全部结束后想执行结束处理，这种情况经常会出现。想想看如果是在一个Serial Dispatch Queue，那很简单，直接将操作添加到这个队列的末尾就行了。但是如果使用了Concurrent Dispatch Queue，或者调用了多个Dispatch Queue,情况就会变得很麻烦。<br>GCD提供了一个很方便的接口Dispatch Group，下面的例子追加三个block到Global Dispatch Queue，执行完毕之后就会最终执行结束用的block：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">dispatch_group_t group = dispatch_group_create();</div><div class="line"></div><div class="line">dispatch_group_async(group, queue, ^&#123;NSLog(@&quot;blk0&quot;);&#125;);</div><div class="line">dispatch_group_async(group, queue, ^&#123;NSLog(@&quot;blk1&quot;);&#125;);</div><div class="line">dispatch_group_async(group, queue, ^&#123;NSLog(@&quot;blk2&quot;);&#125;);</div><div class="line"></div><div class="line">dispatch_group_notify(group, dispatch_get_main_queue(), ^&#123;NSLog(@&quot;done&quot;);&#125;);</div></pre></td></tr></table></figure>
+<p>上面的代码中blk0,blk1,blk2的执行顺序不一定，但是最终done是一定会最后执行的。</p>
+<p>首先调用dispatch_group_create函数生成dispatch_group_t类型的Dispatch Group，然后调用dispatch_group_async函数，和dispatch_async函数是差不多的，只是多加了一个dispatch_group_t作为第一个参数，说明后面追加的操作算在这个group中。</p>
+<p>在追加的操作全部执行完毕之后，滴啊用dispatch_group_notify函数，将执行的Block追加到Dispatch Queue中，将第一个参数指定为group，第三个需要执行的操作追加到第二个参数Dispatch Queue中。</p>
+</li>
+<li><p>dispatch_barrier_async</p>
+<p>前面我们说到，可以使用Serial Dispatch Queue来避免数据竞争的问题，比如同一个数据，如果两个不同的操作同时来写入，就会发生问题。</p>
+<p>但是如果只是同时读数据，那么其实并没有很严重的问题，反而更能提升效率。<strong>也就是说为了高效率地访问数据，读取处理追加到Concurrent Dispatch Queue中，写入处理在人一个读取处理没有执行的状态下下，追加到Serial Dispatch Queue中即可（在写入数据完毕之前不能调用读取指令）</strong>。</p>
+<p>比如以下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_queue_create(&quot;com.example.gcd.ForBarrier&quot;, DISPATCH_QUEUE_CONCURRENT);</div><div class="line">dispatch_async(queue, blk0_for_reading);</div><div class="line">dispatch_async(queue, blk1_for_reading);</div><div class="line">dispatch_async(queue, blk2_for_reading);</div><div class="line">dispatch_async(queue, blk3_for_reading);</div><div class="line">dispatch_async(queue, blk4_for_reading);</div><div class="line">dispatch_async(queue, blk5_for_reading);</div><div class="line">dispatch_async(queue, blk6_for_reading);</div><div class="line">dispatch_async(queue, blk7_for_reading);</div></pre></td></tr></table></figure>
+<p>如果再blk3和blk4之间加入写入处理，并将写入的内容读取blk4及其之后的处理使用，就没有办法控制了。毕竟在Concurrent Dispatch Queue的处理分配中我们不知道到底哪个block是先执行的。</p>
+<p>因此GCD引入了dispatch_barrier_async函数，它会等待追加到Concurrent Dispatch Queue上的并行执行的全部结束之后，再将制定的处理追加到该Concurrent Dispatch Queue中。然后在由dispatch_barrier_async函数追加的处理执行完毕之后，Concurrent Dispatch Queue才恢复为一般的动作，追加到该Concurrent Dispatch Queue的处理又开始执行。（可以理解为一种中断吧）</p>
+<p>在这里就是等待blk0~blk3完成之后执行writing，执行完writing之后再执行blk4~blk7。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">dispatch_async(queue, blk0_for_reading);</div><div class="line">dispatch_async(queue, blk1_for_reading);</div><div class="line">dispatch_async(queue, blk2_for_reading);</div><div class="line">dispatch_async(queue, blk3_for_reading);</div><div class="line">dispatch_barrier_async(queue, blk_for_writing);</div><div class="line">dispatch_async(queue, blk4_for_reading);</div><div class="line">dispatch_async(queue, blk5_for_reading);</div><div class="line">dispatch_async(queue, blk6_for_reading);</div><div class="line">dispatch_async(queue, blk7_for_reading);</div></pre></td></tr></table></figure>
+<p>这样的操作就能提升数据库访问和文件访问的效率。</p>
+</li>
+<li><p>dispatch_sync</p>
+<p>首先说说我们经常调用的dispatch_async函数，所谓async就意味着异步，将制定的block异步地追加到指定的Dispatch Queue中，dispatch_async函数并不对此作任何等待。</p>
+<p>而dispatch_sync就代表同步操作，会同步追加到指定的Dispatch Queue中，在追加的block完成操作之前这个函数就会一直等待。</p>
+<p>（通俗一点来说就是dispatch_async调用的时候不会管block是否执行完就接着执行后面的方法，而dispatch_sync调用的时候会等待block执行完成之后才接着调用dispatch_sync后面的方法）</p>
+<p>假设这样一种情况，执行Main Dispatch Queue时，使用另外的线程Global Dispatch Queue进行处理，处理结束后立即使用所得到的结果，这就需要使用dispatch_sync函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_PRIORITY_DEFAULT, 0);</div><div class="line">dispatch_sync(queue, ^&#123;/*处理*/&#125;);</div></pre></td></tr></table></figure>
+<p>不过这样也会引来死锁问题，在主线程执行下列源代码就会发生死锁：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_get_main_queue();</div><div class="line">dispatch_sync(queue, ^&#123;NSLog(@&quot;Hello?&quot;);&#125;);</div></pre></td></tr></table></figure>
+<p>上面的代码在Main Dispatch Queue中执行指定block并等待其执行结束，但是实际上这段代码证在主线程中执行，没有办法真的追加到Main Dispatch Queue中，所以会一直等待，发生了死锁。</p>
+<p>所以说dispatch_sync函数太容易在Serial Dispatch Queue中发生死锁现象，调用时必须万分小心。</p>
+</li>
+<li><p>dispatch_apply</p>
+<p>dispatch_apply函数式dispatch_sync函数和Dispatch Group的关联API，该函数按指定的次数将指定的Block追加到指定的Dispatch Queue中，并等待全部处理执行结束。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line">dispatch_apply(10, queue, ^(size_t index)&#123;</div><div class="line">  NSLog(@&quot;%zu&quot;, index);</div><div class="line">&#125;);</div><div class="line">NSLog(@&quot;done&quot;);</div></pre></td></tr></table></figure>
+<p>这里dispatch_apply等待各个处理全部完成，才会调用后续的方法。如果说比起前面说的Dispatch_group有什么不同的话，也就是能够指定次数吧=。=</p>
+</li>
+<li><p>dispatch_suspend / dispatch_resume</p>
+<p>当追加大量处理到Dispatch Queue时，在追加处理的过程中，有时希望不执行已经追加的处理，比如计算结果被block捕获，一些处理会对这个结果造成影响的时候。</p>
+<p>那么dispatch_suspend(queue)可以挂起指定DQ，反之dispatch_resume(queue)用来恢复。</p>
+</li>
+<li><p>Dispatch Samaphore</p>
+<p>如前所述，当并行执行的处理更新数据的时候会产生数据不一致的情况，有时应用程序还会因此中断。虽然前面说的Serial Dispatch Queue和dispatch_barrier_async能够解决这些问题，但是很明显并不总是效果最好的。</p>
+<p>考虑这样的情况：不考虑顺序，将所有数据最佳到NSMutableArray中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line"></div><div class="line">NSMutableArray *array = [[NSMutableArray alloc] init];</div><div class="line"></div><div class="line">for(int i = 0; i &lt; 10000; i++) &#123;</div><div class="line">  dispatch_async(queue, ^&#123;</div><div class="line">    [array addobject:[NSNumber numberWithInt:i]];</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当然很容易看出来这样在Concurrent Dispatch Queue中为同一个array添加数据，没办法保证不会出问题。这里就应该用到信号量Dispatch Semaphore。</p>
+<p>解释一下Dispatch Semaphore是持有计数的信号，该计数是多线程编程中的计数类型信号，简单来说就是通过这个信号量告诉所有调用者这个资源到底现在能不能用。</p>
+<p>生成信号量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);</div><div class="line">dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREEVER);</div></pre></td></tr></table></figure>
+<p>第一个函数生成semaphore，数字1表示计数的初始值为1。第二个函数等待semaphore的计数值大于或者等于1，当它大于等于1时对该计数值进行剑法并从dispatch_semaphore_wait函数返回，第二个参数很明显就是等待时间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">dispath_time_t time = dispatch_time(DISPATCH_TIME_NOW, 1ull * BSEC_PER_SEC);</div><div class="line">long result = dispatch_semaphore_wait(semaphore, time);</div><div class="line">if(result == 0) &#123;</div><div class="line">  //由于semaphore计数值大于等于1或者在指定时间内dispatch计数值达到大于等于1</div><div class="line">  //所以semaphore的计数值减去1</div><div class="line">  //另外还有其他排他操作</div><div class="line">&#125;else &#123;</div><div class="line">  // 由于计数值为0</div><div class="line">  // 在指定时间之内等待</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>dispatch_semaphore_wait函数返回0时，可安全执行需要进行排他控制的处理。该处理结束时通过dispatch_semaphore_signal函数将semaphore计数值加1。</p>
+<p>再回到前面的例子中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</div><div class="line"></div><div class="line">//生成信号量并且初始值定为1，保证同时只有1个线程能够操作array对象</div><div class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);</div><div class="line">NSMutableArray *array = [[NSMutableArray alloc] init];</div><div class="line"></div><div class="line">for(int i = 0; i &lt; 10000; i++) &#123;</div><div class="line">  dispatch_async(queue, ^&#123;</div><div class="line">    // 等待semaphore直到计数值大于等于1</div><div class="line">    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div><div class="line">    </div><div class="line">    // 由于semaphore的计数值达到或者大于1，所以将其计数值减去1并返回</div><div class="line">    // 所以说只要执行到这里意味着semaphore总是0</div><div class="line">    // 也就是说永远只有一个线程在更新数据</div><div class="line">    </div><div class="line">    [array addObject:[NSNumber numberWithInt:i]];</div><div class="line">    </div><div class="line">    // 排他处理结束，通过dispatch_semaphore_signal函数将计数增加1</div><div class="line">    // 让其他等待中的Block接着执行</div><div class="line">    </div><div class="line">    dispatch_semaphore_signal(semaphore);</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其实可以这么理解，信号量就是说明是否这个资源空闲，刚开始大家都在等，出现信号量为1时意味着可以处理一个block了，然后排着队的一个block就开始处理，最首先的就是把信号量变为0，告诉其他block说“这里我在用，你们现在用不了”，然后等它处理完之后，将信号量变为1，告诉其他block“用完了你们接着抢吧”。然后其他的排队中的Block接着重复同样的工作直到所有操作完成。</p>
+</li>
+<li><p>dispatch_once</p>
+<p>看名字就知道这个函数的意思，在应用程序执行中只执行一次指定处理的API，下面这种经常出现的用来初始化的源代码可通过dispatch_once函数简化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">static int initialized = NO;</div><div class="line">if(initialized == NO) &#123;</div><div class="line">  // 初始化</div><div class="line">  initialized = YES;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果使用dispatch_once函数，则源代码可写为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">static dispatch_once_t pred;</div><div class="line">dispatch_once(&amp;pred, ^&#123;</div><div class="line">  // 初始化</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>这个函数用途非常广泛，包括在我们创建单例对象的时候会把创建的部分放到dispatch_once函数中执行，这样保证一个类只会实例化一次。</p>
+</li>
+</ol>
+<h4 id="GCD-实现"><a href="#GCD-实现" class="headerlink" title="GCD 实现"></a>GCD 实现</h4><p>毫无疑问GCD的Dispatch Queue非常之方便，这里可以看看它是如何实现的。我们可以猜想一下有哪些工具是一定会在其中用到的：（1）用于管理追加的block的C语言层实现的FIFO队列 （2）Atomic函数中实现的用于排他控制的轻量级信号 （3）用于管理线程的C语言层面实现的容器</p>
+<p>编程人员使用的GCD的API全部为包含在libdispatch库中的C语言函数。Dispatch Queue通过结构体和链表，被实现为FIFO队列。FIFO队列管理是通过dispatch_async等函数所追加的block。block并不是直接加入FIFO队列，而是先加入Dispatch Continuation这一dispatch_continuation_t类型的结构体中，然后再加入FIFO队列。解释一下这个Dispatch Continuation用于记忆block所属的Dispatch Group和其它一些信息，相当于一般说的上下文。</p>
+<p>Dispatch Queue可通过dispatch_set_terget_queue函数设定，可以设定执行该Dispatch Queue处理的Dispatch Queue为目标，    该目标可以像串珠子一样，设定多个连接在一起的Dispatch Queue。但是在连接串的最后必须设定为Main Dispatch Queue，或各种优先级的Global Dispatch Queue。</p>
+<p>Main Dispatch Queue当然是在RunLoop中执行block的，这并不是很让人意外的地方。</p>
+<p>而Global Dispatch Queue分为8种：</p>
+<ul>
+<li>Global Dispatch Queue (High Priority)</li>
+<li>Global Dispatch Queue (Default Priority)</li>
+<li>Global Dispatch Queue (Low Priority)</li>
+<li>Global Dispatch Queue (Background Priority)</li>
+<li>Global Dispatch Queue (High Overcommit Priority)</li>
+<li>Global Dispatch Queue (Default Overcommit Priority)</li>
+<li>Global Dispatch Queue (Low Overcommit Priority)</li>
+<li>Global Dispatch Queue (Background Overcommit Priority)</li>
+</ul>
+<p>优先级中附有Overcommit的Global Dispatch Queue使用在Serial Dispatch Queue中。</p>
+<p>这8种Global Dispatch Queue各使用1个pthread_workqueue。GCD初始化时，使用phtread_workqueue_create_np函数来生成pthread_workqueue。</p>
+<p>pthread_workqueue包含在Libc提供的API中，其使用bsdthread_register和workq_open系统调用，在初始化XNU内核的workqueue之后获取workqueue信息。</p>
+<p>XNU内核支持4种workqueue</p>
+<ul>
+<li>WORKQUEUE_HIGH_PRIOQUEUE</li>
+<li>WORKQUEUE_DEFAULT_PRIOQUEUE</li>
+<li>WORKQUEUE_LOW_PRIOQUEUE</li>
+<li>WORKQUEUE_BG_PRIOQUEUE</li>
+</ul>
+<p>以上为4中执行优先级的workqueue，正好对应着Global Dispatch Queue的4中优先级。</p>
+<p>当在Dispatch Queue执行block时，libdispatch从Global Dispatch自身的FIFO队列中取出Dispatch Continuation，调用pthread_workqueue_additem_np函数。将该Queue自身，符合其优先级的workqueue信息以及为执行Dispatch Continuation的回调函数等传递参数。</p>
+<p>pthread_workqueue_additem_np函数使用workq_kernreturn系统调用，通知workqueue增加应当执行的项目。根据该通知，XNU内核基于系统状态判断是否要生成线程。如果是Overcommit优先级的Global Dispatch Queue， workqueue则始终生成线程。</p>
+<p>workqueue的线程执行pthread_workqueue函数，该函数调用Libdispatch的回调函数。在该回调函数中执行加入到Dispatch Continuation的block。</p>
+<p>block执行完后，进行通知dispatch group结束，释放dispatch continuation等处理，开始准备执行加入到Global Dispatch Queue中的下一个block。</p>
+<p>以上就是Dispatch Queue执行的大概过程。总而言之就是block被Dispatch Contiuation包装起来，靠pthread API定义的函数来完成上下文记录和回调。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>总体而言，GCD是编程人员实现多线程操作的一个非常方便的工具。把我们需要执行的代码段包装成block，便是队列中的最小元素。我们需要考虑的只是将其放入依次执行的Serial Dispatch Queue中还是将其放入只要来了就执行的Concurrent Dispatch Queue中。具体的线程操作由系统自动处理，如果是serial类型的则自动占一个线程专门处理，而concurrent类型的则全部交给系统底层来分配合适的线程。</p>
+<p>当然其中还有很多诸如暂停，等待，数据竞争等处理，但是对于编程人员而言只需要考虑一段代码段什么时候执行就行了，不需要再深究底层的资源分配，非常方便。</p>
+
+                
+<p class="pink-link-context">
+    <a href="/2017/07/18/Objective-c中的runtime学习记录/" rel="next" title="">
+    Prev: 
+  </a>
+</p>
+
+
+
+<p class="pink-link-context">
+    <a href="/2017/07/18/CocoaAsyncSocket部分功能解析/" rel="next" title="">
+    Next: 
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large pink">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect green" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse yellow darken-1"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer indigo darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">Social</h5>
+                
+                    <a class="social-link" href="http://weibo.com/1956184117" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/raytaylorlin" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">Links</h5>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="https://github.com/raytaylorlin" target="_blank">Github地址（测试友情链接）</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright pink-link-context">
+        <div class="container">
+            © 2016 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">Blog powered by <a href="https://hexo.io">Hexo</a> | Theme <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('pink lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-reading, .menu-about').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

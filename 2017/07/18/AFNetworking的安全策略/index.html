@@ -1,0 +1,595 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title></title>
+    <meta name="author" content="John Doe">
+    
+    <meta name="description" content="AFNetworking的安全策略上面我们说到，AFNetworking3.x是对NSURLSession的一层包装，包括delegate的实现和回调，还有请求接口的包装。不过这只是一部分基本功能，实际上还有一些同样很复杂并且重要的部分。比如现在我们看到的就是其中的安全策略。本质上AFNetwork">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+    <meta property="og:site_name" content="Hexo"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="indigo">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">Hexo</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            Home
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            Archives
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            Reading
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            About
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            Search
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav indigo darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://ww2.sinaimg.cn/small/74990035jw1f1rjkd681bj20rs0rsdhg.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">你的大名</p>
+                        <p class="desc">Web前端/iOS/技术宅</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    Home
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    Archives
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    Categories
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    Reading
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    About
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    Search
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav indigo darken-1" id="category-menu">
+    
+
+            
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">Search</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper indigo">
+        <span class="breadcrumb">Current page(Categories)</span>
+        
+            
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>No title</h1>
+    
+
+
+            </div>
+            <time class="pink-link-context" datetime="2017-07-18T11:43:21.000Z"><a href="/2017/07/18/AFNetworking的安全策略/">2017-07-18</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+
+            <div class="toc pink-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-2"><a class="section table-of-contents-link" href="#AFNetworking的安全策略"><span class="section table-of-contents-text">AFNetworking的安全策略</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#补充证书和证书链"><span class="section table-of-contents-text">补充证书和证书链</span></a></li></ol></li></ol></li></ol>
+</div>
+
+
+            <div class="entry pink-link-context">
+                <h2 id="AFNetworking的安全策略"><a href="#AFNetworking的安全策略" class="headerlink" title="AFNetworking的安全策略"></a>AFNetworking的安全策略</h2><p>上面我们说到，AFNetworking3.x是对NSURLSession的一层包装，包括delegate的实现和回调，还有请求接口的包装。不过这只是一部分基本功能，实际上还有一些同样很复杂并且重要的部分。比如现在我们看到的就是其中的安全策略。<br>本质上AFNetworking的安全策略是根据https来完成的。先简单讲讲https和http的差别：<br>由于超文本传输协议http协议以明文的方法传送内容，不提供任何数据加密，所以很容易被攻击者截取到http传输的内容，在这个基础上，开发了新的https协议，即加入了SSL安全套接字方法，依靠证书来验证服务器的身份，这样在普通http传输的过程中传输的信息就是经过了证书加密之后的数据，提高了安全性。<br>简单总结一下就是：</p>
+<ol>
+<li>用户发起请求，服务器响应并返回一个证书，包括基本信息和公钥</li>
+<li>用户拿到证书之后验证是否合法</li>
+<li>生成一个随机数作为加密的密钥，然后用先前服务器所给的密钥来加密，并返回给服务器</li>
+<li>服务器用密钥解密这个随机数，然后再用解密之后的随机数把需要返回的数据来加密并返回给用户</li>
+<li>终于用户拿到加密的数据，用最开始的随机数来解密，完成了数据的交接</li>
+</ol>
+<p>这是一个单步认证，实际上服务器也会对用户端传过来的信息进行验证，过程是差不多的。本质上还是使用一个随机数和一个公钥进行加密和解密，并不难理解。</p>
+<p>AFURLSessionManager中完成的一个delegate方法实现了https认证的过程：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">- (void)URLSession:(NSURLSession *)session</div><div class="line">              task:(NSURLSessionTask *)task</div><div class="line">didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge</div><div class="line"> completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler</div><div class="line">&#123;</div><div class="line">    // 处理challenge的选项，这里有performDefaultHandling,useCredential和cancelAuthenticationChallenge三种选择，分别为默认处理方式，使用指定证书以及直接取消challenge</div><div class="line">    </div><div class="line">    NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;</div><div class="line">    __block NSURLCredential *credential = nil;</div><div class="line"></div><div class="line">    // taskdidReceiveAuthenticationChallenge是一个预设的block，用户可以自定义如何对应来自服务器端的challenge，如果没有设定的话则使用默认代码</div><div class="line">    if (self.taskDidReceiveAuthenticationChallenge) &#123;</div><div class="line">        disposition = self.taskDidReceiveAuthenticationChallenge(session, task, challenge, &amp;credential);</div><div class="line">    &#125; else &#123;</div><div class="line">        // 如果服务器端要求的challenge方法是NSURLAuthenticationMethodServerTrust,那么就是说客户端应该根据challenge.protectionSpace.serverTrust来产生证书</div><div class="line">        if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) &#123;</div><div class="line">            // 查看安全策略，如果不信任服务器端就直接取消challenge</div><div class="line">            if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) &#123;</div><div class="line">                // 创建challenge证书</div><div class="line">                disposition = NSURLSessionAuthChallengeUseCredential;</div><div class="line">                credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];</div><div class="line">            &#125; else &#123;</div><div class="line">                // 不信任，取消挑战</div><div class="line">                disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;</div><div class="line">            &#125;</div><div class="line">        &#125; else &#123;</div><div class="line">            // 不要求NSURLAuthenticationMethodServerTrust的话就使用默认的handling方法</div><div class="line">            disposition = NSURLSessionAuthChallengePerformDefaultHandling;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if (completionHandler) &#123;</div><div class="line">        completionHandler(disposition, credential);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述就是如何应对challenge的方法，总结一下基本功能（1）指定https为默认的认证方法 （2）如果自定义了处理challenge的block self.taskDidReceiveAuthenticationChallenge那么就直接调用，并给credential赋值，最后交给completionHandler进行认证 （3）如果没有自定义block，就根据是否认证方法为NSURLAuthenticationMethodServerTrust来判断是否实现这个单向认证。 （4）如果是直接信任服务器端则创建证书。<br>需要说明的是，（3）（4）之间还有一个查看securityPolicy的过程，如果被认证符合安全策略才会允许生成证书（证书通过serverTrust中包含的服务器证书认证信息），这样在底层系统验证证书合法性之前就可以先做一道验证，把应该取消的https过程给取消掉。</p>
+<p>先看看securityPolicy的内容吧：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">AFSecurityPolicy *policy = [AFSecurityPolicy defaultPolicy]; // 创建一个policy</div><div class="line"></div><div class="line">// 创建方法</div><div class="line">+ (instancetype)defaultPolicy &#123;</div><div class="line">    AFSecurityPolicy *securityPolicy = [[self alloc] init];</div><div class="line">    securityPolicy.SSLPinningMode = AFSSLPinningModeNone;</div><div class="line"></div><div class="line">    return securityPolicy;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>SSLPinningMode是securytyPolicy的一个重要属性，记录https验证模式，有三种验证方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">typedef NS_ENUM(NSUInteger, AFSSLPinningMode) &#123;    </div><div class="line">    AFSSLPinningModeNone, //不验证      </div><div class="line">    AFSSLPinningModePublicKey, //只验证公钥   </div><div class="line">    AFSSLPinningModeCertificate, // 验证证书</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>刚才调用的验证安全性的方法为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div></pre></td><td class="code"><pre><div class="line">- (BOOL)evaluateServerTrust:(SecTrustRef)serverTrust</div><div class="line">                  forDomain:(NSString *)domain</div><div class="line">&#123;</div><div class="line">    // 三个条件：（1）域名有效 （2）允许创建证书 （3）验证域名成功</div><div class="line">    // 因为要验证域名所以很显然不能为modenone或者添加的证书为0</div><div class="line">    if (domain &amp;&amp; self.allowInvalidCertificates &amp;&amp; self.validatesDomainName &amp;&amp; (self.SSLPinningMode == AFSSLPinningModeNone || [self.pinnedCertificates count] == 0)) &#123;</div><div class="line">        NSLog(@&quot;In order to validate a domain name for self signed certificates, you MUST use pinning.&quot;);</div><div class="line">        return NO;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 容器用来装验证策略</div><div class="line">    NSMutableArray *policies = [NSMutableArray array];</div><div class="line">    </div><div class="line">    // 如果需要验证域名</div><div class="line">    if (self.validatesDomainName) &#123;</div><div class="line">    </div><div class="line">        // 使用secPolicyCreateSSL函数创建验证策略，第一个参数表示是否验证整个SSL证书链，第二个参数为域名，判断证书链上的域名是否和传入的一致</div><div class="line">        [policies addObject:(__bridge_transfer id)SecPolicyCreateSSL(true, (__bridge CFStringRef)domain)];</div><div class="line">    &#125; else &#123;</div><div class="line">    </div><div class="line">        // 不需要验证域名，就使用默认的basicX509验证策略</div><div class="line">        [policies addObject:(__bridge_transfer id)SecPolicyCreateBasicX509()];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // 将验证策略policies交给serverTrust，即明确客户端采取的策略</div><div class="line">    SecTrustSetPolicies(serverTrust, (__bridge CFArrayRef)policies);</div><div class="line">    </div><div class="line">    // 存在验证策略的情况下，如果是AFSSLPiningModeNone，意味着是自签名，直接返回信任，否则需要去证书里查找是否有匹配的证书</div><div class="line">    if (self.SSLPinningMode == AFSSLPinningModeNone) &#123;</div><div class="line">        // 这里如果支持自签名则直接返回，根本不需要调用后面的方法</div><div class="line">        return self.allowInvalidCertificates || AFServerTrustIsValid(serverTrust);</div><div class="line">    &#125; else if (!AFServerTrustIsValid(serverTrust) &amp;&amp;</div><div class="line">    !self.allowInvalidCertificates) &#123;</div><div class="line">        //存在既验证无效又不允许自签名的情况，这样就返回no</div><div class="line">        return NO;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 根据SSLPinningMode来采取不同策略</div><div class="line">    switch (self.SSLPinningMode) &#123;</div><div class="line">        // 上面其实已经解决了ModeNone</div><div class="line">        case AFSSLPinningModeNone:</div><div class="line">        default:</div><div class="line">            return NO;</div><div class="line">            </div><div class="line">        // 需要验证证书类型的case</div><div class="line">        case AFSSLPinningModeCertificate: &#123;</div><div class="line">            NSMutableArray *pinnedCertificates = [NSMutableArray array];</div><div class="line">            </div><div class="line">            // 通过SecCertificateCreateWithData方法把证书的data转换成SecCertificateRef类型的参数，然后保存在临时数组中</div><div class="line">            for (NSData *certificateData in self.pinnedCertificates) &#123;</div><div class="line">                [pinnedCertificates addObject:(__bridge_transfer id)SecCertificateCreateWithData(NULL, (__bridge CFDataRef)certificateData)];</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            // 将pinnedCertificates设置为需要参与验证的锚点证书---假如需要验证的数字证书是锚点证书的子节点，则信任该证书---而这里需要验证的证书就在derverTrust中，是从服务器获取的证书信息</div><div class="line">            SecTrustSetAnchorCertificates(serverTrust, (__bridge CFArrayRef)pinnedCertificates);</div><div class="line"></div><div class="line">            // 设置好锚点证书之后再去调用方法验证serverTrust包含的证书是否有效</div><div class="line">            if (!AFServerTrustIsValid(serverTrust)) &#123;</div><div class="line">                return NO;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            // obtain the chain after being validated, which *should* contain the pinned certificate in the last position (if it&apos;s the Root CA)</div><div class="line">            // 这里的证书是服务器端的证书链</div><div class="line">            NSArray *serverCertificates = AFCertificateTrustChainForServerTrust(serverTrust);</div><div class="line">            </div><div class="line">            // 倒序显然更可能提前找到匹配的证书，本地的证书和服务器端的证书链重合的部分</div><div class="line">            for (NSData *trustChainCertificate in [serverCertificates reverseObjectEnumerator]) &#123;</div><div class="line">                if ([self.pinnedCertificates containsObject:trustChainCertificate]) &#123;</div><div class="line">                    return YES;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            return NO;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        // 公钥验证模式，这种模式也会加载服务器端的证书，但是验证的时候只看证书中的公钥</div><div class="line">        case AFSSLPinningModePublicKey: &#123;</div><div class="line">            NSUInteger trustedPublicKeyCount = 0;</div><div class="line">            </div><div class="line">            // 从服务器端传过来的参数</div><div class="line">            NSArray *publicKeys = AFPublicKeyTrustChainForServerTrust(serverTrust);</div><div class="line"></div><div class="line">            // 遍历服务器和本地的公钥</div><div class="line">            for (id trustChainPublicKey in publicKeys) &#123;</div><div class="line">                for (id pinnedPublicKey in self.pinnedPublicKeys) &#123;</div><div class="line">                </div><div class="line">                    // 如果证书相同，count += 1</div><div class="line">                    if (AFSecKeyIsEqualToKey((__bridge SecKeyRef)trustChainPublicKey, (__bridge SecKeyRef)pinnedPublicKey)) &#123;</div><div class="line">                        trustedPublicKeyCount += 1;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">            // 如果存在相同的公钥，返回yes</div><div class="line">            return trustedPublicKeyCount &gt; 0;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    return NO;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面就是securityPolicy的核心部分，重要内容都标上了注释。总结来讲就是根据三种模式来进行证书的验证：（1）如果是AFSSLPinningModeNone，肯定返回yes（根据是否需要验证和是否自签有些差别） （2）如果是AFSSLPinningModeCertificate,那么从serverTrust中获取证书然后和本地的证书集合去匹配 （3）如果是AFSSLPinningModePublicKey，那么从serverTrust中去获取公钥然后和本地的公钥进行配对。<br>其实过程非常清晰，不过细节上调用了很多原生的security代码，从代码角度需要更详细地了解。<br>AFNetworking包装了一系列系统函数在上面的方法中调用，现在可以看看其中重要的几个方法的实现。</p>
+<p>验证servetTrust的函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">static BOOL AFServerTrustIsValid(SecTrustRef serverTrust) &#123;</div><div class="line">    BOOL isValid = NO;</div><div class="line">    SecTrustResultType result;</div><div class="line">    __Require_noErr_Quiet(SecTrustEvaluate(serverTrust, &amp;result), _out);</div><div class="line"></div><div class="line">    isValid = (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);</div><div class="line"></div><div class="line">_out:</div><div class="line">    return isValid;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>首先说说<figure class="highlight plain"><figcaption><span>```这个方法，如果第一个参数为0表示错误，则跳到后面表达式所在的位置去执行，这里就是_out:,也就是直接返回isValid = NO，否则就继续执行。</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line">``` SecTrustEvaluate``` 这个方法去系统根目录去查找证书是否可信，然后把结果赋值给result,并且返回是否找到。如果没有出错就不会直接return false，接着往下进行，然后只有当result为kSecTrustResultUnspecified（表示serverTrust被信任，但不被用户认可）或者 kSecTrustResultProceed（同上并且被用户认可）二者其一的时候就可以认为serverTrust认证成功，然后返回true。</div><div class="line"></div><div class="line">获取serverTrust中包含证书链和公钥的函数：</div><div class="line"></div><div class="line">```objective-c</div><div class="line">static NSArray * AFCertificateTrustChainForServerTrust(SecTrustRef serverTrust) &#123;</div><div class="line">    CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);</div><div class="line">    NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:(NSUInteger)certificateCount];</div><div class="line"></div><div class="line">    for (CFIndex i = 0; i &lt; certificateCount; i++) &#123;</div><div class="line">        SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);</div><div class="line">        [trustChain addObject:(__bridge_transfer NSData *)SecCertificateCopyData(certificate)];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    return [NSArray arrayWithArray:trustChain];</div><div class="line">&#125;</div><div class="line"></div><div class="line">static NSArray * AFPublicKeyTrustChainForServerTrust(SecTrustRef serverTrust) &#123;</div><div class="line">    SecPolicyRef policy = SecPolicyCreateBasicX509();</div><div class="line">    CFIndex certificateCount = SecTrustGetCertificateCount(serverTrust);</div><div class="line">    NSMutableArray *trustChain = [NSMutableArray arrayWithCapacity:(NSUInteger)certificateCount];</div><div class="line">    </div><div class="line">    // 在取出所有证书的基础上</div><div class="line">    for (CFIndex i = 0; i &lt; certificateCount; i++) &#123;</div><div class="line">        SecCertificateRef certificate = SecTrustGetCertificateAtIndex(serverTrust, i);</div><div class="line"></div><div class="line">        // 创建CF数组</div><div class="line">        SecCertificateRef someCertificates[] = &#123;certificate&#125;;</div><div class="line">        CFArrayRef certificates = CFArrayCreate(NULL, (const void **)someCertificates, 1, NULL);</div><div class="line"></div><div class="line">        // 生成一个trust对象，参数是certificate和policy，失败则直接跳过</div><div class="line">        SecTrustRef trust;</div><div class="line">        __Require_noErr_Quiet(SecTrustCreateWithCertificates(certificates, policy, &amp;trust), _out);</div><div class="line"></div><div class="line">        // 验证trust，失败则跳过</div><div class="line">        SecTrustResultType result;</div><div class="line">        __Require_noErr_Quiet(SecTrustEvaluate(trust, &amp;result), _out);</div><div class="line"></div><div class="line">        // 如果符合X.509证书格式，那么先使用SecTrustCopyPublicKey获取公钥然后添加到trustChain中</div><div class="line">        [trustChain addObject:(__bridge_transfer id)SecTrustCopyPublicKey(trust)];</div><div class="line"></div><div class="line">    // 释放资源，如果上面有错误直接跳到这里释放，否则就正常进行到这里进行释放</div><div class="line">    _out:</div><div class="line">        if (trust) &#123;</div><div class="line">            CFRelease(trust);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (certificates) &#123;</div><div class="line">            CFRelease(certificates);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        continue;</div><div class="line">    &#125;</div><div class="line">    CFRelease(policy);</div><div class="line"></div><div class="line">    return [NSArray arrayWithArray:trustChain];</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>第一个函数获取证书链，内容很简单，先获取serverTrust中的证书个数，然后依次将证书对象转化成NSData并加入到trustChain中。<br>第二个函数获取公钥，稍微复杂一点，在上面一个函数取出所有证书的基础上，加入了认证和从证书链中提取公钥的过程。</p>
+<p>总结来讲，基本上如果用户用的不是自签名的证书，那么基本什么都不用管，直接用AFNetworkign就能够完成（大部分情况）。如果自签名就需要设置policy，尽量不要用到吧…<br>AFNetworking总体而言能在系统底层之前就验证证书，提高了效率。</p>
+<h4 id="补充证书和证书链"><a href="#补充证书和证书链" class="headerlink" title="补充证书和证书链"></a>补充证书和证书链</h4><p>可能上面说的证书，证书链等东西有些抽象，具体补充一下相关的信息：<br>数字证书的生成是分层级的，下一级的证书需要其上一级证书的私钥签名。<br>所以后者是前者的证书颁发者，也就是说上一级证书的 Subject Name 是其下一级证书的 Issuer Name。所以也就存在了我们上面数说的证书的根节点和叶子节点这么一说。<br>关于根证书：<br>数字证书认证机构（Certificate Authority, CA）签署和管理的 CA 根证书，会被纳入到你的浏览器和操作系统的可信证书列表中，并由这个列表判断根证书是否可信。也就是根证书是约定好的，不需要其他的数字证书的私钥进行签名。<br>在iOS上对证书的验证：<br>信任链中如果只含有有效证书并且以可信锚点（trusted anchor）结尾，那么这个证书就被认为是有效的。一般情况下信任锚点是系统隐式信任的证书，比如CA根节点，但是也可以在验证证书链的时候设置自签名的证书作为信任锚点（上面说到的自签名的验证中有提到）</p>
+
+                
+<p class="pink-link-context">
+    <a href="/2017/07/18/CocoaAsyncSocket部分功能解析/" rel="next" title="">
+    Prev: 
+  </a>
+</p>
+
+
+
+<p class="pink-link-context">
+    <a href="/2017/07/18/SDWebImage解析/" rel="next" title="">
+    Next: 
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large pink">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect green" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse yellow darken-1"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer indigo darken-1">
+    
+    <div class="footer-container container">
+        <div class="row">
+            
+            <div class="social-group col m4 s12">
+                <h5 class="white-text">Social</h5>
+                
+                    <a class="social-link" href="http://weibo.com/1956184117" target="_blank">
+                        <i class="fa fa-2x fa-weibo"></i>
+                    </a>
+                
+                    <a class="social-link" href="https://github.com/raytaylorlin" target="_blank">
+                        <i class="fa fa-2x fa-github"></i>
+                    </a>
+                
+                    <a class="social-link" href="/atom.xml" target="_blank">
+                        <i class="fa fa-2x fa-rss"></i>
+                    </a>
+                
+                
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+    <div class="site-visitors-container white-text">
+        <span>
+            <i class="fa fa-user"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+        </span>
+        <span>&nbsp;|&nbsp;</span>
+        <span>
+            <i class="fa fa-eye"></i>
+            <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+        </span>
+    </div>
+
+
+            </div>
+            
+
+            
+            <div class="col m8 s12">
+                <h5 class="white-text">Links</h5>
+                
+                    <a class="social-link" href="http://raytaylorlin.com/" target="_blank">raytaylorism主题作者的技术博客</a>
+                
+                    <a class="social-link" href="https://github.com/raytaylorlin" target="_blank">Github地址（测试友情链接）</a>
+                
+            </div>
+            
+        </div>
+    </div>
+    
+
+    <div class="footer-copyright pink-link-context">
+        <div class="container">
+            © 2016 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">Blog powered by <a href="https://hexo.io">Hexo</a> | Theme <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('pink lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-reading, .menu-about').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>
