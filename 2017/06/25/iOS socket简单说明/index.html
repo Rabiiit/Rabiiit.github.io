@@ -10,7 +10,9 @@
     <title></title>
     <meta name="author" content="John Doe">
     
-    <meta name="description" content="日常的普通应用中如果不是对通讯的即时性有要求，基本上大家都会选择使用AFNetworking中的基于http/https的网络通信。但是有时候比如在线聊天，游戏中的数据交互等情况，对网络通信的即时性有非常高的要求（试想一下比如FPS游戏中，击中目标的数据如果不能及时传达到目标，那整个游戏的体验基本就">
+    <meta name="description" content="title: iOS socket简单说明
+tags: [socket, 网络]
+日常的普通应用中如果不是对通讯的即时性有要求，基本上大家都会选择使用AFNetworking中的基于http/https的网络通信。但是有时候比如在线聊天，游戏中的数据交互等情况，对网络通信的即时性有非常高的要求（试想">
     
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -233,7 +235,9 @@
 
 
             <div class="entry pink-link-context">
-                <p>日常的普通应用中如果不是对通讯的即时性有要求，基本上大家都会选择使用AFNetworking中的基于http/https的网络通信。但是有时候比如在线聊天，游戏中的数据交互等情况，对网络通信的即时性有非常高的要求（试想一下比如FPS游戏中，击中目标的数据如果不能及时传达到目标，那整个游戏的体验基本就是一塌糊涂），那么就会使用网络嵌套字socket编程，不同于http的单向的按次来算的信息发送，socket编程会要求客户端进程和服务器端进程建立起稳定的连接，然后不断进行数据交互，直到连接断开。</p>
+                <p>title: iOS socket简单说明</p>
+<p>tags: [socket, 网络]</p>
+<p>日常的普通应用中如果不是对通讯的即时性有要求，基本上大家都会选择使用AFNetworking中的基于http/https的网络通信。但是有时候比如在线聊天，游戏中的数据交互等情况，对网络通信的即时性有非常高的要求（试想一下比如FPS游戏中，击中目标的数据如果不能及时传达到目标，那整个游戏的体验基本就是一塌糊涂），那么就会使用网络嵌套字socket编程，不同于http的单向的按次来算的信息发送，socket编程会要求客户端进程和服务器端进程建立起稳定的连接，然后不断进行数据交互，直到连接断开。</p>
 <p>这里先介绍一下socket编程的相关资料</p>
 <p>### socket相关知识</p>
 <p>HTTP和socket的区别：HTTP是一个基于TCP/IP之上的应用层协议，主要解决的是如何包装和解析数据的部分。HTTP协议规定了客户端和服务器端互相通信的规则，本身是短连接并且基于请求-响应这种方案。针对其无状态特性，一般使用的时候会通过session技术来解决问题。</p>
