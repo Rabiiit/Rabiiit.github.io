@@ -7,8 +7,11 @@
 
     
 
-    <title>Archives: 2017/7 | </title>
+    <title></title>
     <meta name="author" content="John Doe">
+    
+    <meta name="description" content="ScienceWall项目简介ScienceWall是为科研人员打造的一个在线浏览大图、标记、讨论的平台。
+主要工作iOS主要的APP架构和大部分界面逻辑由我负责，并且大部分精力在于如何在APP上浏览比如10W*10W的大图而不会内存崩溃。我们在后台对图片进行了剪切处理，具体方案参考deepzoom">
     
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -193,70 +196,64 @@
 
     <main>
         <div class="container main-container">
-    
-
-<nav class="page-nav hide-on-small-only">
+    <nav class="page-nav hide-on-small-only">
     <div class="nav-wrapper indigo">
-        <span class="breadcrumb">Current page(Archives)</span>
+        <span class="breadcrumb">Current page(Categories)</span>
+        
+            
+
         
 
         
     </div>
 </nav>
 
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>No title</h1>
+    
 
 
-    <ul class="collapsible mt-0" data-collapsible="accordion">
-        
-        
-            <li>
-                <div class="collapsible-header active">
-                    <i class="fa fa-archive"></i>2017
-                </div>
-                <div class="collapsible-body">
-                    <div class="collection">
-                        
-                            <a href="/2017/07/02/Objective-c中的runtime学习记录/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2017-07-02T04:00:00.000Z">2017-07-02</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                Objective-c中的runtime学习记录
-                            </a>
-                        
-                            <a href="/2017/07/02/SDWebImage解析/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2017-07-02T04:00:00.000Z">2017-07-02</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                SDWebImage解析
-                            </a>
-                        
-                            <a href="/2017/07/02/GCD总结/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2017-07-02T03:00:00.000Z">2017-07-02</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                GCD概要
-                            </a>
-                        
-                            <a href="/2017/07/01/CocoaAsyncSocket部分功能解析/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2017-07-01T04:00:00.000Z">2017-07-01</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                CocoaAsyncSocket部分功能解析
-                            </a>
-                        
-                            <a href="/2017/07/01/AFNetworking基本模块/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2017-07-01T03:00:00.000Z">2017-07-01</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                AFNetworking基本模块
-                            </a>
-                        
-                            <a href="/2017/07/01/AFNetworking的安全策略/" class="collection-item grey-text text-darken-1">
-                                <time datetime="2017-07-01T03:00:00.000Z">2017-07-01</time>
-                                <span>&nbsp;&nbsp;&nbsp;</span>
-                                AFNetworking的安全策略
-                            </a>
-                        
-                    </div>
-                </div>
-            </li>
-        
-    </ul>
+            </div>
+            <time class="pink-link-context" datetime="2017-07-19T16:36:38.000Z"><a href="/about/sciencewall.html">2017-07-20</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+
+            <div class="toc pink-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#ScienceWall"><span class="section table-of-contents-text">ScienceWall</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#项目简介"><span class="section table-of-contents-text">项目简介</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#主要工作"><span class="section table-of-contents-text">主要工作</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#相关地址"><span class="section table-of-contents-text">相关地址</span></a></li></ol></li></ol>
+</div>
+
+
+            <div class="entry pink-link-context">
+                <h3 id="ScienceWall"><a href="#ScienceWall" class="headerlink" title="ScienceWall"></a>ScienceWall</h3><h4 id="项目简介"><a href="#项目简介" class="headerlink" title="项目简介"></a>项目简介</h4><p>ScienceWall是为科研人员打造的一个在线浏览大图、标记、讨论的平台。</p>
+<h4 id="主要工作"><a href="#主要工作" class="headerlink" title="主要工作"></a>主要工作</h4><p>iOS主要的APP架构和大部分界面逻辑由我负责，并且大部分精力在于如何在APP上浏览比如10W*10W的大图而不会内存崩溃。我们在后台对图片进行了剪切处理，具体方案参考deepzoom技术，而客户端的显示则使用了OpenGL来“选取应该显示到界面上”的片段进行显示。这样在不破坏浏览体验的情况下能够尽量节省内存消耗。</p>
+<h4 id="相关地址"><a href="#相关地址" class="headerlink" title="相关地址"></a>相关地址</h4><p>Web网站：<a href="http://www.sciencewall.net/" target="_blank" rel="external">ScienceWall</a></p>
+<p>APP下载： <a href="https://itunes.apple.com/cn/app/sciencewall/id1042268145?l=en&amp;mt=8" target="_blank" rel="external">iOS客户端下载</a></p>
+
+                
+
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
 
 
 </div>
