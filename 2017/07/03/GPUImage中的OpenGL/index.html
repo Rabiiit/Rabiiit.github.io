@@ -1,0 +1,626 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    
+
+    <title>GPUImage中的OpenGL | </title>
+    <meta name="author" content="John Doe">
+    
+    <meta name="description" content="因为项目的要求所以先前研究了很久的OpenGL,用来完成超大图片的实现，本身用到OpenGL的部分有限，毕竟不涉及3D和光影等部分，但是自己初学OpenGL的时候可是花了不少力气，一整套从基础的三角到视角转换到高级特性全部溜了一遍，不过网上这样的教程实在是太多所以也没有专程写下来的必要=。=（主要是">
+    
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta property="og:title" content="GPUImage中的OpenGL"/>
+    <meta property="og:site_name" content="Hexo"/>
+
+    
+    <meta property="og:image" content="undefined"/>
+    
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/lib/materialize.min.css">
+    <link rel="stylesheet" href="/css/lib/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+
+    
+        <link rel="stylesheet" href="/css/lib/prettify-tomorrow-night-eighties.css" type="text/css">
+    
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+
+<body>
+    <img src="/weixin_favicon.png" style="position: absolute; left: -9999px; opacity: 0; filter: alpha(opacity=0);">
+
+    <nav class="indigo">
+    <div class="nav-wrapper">
+        <a href="#" data-activates="main-menu" class="button-collapse">
+            <i class="fa fa-navicon"></i>
+        </a>
+        <div class="">
+            <a href="/" class="brand-logo hide-on-med-and-down">Hexo</a>
+            <ul class="right hide-on-med-and-down">
+                
+                    <li>
+                        <a class="menu-home " href="/" >
+                            <i class="fa fa-home "></i>
+                            
+                            Home
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-archive " href="/archives" >
+                            <i class="fa fa-archive "></i>
+                            
+                            Archives
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                            <i class="fa fa-bookmark "></i>
+                            
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-reading " href="/reading" >
+                            <i class="fa fa-book "></i>
+                            
+                            Reading
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-about " href="/about" >
+                            <i class="fa fa-user "></i>
+                            
+                            About
+                        </a>
+                    </li>
+                
+                    <li>
+                        <a class="menu-search modal-trigger " href="#search" >
+                            <i class="fa fa-search "></i>
+                            
+                            Search
+                        </a>
+                    </li>
+                
+            </ul>
+            <div>
+    <ul class="side-nav indigo darken-1" id="main-menu">
+        
+        <li class="side-user">
+            <div class="row">
+                <div class="col s4 no-padding">
+                    <img class="avatar-image circle responsive-img" src="http://ot7rhf4gy.bkt.clouddn.com/17-7-19/78316940.jpg" alt="User Avatar">
+                </div>
+                <div class="info col s8 valign-wrapper no-padding">
+                    <div class="valign">
+                        <p class="name">周绍祥</p>
+                        <p class="desc">iOS开发</p>
+                    </div>
+                </div>
+            </div>
+        </li>
+        
+
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-home " href="/" >
+                    <i class="fa fa-home "></i>
+                    
+                    Home
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-archive " href="/archives" >
+                    <i class="fa fa-archive "></i>
+                    
+                    Archives
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-category category-menu" href="javascript:;" data-activates="category-menu" >
+                    <i class="fa fa-bookmark "></i>
+                    
+                    Categories
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-reading " href="/reading" >
+                    <i class="fa fa-book "></i>
+                    
+                    Reading
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-about " href="/about" >
+                    <i class="fa fa-user "></i>
+                    
+                    About
+                </a>
+            </li>
+        
+            <li class="no-padding">
+                <a class="waves-effect menu-search modal-trigger " href="#search" >
+                    <i class="fa fa-search "></i>
+                    
+                    Search
+                </a>
+            </li>
+        
+    </ul>
+
+    <ul class="side-nav indigo darken-1" id="category-menu">
+    
+
+            
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/网络/">
+                    网络 <span class="right">5</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/系统/">
+                    系统 <span class="right">2</span></a>
+                </a>
+            </li>
+
+        
+
+            <li class="collapse-level-0" collapse-level="0">
+                <a class="no-padding" href="/categories/图形/">
+                    图形 <span class="right">1</span></a>
+                </a>
+            </li>
+
+        
+
+    </ul>
+</div>
+
+        </div>
+    </div>
+</nav>
+
+<div id="search" class="modal search-modal">
+    <div class="row">
+        <div class="input-field col s12">
+              <input id="search-input" type="text">
+              <label for="search-input">Search</label>
+        </div>
+
+    </div>
+    <div id="search-result" class="search-result col s12">
+
+    </div>
+</div>
+
+
+    <main>
+        <div class="container main-container">
+    <nav class="page-nav hide-on-small-only">
+    <div class="nav-wrapper indigo">
+        <span class="breadcrumb">Current page(Categories)</span>
+        
+            
+    
+    
+    <a class="breadcrumb" href="/categories/图形/">图形</a>
+
+
+        
+
+        
+    </div>
+</nav>
+
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>GPUImage中的OpenGL</h1>
+    
+
+
+            </div>
+            <time class="pink-link-context" datetime="2017-07-03T03:00:00.000Z"><a href="/2017/07/03/GPUImage中的OpenGL/">2017-07-03</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+    <div class="tags-row">
+        
+            <a href="/tags/OpenGL/" class="chip pink lighten-1">OpenGL</a>
+        
+    </div>
+
+
+            <div class="toc pink-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#GPUImage介绍"><span class="section table-of-contents-text">GPUImage介绍</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#具体例子分析"><span class="section table-of-contents-text">具体例子分析</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-5"><a class="section table-of-contents-link" href="#输入数据处理"><span class="section table-of-contents-text">输入数据处理</span></a></li><li class="section table-of-contents-item section table-of-contents-level-5"><a class="section table-of-contents-link" href="#Filter原型：GPUImageFilter"><span class="section table-of-contents-text">Filter原型：GPUImageFilter</span></a></li><li class="section table-of-contents-item section table-of-contents-level-5"><a class="section table-of-contents-link" href="#特定filter的实现"><span class="section table-of-contents-text">特定filter的实现</span></a></li><li class="section table-of-contents-item section table-of-contents-level-5"><a class="section table-of-contents-link" href="#显示容器GPUImageView"><span class="section table-of-contents-text">显示容器GPUImageView</span></a></li><li class="section table-of-contents-item section table-of-contents-level-5"><a class="section table-of-contents-link" href="#最终启动渲染链"><span class="section table-of-contents-text">最终启动渲染链</span></a></li></ol></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#总结"><span class="section table-of-contents-text">总结</span></a></li></ol>
+</div>
+
+
+            <div class="entry pink-link-context">
+                <p>因为项目的要求所以先前研究了很久的OpenGL,用来完成超大图片的实现，本身用到OpenGL的部分有限，毕竟不涉及3D和光影等部分，但是自己初学OpenGL的时候可是花了不少力气，一整套从基础的三角到视角转换到高级特性全部溜了一遍，不过网上这样的教程实在是太多所以也没有专程写下来的必要=。=（主要是当时学的时候太弱智没有记录下来学习心得，现在再翻手写笔记太麻烦了）。<br>正好最近想看看滤镜和图片处理功能中OpenGL的使用，权当复习一下了，所以找到久负盛名的开源框架GPUImage，稍微看一下内容，然后整理一下OpenGL比较基础的使用方法把。</p>
+<hr>
+<h4 id="GPUImage介绍"><a href="#GPUImage介绍" class="headerlink" title="GPUImage介绍"></a>GPUImage介绍</h4><p>GPUImage是iOS上一个基于OpenGL进行图片处理的开源框架，由于自带各种滤镜并且能接受很多种类的输入数据，所以不管是效率还是泛用性都是iOS上进行图片处理工作的优先选择。<br>以图片处理为例，GPUImage让用户不需要进行非常繁杂的OpenGL上下文和指令输入，更别提还有复杂的shader渲染计算，从图片数据转为OpenGL可以识别的数据，进入渲染管线最终成为从framebuffer取出显示在屏幕上，这些操作全部都交由GPUImage框架来完成。<br>最有意思的是，调用GPUImage的各种组件的方法是一种链式的添加，比如获取图片，添加滤镜，输出图片所用的组件按照调用顺序一个个“挂”起来。看看例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">UIImage *inputImage = [UIImage imageNamed:@&quot;sample.jpg&quot;];</div><div class="line">GPUImagePicture *sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];</div><div class="line">// 创建素描滤镜并且添加到图片对象之后</div><div class="line">GPUImageSketchFilter *customFilter = [[GPUImageSketchFilter alloc] init];</div><div class="line">[sourcePicture addTarget:customFilter];</div><div class="line">// 创建输出组件</div><div class="line">GPUImageView *imageView = [[GPUImageView alloc] initWithFrame:mainSreenFrame];</div><div class="line">[self.view addSubview:imageView];</div><div class="line">// 在链的尾端添加输出组件</div><div class="line">[customFilter addTarget:imageView];</div><div class="line">[sourcePicture processImage];</div></pre></td></tr></table></figure>
+<p>非常简单明了的调用，获取图片，使用素描滤镜然后在新建的Imageview中显示出来。<br>GPUImage中包含了非常多的滤镜，超过100种，包括对图片和视频进行处理的各种方案。当然没必要一个个细看清楚，我们可以从调用的角度来看一看进行一次图片处理的时候会调用什么方法。先看看框架中主要的几个部件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">#import &quot;GLProgram.h&quot;</div><div class="line"></div><div class="line">// Base classes</div><div class="line">#import &quot;GPUImageContext.h&quot;</div><div class="line">#import &quot;GPUImageOutput.h&quot;</div><div class="line">#import &quot;GPUImageView.h&quot;</div><div class="line">#import &quot;GPUImageVideoCamera.h&quot;</div><div class="line">#import &quot;GPUImageStillCamera.h&quot;</div><div class="line">#import &quot;GPUImageMovie.h&quot;</div><div class="line">#import &quot;GPUImagePicture.h&quot;</div><div class="line">#import &quot;GPUImageRawDataInput.h&quot;</div><div class="line">#import &quot;GPUImageRawDataOutput.h&quot;</div><div class="line">#import &quot;GPUImageMovieWriter.h&quot;</div><div class="line">#import &quot;GPUImageFilterPipeline.h&quot;</div><div class="line">#import &quot;GPUImageTextureOutput.h&quot;</div><div class="line">#import &quot;GPUImageFilterGroup.h&quot;</div><div class="line">#import &quot;GPUImageTextureInput.h&quot;</div><div class="line">#import &quot;GPUImageUIElement.h&quot;</div><div class="line">#import &quot;GPUImageBuffer.h&quot;</div><div class="line">#import &quot;GPUImageFramebuffer.h&quot;</div><div class="line">#import &quot;GPUImageFramebufferCache.h&quot;</div></pre></td></tr></table></figure>
+<p>其中最为重要的是GLProgram,GPUImageContext,GPUImageFramebuffer。第一个管理了OpenGL的调用，熟悉OpenGL的人都知道，想要使用OpenGL必须将其所有的渲染管线打包成一个program，这里就是封装了我们渲染图片所用的各种部件包括shader。第二个是上下文，也是OpenGL绘制图片时需要获取的信息。第三个FrameBuffer大家也应该不陌生，在管线中处理过的光栅化之后的图形数据最后会在frameBuffer中，等待后续处理然后直接作为显示的像素使用。<br>其他的后面可能会提到，比如处理输入的GPUImageVideoCamera,GPUImageStillCamera，GPUimagePicture等。<br>大致的流程是这样的：</p>
+<ol>
+<li><p>获取数据<br>我们知道OpenGL用作处理图片的工作方式就是将图像信息转化为OpenGL的纹理，然后对每个像素点进行计算处理。那么首先要完成的工作就是采集数据了。考虑到GPUImage并不只是处理静态图片，还包括视频，纯纹理，摄像头数据等不同来源不同格式的数据，所以光从数据接口就有很多不同的形式，处理静态图片的GPUImagePicture,处理视频文件的GPUImageMovie,调用摄像头处理照片和视频的GPUImageStillCamera和GPUImageVideoCamera等。</p>
+</li>
+<li><p>传递数据<br>GPUImage的图像渲染过程是一个链式的渲染过程，一个阶段接在另一个阶段之后，不管中间有多少组件，最终逻辑上都是 输入组件-&gt;中间处理-&gt;最终输出 这么三个部分。而每个Filter中间，都是依靠outputFrameBuffer和inputFrameBuffer来完成数据传递的。一个Filter通过GPUImageInput协议来完成数据的传入，而GPUImageOutput来完成数据向后传递的实现。</p>
+</li>
+<li><p>处理数据<br>当一个Filter获取到待处理的数据之后，会按照这个流程来完成渲染：(1)向frameBufferCache申请一个outputFrameBuffer (2)将申请得到的outputFrameBuffer激活并设为渲染对象 (3)glClear清空画布信息 (4)传入顶点并设置输入纹理及其坐标 (5)调用绘制指令。 至于shader是各个filter自己封装好的，并不需要使用者自己调用。比如我们调用GPUImageFilter默认的shader，其实什么渲染效果都没有，就是维持原图状态。</p>
+</li>
+<li><p>输出数据<br>主要是GPUImageView和GPUImageMovieWriter，其实就是将这些输出模块添加到滤镜链中等着处理完了再显示就行了。</p>
+</li>
+</ol>
+<p>大致就是这样，其实和OpenGL渲染本质的状态机是差不多的，其内核只管从外界拿来数据然后按照固定的流程执行渲染最后再给出最终结果，无非是根据渲染的指令不同而改变一下渲染的具体设置，但是OpenGL本身是不断循环往复这个渲染流水线，可以说是无限循环了。</p>
+<hr>
+<h4 id="具体例子分析"><a href="#具体例子分析" class="headerlink" title="具体例子分析"></a>具体例子分析</h4><h5 id="输入数据处理"><a href="#输入数据处理" class="headerlink" title="输入数据处理"></a>输入数据处理</h5><p>上面说了这么多，对于GPUImage的流程也有一定的了解，现在我们按照一开始的例子来具体分析每一步的具体代码：<br>先看第一步输入数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div></pre></td><td class="code"><pre><div class="line">- (id)initWithImage:(UIImage *)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput;</div><div class="line">&#123;</div><div class="line">    return [self initWithCGImage:[newImageSource CGImage] smoothlyScaleOutput:smoothlyScaleOutput];</div><div class="line">&#125;</div><div class="line">--------&gt; 跳转</div><div class="line"></div><div class="line">- (id)initWithCGImage:(CGImageRef)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput;</div><div class="line">&#123;</div><div class="line">    return [self initWithCGImage:newImageSource smoothlyScaleOutput:smoothlyScaleOutput removePremultiplication:NO];</div><div class="line">&#125;</div><div class="line">-------&gt; 跳转</div><div class="line"></div><div class="line">// 最终的图片数据处理的核心方法，代码量非常大，一点点分析</div><div class="line">- (id)initWithCGImage:(CGImageRef)newImageSource smoothlyScaleOutput:(BOOL)smoothlyScaleOutput removePremultiplication:(BOOL)removePremultiplication;</div><div class="line">&#123;</div><div class="line">    if (!(self = [super init]))</div><div class="line">    &#123;</div><div class="line">		return nil;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    hasProcessedImage = NO;</div><div class="line">    self.shouldSmoothlyScaleOutput = smoothlyScaleOutput;</div><div class="line">    imageUpdateSemaphore = dispatch_semaphore_create(0);</div><div class="line">    dispatch_semaphore_signal(imageUpdateSemaphore);</div><div class="line"></div><div class="line"></div><div class="line">    // 获取图片的宽和高，由于是要交给OpenGL,只能调用core graphic能识别的形式</div><div class="line">    CGFloat widthOfImage = CGImageGetWidth(newImageSource);</div><div class="line">    CGFloat heightOfImage = CGImageGetHeight(newImageSource);</div><div class="line"></div><div class="line">    // 输入数据有误进行判断</div><div class="line">    NSAssert( widthOfImage &gt; 0 &amp;&amp; heightOfImage &gt; 0, @&quot;Passed image must not be empty - it should be at least 1px tall and wide&quot;);</div><div class="line">    </div><div class="line">    pixelSizeOfImage = CGSizeMake(widthOfImage, heightOfImage);</div><div class="line">    CGSize pixelSizeToUseForTexture = pixelSizeOfImage;</div><div class="line">    </div><div class="line">    BOOL shouldRedrawUsingCoreGraphics = NO;</div><div class="line">    </div><div class="line">    // OpenGL中对纹理的大小还有尺寸都有要求，如果超过了最大极限就需要进行修改</div><div class="line">    CGSize scaledImageSizeToFitOnGPU = [GPUImageContext sizeThatFitsWithinATextureForSize:pixelSizeOfImage];// 这个方法返回pixelSizeOfImage在设备上作为texture能够显示的最大尺寸（可能会被等比压缩）</div><div class="line">    </div><div class="line">    // 如果调整过尺寸，所有渲染计算全部按调整过的尺寸来，并且需要重新绘制</div><div class="line">    if (!CGSizeEqualToSize(scaledImageSizeToFitOnGPU, pixelSizeOfImage))</div><div class="line">    &#123;</div><div class="line">        pixelSizeOfImage = scaledImageSizeToFitOnGPU;</div><div class="line">        pixelSizeToUseForTexture = pixelSizeOfImage;</div><div class="line">        shouldRedrawUsingCoreGraphics = YES;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    //如果要使用mipmaps压缩图片，就要保证图片的宽高尺寸是2的整数次方（这里的操作就有可能会让图片变形了）</div><div class="line">    if (self.shouldSmoothlyScaleOutput)</div><div class="line">    &#123;</div><div class="line">        </div><div class="line">        CGFloat powerClosestToWidth = ceil(log2(pixelSizeOfImage.width));</div><div class="line">        CGFloat powerClosestToHeight = ceil(log2(pixelSizeOfImage.height));</div><div class="line">        </div><div class="line">        pixelSizeToUseForTexture = CGSizeMake(pow(2.0, powerClosestToWidth), pow(2.0, powerClosestToHeight));</div><div class="line">        </div><div class="line">        shouldRedrawUsingCoreGraphics = YES;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    GLubyte *imageData = NULL;</div><div class="line">    CFDataRef dataFromImageDataProvider = NULL;</div><div class="line">    GLenum format = GL_BGRA;</div><div class="line">    BOOL isLitteEndian = YES;</div><div class="line">    BOOL alphaFirst = NO;</div><div class="line">    BOOL premultiplied = NO;</div><div class="line">	</div><div class="line">    if (!shouldRedrawUsingCoreGraphics) &#123;</div><div class="line">        // 由于OpenGL本身并解析数据，只是按照固定的memory layout死板地写入数据，所以如果这里的图片数据不是由GPUImage生成的，就必须先检验一下是否合乎约定的memory layout</div><div class="line">        // 这里首先判断是不是合法，不然就要重写数据，判断的标准是原图每个最小单元是8个bit，每个像素是32个bit，4个字节</div><div class="line">        if (CGImageGetBytesPerRow(newImageSource) != CGImageGetWidth(newImageSource) * 4 ||</div><div class="line">            CGImageGetBitsPerPixel(newImageSource) != 32 ||</div><div class="line">            CGImageGetBitsPerComponent(newImageSource) != 8)</div><div class="line">        &#123;</div><div class="line">            // 如果不合法，就跳到后面去重写图片数据</div><div class="line">            shouldRedrawUsingCoreGraphics = YES;</div><div class="line">        &#125; else &#123;</div><div class="line">            // 检查bitmap的格式，如果包含浮点成分就不能直接在OpenGL中调用</div><div class="line">            CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(newImageSource);</div><div class="line">            if ((bitmapInfo &amp; kCGBitmapFloatComponents) != 0) &#123;</div><div class="line">                shouldRedrawUsingCoreGraphics = YES;</div><div class="line">            &#125; else &#123;</div><div class="line">                CGBitmapInfo byteOrderInfo = bitmapInfo &amp; kCGBitmapByteOrderMask;</div><div class="line">                if (byteOrderInfo == kCGBitmapByteOrder32Little) &#123;</div><div class="line">                    // 对小字节序的判断，如果alpha不在颜色数据的第一位就重新绘制</div><div class="line">                    CGImageAlphaInfo alphaInfo = bitmapInfo &amp; kCGBitmapAlphaInfoMask;</div><div class="line">                    if (alphaInfo != kCGImageAlphaPremultipliedFirst &amp;&amp; alphaInfo != kCGImageAlphaFirst &amp;&amp;</div><div class="line">                        alphaInfo != kCGImageAlphaNoneSkipFirst) &#123;</div><div class="line">                        shouldRedrawUsingCoreGraphics = YES;</div><div class="line">                    &#125;</div><div class="line">                &#125; else if (byteOrderInfo == kCGBitmapByteOrderDefault || byteOrderInfo == kCGBitmapByteOrder32Big) &#123;</div><div class="line">					isLitteEndian = NO;</div><div class="line">                    // 大字节序的判断，和上面差不多</div><div class="line">                    CGImageAlphaInfo alphaInfo = bitmapInfo &amp; kCGBitmapAlphaInfoMask;</div><div class="line">                    if (alphaInfo != kCGImageAlphaPremultipliedLast &amp;&amp; alphaInfo != kCGImageAlphaLast &amp;&amp;</div><div class="line">                        alphaInfo != kCGImageAlphaNoneSkipLast) &#123;</div><div class="line">                        shouldRedrawUsingCoreGraphics = YES;</div><div class="line">                    &#125; else &#123;</div><div class="line">                        /* Can access directly using GL_RGBA pixel format */</div><div class="line">						premultiplied = alphaInfo == kCGImageAlphaPremultipliedLast || alphaInfo == kCGImageAlphaPremultipliedLast;</div><div class="line">						alphaFirst = alphaInfo == kCGImageAlphaFirst || alphaInfo == kCGImageAlphaPremultipliedFirst;</div><div class="line">						format = GL_RGBA;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // 上面很多情况都需要重新绘制图片数据，这里就是具体的绘制方法</div><div class="line">    if (shouldRedrawUsingCoreGraphics)</div><div class="line">    &#123;</div><div class="line">        // 大小改变需要重绘或者数据格式不对，imageData就是乘装数据的指针，每个像素4个字节</div><div class="line">        imageData = (GLubyte *) calloc(1, (int)pixelSizeToUseForTexture.width * (int)pixelSizeToUseForTexture.height * 4);</div><div class="line">        </div><div class="line">        CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();</div><div class="line">        </div><div class="line">        // 创建上下文，也就是说明怎么解析数据，这里说明每个元素8个bit，每一行数据是宽度乘以4，也就是每个像素四个字节</div><div class="line">        CGContextRef imageContext = CGBitmapContextCreate(imageData, (size_t)pixelSizeToUseForTexture.width, (size_t)pixelSizeToUseForTexture.height, 8, (size_t)pixelSizeToUseForTexture.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);</div><div class="line">        </div><div class="line">        // 正式绘制数据，完成后将中间变量release掉</div><div class="line">        CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, pixelSizeToUseForTexture.width, pixelSizeToUseForTexture.height), newImageSource);</div><div class="line">        CGContextRelease(imageContext);</div><div class="line">        CGColorSpaceRelease(genericRGBColorspace);</div><div class="line">		isLitteEndian = YES;</div><div class="line">		alphaFirst = YES;</div><div class="line">		premultiplied = YES;</div><div class="line">    &#125;</div><div class="line">    else</div><div class="line">    &#123;</div><div class="line">        // 不用重新绘制就直接拿数据呗</div><div class="line">        dataFromImageDataProvider = CGDataProviderCopyData(CGImageGetDataProvider(newImageSource));</div><div class="line">        imageData = (GLubyte *)CFDataGetBytePtr(dataFromImageDataProvider);</div><div class="line">    &#125;</div><div class="line">	</div><div class="line">	// 如果不使用premultiplied alpha就要对premultiplied过的数据进行一下还原</div><div class="line">	if (removePremultiplication &amp;&amp; premultiplied) &#123;</div><div class="line">		NSUInteger	totalNumberOfPixels = round(pixelSizeToUseForTexture.width * pixelSizeToUseForTexture.height);</div><div class="line">		uint32_t	*pixelP = (uint32_t *)imageData;</div><div class="line">		uint32_t	pixel;</div><div class="line">		CGFloat		srcR, srcG, srcB, srcA;</div><div class="line">        </div><div class="line">        // premultiplied的数据中RGB是已经和alpha通道混合后的结果，如果不使用这个处理，那就要将图片数据还原出来</div><div class="line">		for (NSUInteger idx=0; idx&lt;totalNumberOfPixels; idx++, pixelP++) &#123;</div><div class="line">			pixel = isLitteEndian ? CFSwapInt32LittleToHost(*pixelP) : CFSwapInt32BigToHost(*pixelP);</div><div class="line">            </div><div class="line">            // 提取alpha通道值</div><div class="line">			if (alphaFirst) &#123;</div><div class="line">				srcA = (CGFloat)((pixel &amp; 0xff000000) &gt;&gt; 24) / 255.0f;</div><div class="line">			&#125;</div><div class="line">			else &#123;</div><div class="line">				srcA = (CGFloat)(pixel &amp; 0x000000ff) / 255.0f;</div><div class="line">				pixel &gt;&gt;= 8;</div><div class="line">			&#125;</div><div class="line"></div><div class="line">            // 提取R,G,B通道值</div><div class="line">			srcR = (CGFloat)((pixel &amp; 0x00ff0000) &gt;&gt; 16) / 255.0f;</div><div class="line">			srcG = (CGFloat)((pixel &amp; 0x0000ff00) &gt;&gt; 8) / 255.0f;</div><div class="line">			srcB = (CGFloat)(pixel &amp; 0x000000ff) / 255.0f;</div><div class="line">			</div><div class="line">			// 还原本来的R,G,B值</div><div class="line">			srcR /= srcA; srcG /= srcA; srcB /= srcA;</div><div class="line">			</div><div class="line">			// 重新拼成pixel数据</div><div class="line">			pixel = (uint32_t)(srcR * 255.0) &lt;&lt; 16;</div><div class="line">			pixel |= (uint32_t)(srcG * 255.0) &lt;&lt; 8;</div><div class="line">			pixel |= (uint32_t)(srcB * 255.0);</div><div class="line"></div><div class="line">            // 再将原来的alpha通道值加上去</div><div class="line">			if (alphaFirst) &#123;</div><div class="line">				pixel |= (uint32_t)(srcA * 255.0) &lt;&lt; 24;</div><div class="line">			&#125;</div><div class="line">			else &#123;</div><div class="line">				pixel &lt;&lt;= 8;</div><div class="line">				pixel |= (uint32_t)(srcA * 255.0);</div><div class="line">			&#125;</div><div class="line">			*pixelP = isLitteEndian ? CFSwapInt32HostToLittle(pixel) : CFSwapInt32HostToBig(pixel);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">    // 在GPUImageContext专门创建的一个队列中完成图片处理</div><div class="line">    runSynchronouslyOnVideoProcessingQueue(^&#123;</div><div class="line">        // 创建渲染上下文</div><div class="line">        [GPUImageContext useImageProcessingContext];</div><div class="line">        </div><div class="line">        // 从bufferCache中创建合适大小的outputFramebuffer</div><div class="line">        outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:pixelSizeToUseForTexture onlyTexture:YES];</div><div class="line">        [outputFramebuffer disableReferenceCounting];</div><div class="line"></div><div class="line">        // OpenGL例行公事，向OpenGL申请GL_TEXTURE_2D接口</div><div class="line">        glBindTexture(GL_TEXTURE_2D, [outputFramebuffer texture]);</div><div class="line">        if (self.shouldSmoothlyScaleOutput)</div><div class="line">        &#123;</div><div class="line">            // 如果需要就对像素数据进行处理，mipmap能压缩使处理效率更高</div><div class="line">            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);</div><div class="line">        &#125;</div><div class="line">        // 将刚刚申请的GL_TEXTURE_2D赋予真实的像素数据</div><div class="line">        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)pixelSizeToUseForTexture.width, (int)pixelSizeToUseForTexture.height, 0, format, GL_UNSIGNED_BYTE, imageData);</div><div class="line">        </div><div class="line">        if (self.shouldSmoothlyScaleOutput)</div><div class="line">        &#123;</div><div class="line">            glGenerateMipmap(GL_TEXTURE_2D);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        // 数据填充之后将接口“断开”</div><div class="line">        glBindTexture(GL_TEXTURE_2D, 0);</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    // 记得释放掉不用的内存，这里ARC是管不了的</div><div class="line">    if (shouldRedrawUsingCoreGraphics)</div><div class="line">    &#123;</div><div class="line">        free(imageData);</div><div class="line">    &#125;</div><div class="line">    else</div><div class="line">    &#123;</div><div class="line">        if (dataFromImageDataProvider)</div><div class="line">        &#123;</div><div class="line">            CFRelease(dataFromImageDataProvider);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面看起来一两百行的代码非常麻烦，但是其实逻辑非常清晰：(1)首先判断图片的大小是否合法，如果合法就什么都不做，如果不合法就改变至可接受的范围 (2)判断是不是需要重新计算像素数据，有很多原因需要重新计算数据，比如图片大小需要改变、数据格式不正确等原因 (3)如果需要重新绘制就重新绘制吧，不管怎么样得到新数据还是使用原数据，先看一下有没有premultiplied alpha，对应这个操作需要进行一些还原计算(去除RGB通道中alpha值的影响) (4)最后是OpenGL的例行操作，将像素数据作为texture交给OpenGL管线。<br>具体的重要步骤已经用注释的形式添加在了代码中，可以细看。</p>
+<p>其中有一些需要说明的地方：</p>
+<ul>
+<li>OpenGL要求纹理的宽和高都是2的整数幂，但是事实上我们经常会遇到纹理不满足这种尺寸的情况，有很多解决办法，比如取一个满足要求的背景，比如256<em>256，然后将我们200</em>200的的图片放到上面，这样读取纹理的时候的尺寸是满足要求的，但是实际使用只需要这有效的一部分就行了；也有atlas texture这种操作，将多个素材拼到一起凑成一个大的纹理，调用的时候只调用其中的具体部分，其实本质和前面那个方法差不多，但是这样能省去很多单个读取纹理的时间，大大提高效率。在GPUImage中没有用到这么麻烦的操作，只是简单地区长和宽最接近的2整数次幂，然后作为纹理的大小就是了，这样图片有可能会比例变化，但是实际上使用纹理的时候也会拉伸，所以不至于视觉上很严重。</li>
+<li>mipmap：<br>mipmap是一种纹理处理技术，用来解决纹理调用中出现的闪烁和性能低效问题。闪烁是指当屏幕上被渲染物体的表面与它相对应的纹理显得非常小的时候会出现的一种现象。我们知道纹理的大小是固定的，但是实际使用起来由于会出现缩放裁剪等情况，我们可能并不需要原纹理那样大小的文件，所以mipmap技术就应运而生，加载纹理的时候不仅仅只加载当前这个纹理信息，而是进而加载一系列固定比例的缩小图，在OpenGL中被称为不同的层级。使用mipmap纹理的时候系统会根据实际需要的纹理大小从不同层级中选出最适合的一个。打个比方我们的原始纹理是256<em>256，经过mipmap处理，每个层级的大小可能就是256</em>256、128<em>128、64</em>64….调用这个纹理的时候可能根据实际大小需要会选择64*64的层级即可。</li>
+<li>premultiplied alpha：<br>我们知道通常使用的RGBA四个通道来表示一个像素，每个通道8位，比如红色60%透明度就是(255,0,0,153)或者说用正规浮点数记录alpha为(255,0,0,0.6)，前三个代表三个颜色通道的值，alpha则是透明度，透明度是进行颜色混合的关键因素，假如一个像素的透明度是1.0，那么我们是看不到这个像素后面的颜色数据的，但是如果alpha&lt;1.0,就要和后面的像素进行混合，比例分别是alpha和(1-alpha)。premultiplied alpha会让RGB三个通道提前乘以透明度，比如这里的(255,0,0,0.6)如果经过premultiplied alpha处理后就会是(153,0.,0,0.6)。这样的操作能让纹理进行texture filting（插值时的权重会出现问题），但是也让颜色数据变得更不直观。<br>回到代码中，其实做的非常简单，如果使用了premultiplied alpha，那么就分别将R、G、B、A提取出来然后还原本来的R、G、B，最后还原成没有经过premultiplied alpha处理的原像素数据。</li>
+</ul>
+<p>后面还有OpenGL中绑定数据的方法，觉得需要结合OpenGL的用法来说，后面再细说。</p>
+<hr>
+<h5 id="Filter原型：GPUImageFilter"><a href="#Filter原型：GPUImageFilter" class="headerlink" title="Filter原型：GPUImageFilter"></a>Filter原型：GPUImageFilter</h5><p>接下来看filter的原理，由于filter的种类太多，我们就从中挑选一个sketch filter来研究好了，在此之前，先看看所有filter共同的父类：GPUImageFilter。<br>看看代码中的注释说明：</p>
+<blockquote>
+<p>GPUImage’s base filter class：<br> Filters and other subsequent elements in the chain conform to the GPUImageInput protocol, which lets them take in the supplied or processed texture from the previous link in the chain and do something with it. Objects one step further down the chain are considered targets, and processing can be branched by adding multiple targets to a single output or filter.<br> 解释一下就是GPUImage最基本的filter类（什么渲染效果都没有），filters或者其他渲染链上的元素遵从GPUImageInput协议，让它们可以从链的前一个组件中获取数据。接在后面的部件称为target，也可以通过一次添加多个target完成分支渲染。</p>
+</blockquote>
+<p>而GPUImageFilter又继承自GPUImageOutput，这个类的职责就是(1)维护一个outputFramebuffer,准备交给渲染链后面的组件 (2)通过GPUImageInput协议来从前面的组件接收数据 (3)记录下后面的组件作为自己的target (4)提供了不同线程上运行渲染片段的接口<br>基本上就是作为一个组件的基本逻辑，在这个类的基础上我们就可以实现链式渲染。</p>
+<p>回到GPUImageFilter，由于是GPUImageOutput的子类，所以完整继承了上面我们说的这些作为渲染组件的特性。看一看其本身的结构特点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">extern NSString *const kGPUImageVertexShaderString;</div><div class="line">extern NSString *const kGPUImagePassthroughFragmentShaderString;</div><div class="line"></div><div class="line">struct GPUVector4 &#123;</div><div class="line">    GLfloat one;</div><div class="line">    GLfloat two;</div><div class="line">    GLfloat three;</div><div class="line">    GLfloat four;</div><div class="line">&#125;;</div><div class="line">typedef struct GPUVector4 GPUVector4;</div><div class="line"></div><div class="line">struct GPUVector3 &#123;</div><div class="line">    GLfloat one;</div><div class="line">    GLfloat two;</div><div class="line">    GLfloat three;</div><div class="line">&#125;;</div><div class="line">typedef struct GPUVector3 GPUVector3;</div><div class="line"></div><div class="line">struct GPUMatrix4x4 &#123;</div><div class="line">    GPUVector4 one;</div><div class="line">    GPUVector4 two;</div><div class="line">    GPUVector4 three;</div><div class="line">    GPUVector4 four;</div><div class="line">&#125;;</div><div class="line">typedef struct GPUMatrix4x4 GPUMatrix4x4;</div><div class="line"></div><div class="line">struct GPUMatrix3x3 &#123;</div><div class="line">    GPUVector3 one;</div><div class="line">    GPUVector3 two;</div><div class="line">    GPUVector3 three;</div><div class="line">&#125;;</div><div class="line">typedef struct GPUMatrix3x3 GPUMatrix3x3;</div></pre></td></tr></table></figure>
+<p>上面是使用OpenGL需要的两个字符串和结构体，我们之前说了，OpenGL识别数据是靠用户传入的纯数字节流和解析方法，并没有能够提供关于数据结构上的接口，所以我们为了方便坐标颜色等因素的计算必须自己先定下结构体，比如上面的GPUVector4就是一个4维的向量，其中元素的类型是GLfloat，而GPUMatrix4x4是一个4x4的矩阵。<br>两个字符串，一个是vertexShader,一个是fragmentShader。前者是OpenGL处理输入顶点的程序，后者是光栅化之后如何处理每个片元的程序，是OpenGL的核心概念，也是我们从顶点数据到最终能够在图像上看到渲染完成后的图片的关键点。这个基础的内容很多，就没必要细说了，简单而言，前者是如何处理顶点的计算法则，后者是处理颜色的法则。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">@interface GPUImageFilter : GPUImageOutput &lt;GPUImageInput&gt;</div><div class="line">&#123;</div><div class="line">    // 输入和输出的数据</div><div class="line">    GPUImageFramebuffer *firstInputFramebuffer;</div><div class="line">    GPUImageFramebuffer *outputFramebuffer;</div><div class="line">    </div><div class="line">    // 创建OpenGL程序（program），以及需要使用的参数句柄，还有颜色分量</div><div class="line">    GLProgram *filterProgram;</div><div class="line">    GLint filterPositionAttribute, filterTextureCoordinateAttribute;</div><div class="line">    GLint filterInputTextureUniform;</div><div class="line">    GLfloat backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha;</div><div class="line">    </div><div class="line">    BOOL isEndProcessing;</div><div class="line">    </div><div class="line">    // 尺寸和方向数据</div><div class="line">    CGSize currentFilterSize;</div><div class="line">    GPUImageRotationMode inputRotation;</div><div class="line">    </div><div class="line">    BOOL currentlyReceivingMonochromeInput;</div><div class="line">    </div><div class="line">    NSMutableDictionary *uniformStateRestorationBlocks;</div><div class="line">    dispatch_semaphore_t imageCaptureSemaphore;</div><div class="line">    </div><div class="line">    </div><div class="line">    </div><div class="line">    // 后边接的targets，还有其纹理坐标</div><div class="line">    NSMutableArray *targets, *targetTextureIndices;</div><div class="line">    </div><div class="line">    CGSize inputTextureSize, cachedMaximumOutputSize, forcedMaximumSize;</div><div class="line">    </div><div class="line">    BOOL overrideInputSize;</div><div class="line">    </div><div class="line">    BOOL allTargetsWantMonochromeData;</div><div class="line">    BOOL usingNextFrameForImageCapture;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上是GPUImageFilter的实例变量，有一部分由于继承自GPUImageOutput所以也放到一起来看了。<br>可以看到有两个GPUImageFramebuffer类型的变量，firstInputFramebuffer和outputFramebuffer，从字面上可以理解这就是输入和输出的framebuffer数据。后面是OpenGL需要使用的各种句柄，如attribute，uniform这些参数是除顶点数据、纹理等数据之外从外界向shader输入出具体参数的方法。然后还有尺寸、方向的数据，以及作为chain中的组件的targets数组等需要的部件。</p>
+<p>现在先看看整个GPUImageFilter中最重要的方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line">- (id)initWithVertexShaderFromString:(NSString *)vertexShaderString fragmentShaderFromString:(NSString *)fragmentShaderString;</div><div class="line">&#123;</div><div class="line">    if (!(self = [super init]))</div><div class="line">    &#123;</div><div class="line">		return nil;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 初始化参数，存放处理uniform的dictionary初始容量为10，并且创建一个信号量imageCaptureSemaphore</div><div class="line">    uniformStateRestorationBlocks = [NSMutableDictionary dictionaryWithCapacity:10];</div><div class="line">    _preventRendering = NO;</div><div class="line">    currentlyReceivingMonochromeInput = NO;</div><div class="line">    inputRotation = kGPUImageNoRotation;</div><div class="line">    backgroundColorRed = 0.0;</div><div class="line">    backgroundColorGreen = 0.0;</div><div class="line">    backgroundColorBlue = 0.0;</div><div class="line">    backgroundColorAlpha = 0.0;</div><div class="line">    imageCaptureSemaphore = dispatch_semaphore_create(0);</div><div class="line">    dispatch_semaphore_signal(imageCaptureSemaphore);</div><div class="line"></div><div class="line">    // 专用线程中处理</div><div class="line">    runSynchronouslyOnVideoProcessingQueue(^&#123;</div><div class="line">        // 获取渲染需要的上下文context</div><div class="line">        [GPUImageContext useImageProcessingContext];</div><div class="line"></div><div class="line">        // 创建program，并且将编译过的vertex shader和fragment shader程序添加上去</div><div class="line">        filterProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:vertexShaderString fragmentShaderString:fragmentShaderString];</div><div class="line">        </div><div class="line">        if (!filterProgram.initialized)</div><div class="line">        &#123;</div><div class="line">            // 如果OpenGL program初始化失败，就调用默认初始化方法，为program添加&quot;position&quot;&amp;&quot;inputTextureCoordinate&quot;参数</div><div class="line">            [self initializeAttributes];</div><div class="line">            </div><div class="line">            // 如果没有完成连接，program创建失败，报错</div><div class="line">            if (![filterProgram link])</div><div class="line">            &#123;</div><div class="line">                NSString *progLog = [filterProgram programLog];</div><div class="line">                NSLog(@&quot;Program link log: %@&quot;, progLog);</div><div class="line">                NSString *fragLog = [filterProgram fragmentShaderLog];</div><div class="line">                NSLog(@&quot;Fragment shader compile log: %@&quot;, fragLog);</div><div class="line">                NSString *vertLog = [filterProgram vertexShaderLog];</div><div class="line">                NSLog(@&quot;Vertex shader compile log: %@&quot;, vertLog);</div><div class="line">                filterProgram = nil;</div><div class="line">                NSAssert(NO, @&quot;Filter shader link failed&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        // 关联program中的参数到这里的实例变量上</div><div class="line">        filterPositionAttribute = [filterProgram attributeIndex:@&quot;position&quot;];</div><div class="line">        filterTextureCoordinateAttribute = [filterProgram attributeIndex:@&quot;inputTextureCoordinate&quot;];</div><div class="line">        filterInputTextureUniform = [filterProgram uniformIndex:@&quot;inputImageTexture&quot;]; // This does assume a name of &quot;inputImageTexture&quot; for the fragment shader</div><div class="line">        </div><div class="line">        [GPUImageContext setActiveShaderProgram:filterProgram];</div><div class="line">        </div><div class="line">        // 允许使用变量，这是OpenGL固定操作</div><div class="line">        glEnableVertexAttribArray(filterPositionAttribute);</div><div class="line">        glEnableVertexAttribArray(filterTextureCoordinateAttribute);    </div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这是最基本的初始化方法，其他的初始化API也都是调用这个方法的基础上进行变化，其中GPUImageFilter本身的两个shader非常简单：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">NSString *const kGPUImageVertexShaderString = SHADER_STRING</div><div class="line">(</div><div class="line"> attribute vec4 position;</div><div class="line"> attribute vec4 inputTextureCoordinate;</div><div class="line"> </div><div class="line"> varying vec2 textureCoordinate;</div><div class="line"> </div><div class="line"> void main()</div><div class="line"> &#123;</div><div class="line">     gl_Position = position;</div><div class="line">     textureCoordinate = inputTextureCoordinate.xy;</div><div class="line"> &#125;</div><div class="line"> );</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">NSString *const kGPUImagePassthroughFragmentShaderString = SHADER_STRING</div><div class="line">(</div><div class="line"> varying highp vec2 textureCoordinate;</div><div class="line"> </div><div class="line"> uniform sampler2D inputImageTexture;</div><div class="line"> </div><div class="line"> void main()</div><div class="line"> &#123;</div><div class="line">     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);</div><div class="line"> &#125;</div><div class="line">);</div></pre></td></tr></table></figure>
+<p>vertex shader需要三个参数，position也就是顶点的位置，由于一般这里都是处理纹理，顶点基本就等于“相框”的顶点，没什么复杂操作；然后是纹理的位置，然后将纹理的坐标传给fragment shader。在vertex shader程序的main函数里，也只是原封不动地将坐标交给fragment shader，啥也没干。<br>而fragment shader，接受textureCoordinate作为参数，并且还有一个inputImageTexture作为uniform变量，也就是实际的纹理数据，然后再main函数里将纹理“贴”到固定的矩形里就行了，也基本上是什么都没做。<br>后面的很多各种Filter，基本上都是用的这么一个vertex shader，因为只要有个“相框”就行了，不需要复杂的位置视角变换；而不同的是各自如何处理颜色的fragment shader会不一样。<br>这样我们就完成了一个最基本的GPUImageFilter的初始化。</p>
+<p>但是我们实际使用的时候并不会直接调用GPUImageFilter，毕竟它只是提供了Filter的原型，自己并没有实际的图形操作。例子中我们调用的是GPUImageSketchFilter，那么就一点点来看GPUImage是怎么将原型filter扩展成多种多样的特效filter的过程的。</p>
+<hr>
+<h5 id="特定filter的实现"><a href="#特定filter的实现" class="headerlink" title="特定filter的实现"></a>特定filter的实现</h5><p>下图是GPUImageSketchFilter的继承关系：<br><img src="http://ot7rhf4gy.bkt.clouddn.com/17-7-19/86744408.jpg" alt="sketch继承"><br>我们已经讲过了GPUImageOutput和GPUImageFilter,那么一步步看看每一个类都添加了什么功能吧：</p>
+<ul>
+<li>GPUImageTwoPassFilter:<br>我们先看看其实例变量：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">GPUImageFramebuffer *secondOutputFramebuffer;</div><div class="line"></div><div class="line">GLProgram *secondFilterProgram;</div><div class="line">GLint secondFilterPositionAttribute, secondFilterTextureCoordinateAttribute;</div><div class="line">GLint secondFilterInputTextureUniform, secondFilterInputTextureUniform2;</div><div class="line"></div><div class="line">NSMutableDictionary *secondProgramUniformStateRestorationBlocks;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>很明显这个类就像它的名字一样，在原有的一套inputFramebuffer+outputFramebuffer的基础上添加了一个新的secondOutputFramebuffer。也就是说一组input数据输入之后，有两套完全不同的pipeline来处理这个数据，最后从两个framebuffer分别输出，名副其实的“two pass”。<br>知道了这个前提，那么初始化方法其实我们很好猜到到底干了些啥：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">GPUImageTwoPassFilter.m</div><div class="line"></div><div class="line">- (id)initWithFirstStageVertexShaderFromString:(NSString *)firstStageVertexShaderString firstStageFragmentShaderFromString:(NSString *)firstStageFragmentShaderString secondStageVertexShaderFromString:(NSString *)secondStageVertexShaderString secondStageFragmentShaderFromString:(NSString *)secondStageFragmentShaderString;</div><div class="line">&#123;</div><div class="line">    // 这里调用了GPUImageFilter中的初始化方法</div><div class="line">    if (!(self = [super initWithVertexShaderFromString:firstStageVertexShaderString fragmentShaderFromString:firstStageFragmentShaderString]))</div><div class="line">    &#123;</div><div class="line">		return nil;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // 其实是和构建第一套pipeline一样的方法</div><div class="line">    secondProgramUniformStateRestorationBlocks = [NSMutableDictionary dictionaryWithCapacity:10];</div><div class="line"></div><div class="line">    runSynchronouslyOnVideoProcessingQueue(^&#123;</div><div class="line">        [GPUImageContext useImageProcessingContext];</div><div class="line"></div><div class="line">        secondFilterProgram = [[GPUImageContext sharedImageProcessingContext] programForVertexShaderString:secondStageVertexShaderString fragmentShaderString:secondStageFragmentShaderString];</div><div class="line">        </div><div class="line">        if (!secondFilterProgram.initialized)</div><div class="line">        &#123;</div><div class="line">            [self initializeSecondaryAttributes];</div><div class="line">            </div><div class="line">            if (![secondFilterProgram link])</div><div class="line">            &#123;</div><div class="line">                NSString *progLog = [secondFilterProgram programLog];</div><div class="line">                NSLog(@&quot;Program link log: %@&quot;, progLog);</div><div class="line">                NSString *fragLog = [secondFilterProgram fragmentShaderLog];</div><div class="line">                NSLog(@&quot;Fragment shader compile log: %@&quot;, fragLog);</div><div class="line">                NSString *vertLog = [secondFilterProgram vertexShaderLog];</div><div class="line">                NSLog(@&quot;Vertex shader compile log: %@&quot;, vertLog);</div><div class="line">                secondFilterProgram = nil;</div><div class="line">                NSAssert(NO, @&quot;Filter shader link failed&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        secondFilterPositionAttribute = [secondFilterProgram attributeIndex:@&quot;position&quot;];</div><div class="line">        secondFilterTextureCoordinateAttribute = [secondFilterProgram attributeIndex:@&quot;inputTextureCoordinate&quot;];</div><div class="line">        secondFilterInputTextureUniform = [secondFilterProgram uniformIndex:@&quot;inputImageTexture&quot;]; // This does assume a name of &quot;inputImageTexture&quot; for the fragment shader</div><div class="line">        secondFilterInputTextureUniform2 = [secondFilterProgram uniformIndex:@&quot;inputImageTexture2&quot;]; // This does assume a name of &quot;inputImageTexture2&quot; for second input texture in the fragment shader</div><div class="line">        </div><div class="line">        [GPUImageContext setActiveShaderProgram:secondFilterProgram];</div><div class="line">        </div><div class="line">        glEnableVertexAttribArray(secondFilterPositionAttribute);</div><div class="line">        glEnableVertexAttribArray(secondFilterTextureCoordinateAttribute);</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>不用看这么多内容，其实很简单，第一步调用父类的初始化方法产生一套pipeline，对应的framebuffer，第二步按照同样的流程再生成一个pipeline（全部都是second前缀），需要说明的是第二套pipeline的vertex shader &amp; fragment shader是需要调用初始化方法的时候当做参数传入的。</p>
+<ul>
+<li>GPUImageSobelEdgeDetectionFilter：<br>这里说明一下SobelEdgeDetection是一种边缘检测算法，那么很清楚这个类就是加入了这一边缘检测处理的子类。至于说为什么这里会用到这个算法，因为我们调用的滤镜就是将图像素描化的效果，所以要进行边缘检测并且改变图片的灰度表达。具体的计算方法不细讲了，这里看看初始化的方法和fragment shader。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">- (id)initWithFragmentShaderFromString:(NSString *)fragmentShaderString;</div><div class="line">&#123;</div><div class="line">    // Do a luminance pass first to reduce the calculations performed at each fragment in the edge detection phase</div><div class="line"></div><div class="line">    // 这里直接调用了父类的初始化方法，第二个fragment shader做为参数交给初始化方法</div><div class="line">    if (!(self = [super initWithFirstStageVertexShaderFromString:kGPUImageVertexShaderString firstStageFragmentShaderFromString:kGPUImageLuminanceFragmentShaderString secondStageVertexShaderFromString:kGPUImageNearbyTexelSamplingVertexShaderString secondStageFragmentShaderFromString:fragmentShaderString]))</div><div class="line">    &#123;</div><div class="line">		return nil;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    hasOverriddenImageSizeFactor = NO;</div><div class="line">    </div><div class="line">    texelWidthUniform = [secondFilterProgram uniformIndex:@&quot;texelWidth&quot;];</div><div class="line">    texelHeightUniform = [secondFilterProgram uniformIndex:@&quot;texelHeight&quot;];</div><div class="line">    edgeStrengthUniform = [secondFilterProgram uniformIndex:@&quot;edgeStrength&quot;];</div><div class="line">    </div><div class="line">    self.edgeStrength = 1.0;</div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>没什么好说的，看看fragmentshader：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">NSString *const kGPUImageSobelEdgeDetectionFragmentShaderString = SHADER_STRING</div><div class="line">(</div><div class="line"> precision mediump float;</div><div class="line"></div><div class="line"> varying vec2 textureCoordinate;</div><div class="line"> varying vec2 leftTextureCoordinate;</div><div class="line"> varying vec2 rightTextureCoordinate;</div><div class="line"> </div><div class="line"> varying vec2 topTextureCoordinate;</div><div class="line"> varying vec2 topLeftTextureCoordinate;</div><div class="line"> varying vec2 topRightTextureCoordinate;</div><div class="line"> </div><div class="line"> varying vec2 bottomTextureCoordinate;</div><div class="line"> varying vec2 bottomLeftTextureCoordinate;</div><div class="line"> varying vec2 bottomRightTextureCoordinate;</div><div class="line"></div><div class="line"> uniform sampler2D inputImageTexture;</div><div class="line"> uniform float edgeStrength;</div><div class="line"> </div><div class="line"> void main()</div><div class="line"> &#123;</div><div class="line">    float bottomLeftIntensity = texture2D(inputImageTexture, bottomLeftTextureCoordinate).r;</div><div class="line">    float topRightIntensity = texture2D(inputImageTexture, topRightTextureCoordinate).r;</div><div class="line">    float topLeftIntensity = texture2D(inputImageTexture, topLeftTextureCoordinate).r;</div><div class="line">    float bottomRightIntensity = texture2D(inputImageTexture, bottomRightTextureCoordinate).r;</div><div class="line">    float leftIntensity = texture2D(inputImageTexture, leftTextureCoordinate).r;</div><div class="line">    float rightIntensity = texture2D(inputImageTexture, rightTextureCoordinate).r;</div><div class="line">    float bottomIntensity = texture2D(inputImageTexture, bottomTextureCoordinate).r;</div><div class="line">    float topIntensity = texture2D(inputImageTexture, topTextureCoordinate).r;</div><div class="line">    float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;</div><div class="line">    float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;</div><div class="line">    </div><div class="line">    float mag = length(vec2(h, v)) * edgeStrength;</div><div class="line">    </div><div class="line">    gl_FragColor = vec4(vec3(mag), 1.0);</div><div class="line"> &#125;</div><div class="line">);</div></pre></td></tr></table></figure></p>
+<p>sobel边缘检测是一个根据目标与其周围像素的计算方法，利用查分算子进行纵向和横向的卷积计算灰度值，最后得出目标像素和周围点的差别，如果梯度大于某个阈值就认为是边缘点。这个算法精确度不是很高，但是在不要求精确度的情况下确实简单实用。<br>细节计算就不说明了。</p>
+<ul>
+<li>GPUImageSketchFilter：<br>这是最终封装好给外接调用的filter，点进去看发现其实初始化也只是封装好了父类的初始化方法而已，使用了自己的fragment shader进行封装。 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">NSString *const kGPUImageSketchFragmentShaderString = SHADER_STRING</div><div class="line">(</div><div class="line"> precision mediump float;</div><div class="line"> </div><div class="line"> varying vec2 textureCoordinate;</div><div class="line"> varying vec2 leftTextureCoordinate;</div><div class="line"> varying vec2 rightTextureCoordinate;</div><div class="line"> </div><div class="line"> varying vec2 topTextureCoordinate;</div><div class="line"> varying vec2 topLeftTextureCoordinate;</div><div class="line"> varying vec2 topRightTextureCoordinate;</div><div class="line"> </div><div class="line"> varying vec2 bottomTextureCoordinate;</div><div class="line"> varying vec2 bottomLeftTextureCoordinate;</div><div class="line"> varying vec2 bottomRightTextureCoordinate;</div><div class="line"> </div><div class="line"> uniform float edgeStrength;</div><div class="line"></div><div class="line"> uniform sampler2D inputImageTexture;</div><div class="line"> </div><div class="line"> void main()</div><div class="line"> &#123;</div><div class="line">     float bottomLeftIntensity = texture2D(inputImageTexture, bottomLeftTextureCoordinate).r;</div><div class="line">     float topRightIntensity = texture2D(inputImageTexture, topRightTextureCoordinate).r;</div><div class="line">     float topLeftIntensity = texture2D(inputImageTexture, topLeftTextureCoordinate).r;</div><div class="line">     float bottomRightIntensity = texture2D(inputImageTexture, bottomRightTextureCoordinate).r;</div><div class="line">     float leftIntensity = texture2D(inputImageTexture, leftTextureCoordinate).r;</div><div class="line">     float rightIntensity = texture2D(inputImageTexture, rightTextureCoordinate).r;</div><div class="line">     float bottomIntensity = texture2D(inputImageTexture, bottomTextureCoordinate).r;</div><div class="line">     float topIntensity = texture2D(inputImageTexture, topTextureCoordinate).r;</div><div class="line">     float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;</div><div class="line">     float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;</div><div class="line">     </div><div class="line">     // 也就是这里有差别</div><div class="line">     float mag = 1.0 - (length(vec2(h, v)) * edgeStrength);</div><div class="line">     </div><div class="line">     gl_FragColor = vec4(vec3(mag), 1.0);</div><div class="line"> &#125;</div><div class="line">);</div><div class="line"></div><div class="line">- (id)init;</div><div class="line">&#123;</div><div class="line">    if (!(self = [self initWithFragmentShaderFromString:kGPUImageSketchFragmentShaderString]))</div><div class="line">    &#123;</div><div class="line">		return nil;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>仔细观察的话就能发现，其实这个shader计算每个像素颜色的方法和我们在其父类SobelEdgeDetectiveFilter中看到的是基本相同的，只有最后决定颜色的时候是反过来用1减去本来计算出来的各通路的值的。</p>
+<p>至此，我们例子中的初始化滤镜组件的部分就完成了。<strong>简单来说就是在最原始的GPUImageFilter的基础上再加一组pipeline，然后按照特定的fragment shader来输出数据</strong>。<br>不过这个例子只是GPUImage使用方式中的一种，只针对静态图片的滤镜是这样，别的情况下比如是对视频进行逐帧操作或者是拍下照片等，重点可能就不在fragment shader上了。限于篇幅没法一次说明那么多内容。</p>
+<hr>
+<h5 id="显示容器GPUImageView"><a href="#显示容器GPUImageView" class="headerlink" title="显示容器GPUImageView"></a>显示容器GPUImageView</h5><p>GPUImageView结构上很简单，就是遵循了GPUImageInput协议的UIImageView。严格来说其在图片处理方面和前面介绍的filter组件是一样的，接受input数据之后创建自己的一套渲染pipeline,包括vertex shader &amp; fragment shader，而这里使用的图片处理仅仅只负责显示出来的图片的角度，而不管光影颜色等复杂因素。初始化方法就不看了，和前面提到的pipeline的初始化是差不多的。这个GPUImageView要说和前面的组件有什么不一样的话可能就只有它将framebuffer直接显示在自己的视图上了吧。</p>
+<hr>
+<h5 id="最终启动渲染链"><a href="#最终启动渲染链" class="headerlink" title="最终启动渲染链"></a>最终启动渲染链</h5><p>上面我们将整个渲染链中的组件，从数据读入、数据处理到图像展示的三个部分全部初始化完成并依次“组装”(addtarget)起来了。最后就调用链首的proccess方法。<br>这里我们调用的是GPUImagePicture的proccess方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">- (void)processImage;</div><div class="line">&#123;</div><div class="line">    [self processImageWithCompletionHandler:nil];</div><div class="line">&#125;</div><div class="line"></div><div class="line">- (BOOL)processImageWithCompletionHandler:(void (^)(void))completion;</div><div class="line">&#123;</div><div class="line">    hasProcessedImage = YES;</div><div class="line">    </div><div class="line">    // 减了1的信号量还不为0就报错</div><div class="line">    if (dispatch_semaphore_wait(imageUpdateSemaphore, DISPATCH_TIME_NOW) != 0)</div><div class="line">    &#123;</div><div class="line">        return NO;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // 给每个target依次输入数据</div><div class="line">    runAsynchronouslyOnVideoProcessingQueue(^&#123;        </div><div class="line">        for (id&lt;GPUImageInput&gt; currentTarget in targets)</div><div class="line">        &#123;</div><div class="line">            NSInteger indexOfObject = [targets indexOfObject:currentTarget];</div><div class="line">            NSInteger textureIndexOfTarget = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];</div><div class="line">            </div><div class="line">            [currentTarget setCurrentlyReceivingMonochromeInput:NO];</div><div class="line">            [currentTarget setInputSize:pixelSizeOfImage atIndex:textureIndexOfTarget];</div><div class="line">            [currentTarget setInputFramebuffer:outputFramebuffer atIndex:textureIndexOfTarget];</div><div class="line">            [currentTarget newFrameReadyAtTime:kCMTimeIndefinite atIndex:textureIndexOfTarget];</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        dispatch_semaphore_signal(imageUpdateSemaphore);</div><div class="line">        </div><div class="line">        if (completion != nil) &#123;</div><div class="line">            completion();</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    return YES;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>setInputFramebuffer: atIndex:这个方法是GPUImageInput协议中需要实现的方法，由于我们的例子中使用的是GPUImageTwoInputFilter这个类，那么就看它里面对protocal的实现方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div></pre></td><td class="code"><pre><div class="line">// 按照协议GPUImageInput要求传入数据</div><div class="line">- (void)setInputFramebuffer:(GPUImageFramebuffer *)newInputFramebuffer atIndex:(NSInteger)textureIndex;</div><div class="line">&#123;</div><div class="line">    if (textureIndex == 0)</div><div class="line">    &#123;</div><div class="line">        firstInputFramebuffer = newInputFramebuffer;</div><div class="line">        hasSetFirstTexture = YES;</div><div class="line">        [firstInputFramebuffer lock];</div><div class="line">    &#125;</div><div class="line">    else</div><div class="line">    &#123;</div><div class="line">        secondInputFramebuffer = newInputFramebuffer;</div><div class="line">        [secondInputFramebuffer lock];</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 启动图片处理</div><div class="line">- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;</div><div class="line">&#123;</div><div class="line">    // You can set up infinite update loops, so this helps to short circuit them</div><div class="line">    if (hasReceivedFirstFrame &amp;&amp; hasReceivedSecondFrame)</div><div class="line">    &#123;</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    BOOL updatedMovieFrameOppositeStillImage = NO;</div><div class="line">    </div><div class="line">    if (textureIndex == 0)</div><div class="line">    &#123;</div><div class="line">        hasReceivedFirstFrame = YES;</div><div class="line">        firstFrameTime = frameTime;</div><div class="line">        if (secondFrameCheckDisabled)</div><div class="line">        &#123;</div><div class="line">            hasReceivedSecondFrame = YES;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        if (!CMTIME_IS_INDEFINITE(frameTime))</div><div class="line">        &#123;</div><div class="line">            if CMTIME_IS_INDEFINITE(secondFrameTime)</div><div class="line">            &#123;</div><div class="line">                updatedMovieFrameOppositeStillImage = YES;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    else</div><div class="line">    &#123;</div><div class="line">        hasReceivedSecondFrame = YES;</div><div class="line">        secondFrameTime = frameTime;</div><div class="line">        if (firstFrameCheckDisabled)</div><div class="line">        &#123;</div><div class="line">            hasReceivedFirstFrame = YES;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        if (!CMTIME_IS_INDEFINITE(frameTime))</div><div class="line">        &#123;</div><div class="line">            if CMTIME_IS_INDEFINITE(firstFrameTime)</div><div class="line">            &#123;</div><div class="line">                updatedMovieFrameOppositeStillImage = YES;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // || (hasReceivedFirstFrame &amp;&amp; secondFrameCheckDisabled) || (hasReceivedSecondFrame &amp;&amp; firstFrameCheckDisabled)</div><div class="line">    if ((hasReceivedFirstFrame &amp;&amp; hasReceivedSecondFrame) || updatedMovieFrameOppositeStillImage)</div><div class="line">    &#123;</div><div class="line">        CMTime passOnFrameTime = (!CMTIME_IS_INDEFINITE(firstFrameTime)) ? firstFrameTime : secondFrameTime;</div><div class="line">        [super newFrameReadyAtTime:passOnFrameTime atIndex:0]; // Bugfix when trying to record: always use time from first input (unless indefinite, in which case use the second input)</div><div class="line">        hasReceivedFirstFrame = NO;</div><div class="line">        hasReceivedSecondFrame = NO;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>前面都是对收到的数据进行判断，可以看到最终调用的还是父类的方法，那我们回头去看：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line">GPUImageFilter.m</div><div class="line"></div><div class="line">- (void)newFrameReadyAtTime:(CMTime)frameTime atIndex:(NSInteger)textureIndex;</div><div class="line">&#123;</div><div class="line">    // 四个角没什么疑问吧。。</div><div class="line">    static const GLfloat imageVertices[] = &#123;</div><div class="line">        -1.0f, -1.0f,</div><div class="line">        1.0f, -1.0f,</div><div class="line">        -1.0f,  1.0f,</div><div class="line">        1.0f,  1.0f,</div><div class="line">    &#125;;</div><div class="line">    </div><div class="line">    [self renderToTextureWithVertices:imageVertices textureCoordinates:[[self class] textureCoordinatesForRotation:inputRotation]];</div><div class="line"></div><div class="line">    [self informTargetsAboutNewFrameAtTime:frameTime];</div><div class="line">&#125;</div><div class="line"></div><div class="line">======&gt;&gt;&gt;</div><div class="line">- (void)renderToTextureWithVertices:(const GLfloat *)vertices textureCoordinates:(const GLfloat *)textureCoordinates;</div><div class="line">&#123;</div><div class="line">    if (self.preventRendering)</div><div class="line">    &#123;</div><div class="line">        [firstInputFramebuffer unlock];</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    [GPUImageContext setActiveShaderProgram:filterProgram];</div><div class="line"></div><div class="line">    outputFramebuffer = [[GPUImageContext sharedFramebufferCache] fetchFramebufferForSize:[self sizeOfFBO] textureOptions:self.outputTextureOptions onlyTexture:NO];</div><div class="line">    [outputFramebuffer activateFramebuffer];</div><div class="line">    if (usingNextFrameForImageCapture)</div><div class="line">    &#123;</div><div class="line">        [outputFramebuffer lock];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    [self setUniformsForProgramAtIndex:0];</div><div class="line">    </div><div class="line">    glClearColor(backgroundColorRed, backgroundColorGreen, backgroundColorBlue, backgroundColorAlpha);</div><div class="line">    glClear(GL_COLOR_BUFFER_BIT);</div><div class="line"></div><div class="line">	glActiveTexture(GL_TEXTURE2);</div><div class="line">	glBindTexture(GL_TEXTURE_2D, [firstInputFramebuffer texture]);</div><div class="line">	</div><div class="line">	glUniform1i(filterInputTextureUniform, 2);	</div><div class="line"></div><div class="line">    glVertexAttribPointer(filterPositionAttribute, 2, GL_FLOAT, 0, 0, vertices);</div><div class="line">	glVertexAttribPointer(filterTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, textureCoordinates);</div><div class="line">    </div><div class="line">    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);</div><div class="line">    </div><div class="line">    [firstInputFramebuffer unlock];</div><div class="line">    </div><div class="line">    if (usingNextFrameForImageCapture)</div><div class="line">    &#123;</div><div class="line">        dispatch_semaphore_signal(imageCaptureSemaphore);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>好了，可以看到这里最终是调用了OpenGL的渲染管线，将最终渲染的结果放到framebuffer中，等待交给后面的组件使用。大部分都是固定管线操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">- (void)informTargetsAboutNewFrameAtTime:(CMTime)frameTime;</div><div class="line">&#123;</div><div class="line">    if (self.frameProcessingCompletionBlock != NULL)</div><div class="line">    &#123;</div><div class="line">        self.frameProcessingCompletionBlock(self, frameTime);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // Get all targets the framebuffer so they can grab a lock on it</div><div class="line">    for (id&lt;GPUImageInput&gt; currentTarget in targets)</div><div class="line">    &#123;</div><div class="line">        if (currentTarget != self.targetToIgnoreForUpdates)</div><div class="line">        &#123;</div><div class="line">            NSInteger indexOfObject = [targets indexOfObject:currentTarget];</div><div class="line">            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];</div><div class="line"></div><div class="line">            [self setInputFramebufferForTarget:currentTarget atIndex:textureIndex];</div><div class="line">            [currentTarget setInputSize:[self outputFrameSize] atIndex:textureIndex];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    // 解除资源锁定</div><div class="line">    [[self framebufferForOutput] unlock];</div><div class="line">    </div><div class="line">    if (usingNextFrameForImageCapture)</div><div class="line">    &#123;</div><div class="line">//        usingNextFrameForImageCapture = NO;</div><div class="line">    &#125;</div><div class="line">    else</div><div class="line">    &#123;</div><div class="line">        [self removeOutputFramebuffer];</div><div class="line">    &#125;    </div><div class="line">    </div><div class="line">    // 触发后面target的处理</div><div class="line">    for (id&lt;GPUImageInput&gt; currentTarget in targets)</div><div class="line">    &#123;</div><div class="line">        if (currentTarget != self.targetToIgnoreForUpdates)</div><div class="line">        &#123;</div><div class="line">            NSInteger indexOfObject = [targets indexOfObject:currentTarget];</div><div class="line">            NSInteger textureIndex = [[targetTextureIndices objectAtIndex:indexOfObject] integerValue];</div><div class="line">            [currentTarget newFrameReadyAtTime:frameTime atIndex:textureIndex];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>完成渲染之后再调用后面的target，将数据传递下去。直到最终显示在GPUImageView上。就是这样一个逻辑。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>GPUImage作为一个用途广泛的图形视频处理框架，内容实在是太过丰富，对应不同的数据源还有不同的渲染、处理方法，搭配起来有非常复杂的变化。我们这里只是拿一个例子来分析了GPUImage对一个静态图片的渲染方法，其中涉及了部分OpenGL的绘制指令，包括program、vertex shader、fragment shdaer等内容，这些是OpenGL的基础内容，只有自己动手才能明白每一步有什么意义。在这个框架中我们能看到很清晰的“渲染链”的逻辑，完美地应对了复杂渲染的搭配。并且从最基本的GPUImageFilter不断拓展为各种效果的设计方法也值得学习。可以说这个框架的设计思路和结构，非常值得学习，里面调用OpenGL的指令也适合让初学者了解OpenGL渲染中每一步的意义。</p>
+
+                
+
+
+<p class="pink-link-context">
+    <a href="/2017/07/02/Objective-c中的runtime学习记录/" rel="next" title="Objective-c中的runtime学习记录">
+    Next: Objective-c中的runtime学习记录
+  </a>
+</p>
+
+
+            </div>
+			
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+</div>
+
+        <div class="fixed-action-btn float-sitemap">
+    <a class="btn-floating btn-large pink">
+      <i class="fa fa-caret-square-o-up"></i>
+    </a>
+    <ul>
+      <li><a class="btn-return-top btn-floating waves-effect green" title="Return to top"><i class="fa fa-arrow-circle-o-up"></i></a></li>
+      <li><a class="btn-floating waves-effect button-collapse yellow darken-1"  data-activates="main-menu" title="Menu"><i class="fa fa-navicon"></i></a></li>
+    </ul>
+  </div>
+
+    </main>
+    <footer class="page-footer indigo darken-1">
+    
+
+    <div class="footer-copyright pink-link-context">
+        <div class="container">
+            © 2016 example.com, All rights reserved.
+            <p class="right" style="margin-top: 0;">Blog powered by <a href="https://hexo.io">Hexo</a> | Theme <a href="https://github.com/raytaylorlin/hexo-theme-raytaylorism">raytaylorism</a></p>
+        </div>
+    </div>
+</footer>
+
+
+    <noscript>
+    <div class="noscript">
+        <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+    </div>
+</noscript>
+<div class="noscript">
+    <p class="center-align">当前网速较慢或者你使用的浏览器不支持博客特定功能，请尝试刷新或换用Chrome、Firefox等现代浏览器</p>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/materialize.min.js"></script>
+
+<script>
+    (function($) {
+        $(document).ready(function() {
+            // 隐藏禁用javascript（针对微信内置浏览器）的提示
+            $('.noscript').hide();
+
+            // 图片缩放效果
+            var $imgs = $('img').not('.slider-image').not('.avatar-image').not('.carousel-image').not('.card-cover-image').not('.qrcode');
+
+            // 给图片加上点击放大效果（materialbox插件）
+            $imgs.addClass('materialboxed').each(function(i, el) {
+                $(this).attr('data-caption', $(this).attr('alt') || ' ');
+            }).materialbox();
+
+            // 优化表格的显示
+            $('table').each(function() {
+                var $table = $(this);
+                // 除去多行代码的情况
+                if ($table.find('pre').length == 0) {
+                    $table.addClass('responsive-table striped bordered');
+                }
+            });
+
+            // 首页幻灯片
+            $('.slider').slider({indicators: true, full_width: true, interval: 8000});
+
+            $(".button-collapse").sideNav();
+            $(".category-menu").sideNav();
+
+            // 针对gallery post
+            $('.carousel').carousel({full_width: true});
+            $('.carousel-control.prev').click(function() {
+                $('.carousel').carousel('prev');
+            });
+            $('.carousel-control.next').click(function() {
+                $('.carousel').carousel('next');
+            });
+
+            // 文章目录
+            $('article').not('.simple-article').find('h1').add('h2').add('h3').add('h4').add('h5').add('h6').scrollSpy();
+
+            // 目录随屏幕滚动（防止目录过长越过footer）
+            var $toc = $('.toc');
+            var scrollTargetTop = 0;
+            $(window).scroll(function() {
+                var $activeLink = $toc.find('a.active.section');
+                if ($(window).scrollTop() < 100) {
+                    scrollTargetTop = 0;
+                } else {
+                    if ($activeLink[0]) {
+                        scrollTargetTop = $activeLink.offset().top - $toc.offset().top;
+                    }
+                }
+                $toc.css('top', '-' + scrollTargetTop + 'px');
+            });
+
+            // 修正文章目录的left-border颜色
+            var color = $('.table-of-contents-text').css('color');
+            $('.table-of-contents-link').css('border-left-color', color);
+
+            // 针对移动端做的优化：FAB按钮点击一下收回
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $('.fixed-action-btn').addClass('click-to-toggle');
+            }
+            // 回到顶部
+            $('.btn-return-top').click(function() {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 500);
+            });
+
+            // 重置读书页面的Tab标签页的颜色
+            $('li.tab a').hover(function() {
+                $(this).toggleClass('text-lighten-4');
+            });
+            $('.indicator').addClass('pink lighten-2');
+
+            
+            // 添加new标签
+            $('.menu-reading, .menu-about').append('<span class="new badge pink"></span>');
+            
+
+            // 搜索功能
+            $('.modal-trigger').leanModal({
+                // 打开搜索框时自动聚焦
+                ready: function() {
+                    if ($('#search').is(":visible")) {
+                        $('#search-input').focus();
+                    }
+                }
+            });
+            var searchXml = "";
+            if (searchXml.length == 0) {
+             	searchXml = "search.xml";
+            }
+            var searchPath = "/" + searchXml;
+            initSearch(searchPath, 'search-input', 'search-result');
+        });
+
+        // 初始化搜索与匹配函数
+        var initSearch = function(path, search_id, content_id) {
+            'use strict';
+            $.ajax({
+                url: path,
+                dataType: "xml",
+                success: function(xmlResponse) {
+                    // get the contents from search data
+                    var datas = $("entry", xmlResponse).map(function() {
+                        return {
+                            title: $("title", this).text(),
+                            content: $("content", this).text(),
+                            url: $("url", this).text()
+                        };
+                    }).get();
+                    var $input = document.getElementById(search_id);
+                    var $resultContent = document.getElementById(content_id);
+                    $input.addEventListener('input', function() {
+                        var str = '<ul class=\"search-result-list\">';
+                        var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                        $resultContent.innerHTML = "";
+                        if (this.value.trim().length <= 0) {
+                            return;
+                        }
+                        // perform local searching
+                        datas.forEach(function(data) {
+                            var isMatch = true;
+                            var content_index = [];
+                            var data_title = data.title.trim().toLowerCase();
+                            var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                            var data_url = data.url;
+                            var index_title = -1;
+                            var index_content = -1;
+                            var first_occur = -1;
+                            // only match artiles with not empty titles and contents
+                            if (data_title != '' && data_content != '') {
+                                keywords.forEach(function(keyword, i) {
+                                    index_title = data_title.indexOf(keyword);
+                                    index_content = data_content.indexOf(keyword);
+                                    if (index_title < 0 && index_content < 0) {
+                                        isMatch = false;
+                                    } else {
+                                        if (index_content < 0) {
+                                            index_content = 0;
+                                        }
+                                        if (i == 0) {
+                                            first_occur = index_content;
+                                        }
+                                    }
+                                });
+                            }
+                            // show search results
+                            if (isMatch) {
+                                keywords.forEach(function(keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    data_title = data_title.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                });
+
+                                str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                                var content = data.content.trim().replace(/<[^>]+>/g, "");
+                                if (first_occur >= 0) {
+                                    // cut out 100 characters
+                                    var start = first_occur - 20;
+                                    var end = first_occur + 80;
+                                    if (start < 0) {
+                                        start = 0;
+                                    }
+                                    if (start == 0) {
+                                        end = 100;
+                                    }
+                                    if (end > content.length) {
+                                        end = content.length;
+                                    }
+                                    var match_content = content.substring(start, end);
+                                    // highlight all keywords
+                                    keywords.forEach(function(keyword) {
+                                        var regS = new RegExp(keyword, "gi");
+                                        match_content = match_content.replace(regS, "<span class=\"search-keyword pink lighten-2\">" + keyword + "</span>");
+                                    });
+
+                                    str += "<p class=\"search-result\">..." + match_content + "...</p>"
+                                }
+                                str += "</li>";
+                            }
+                        });
+                        str += "</ul>";
+                        $resultContent.innerHTML = str;
+                    });
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
+
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("pre").addClass("prettyprint");
+        prettyPrint();
+    });
+</script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+</body>
+</html>

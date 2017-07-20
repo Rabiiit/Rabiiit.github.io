@@ -7,8 +7,12 @@
 
     
 
-    <title>系统 | </title>
+    <title></title>
     <meta name="author" content="John Doe">
+    
+    <meta name="description" content="数据可视化项目项目简介这个大项目算是跨平台的数据可视化的一种尝试，最开始的初衷只是完成一个生物数据可视化的一部分，将数以亿计的基因碱基序列用图形的方法表示出来。
+参考了Web端多种开源的Genome Browser，重点在JBrowser上。
+后来改换思路，参考js的可视化框架D3,先将其基本图形的">
     
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -215,36 +219,77 @@
 
     <main>
         <div class="container main-container">
-    
-
-<nav class="page-nav hide-on-small-only">
+    <nav class="page-nav hide-on-small-only">
     <div class="nav-wrapper indigo">
         <span class="breadcrumb">Current page(Categories)</span>
         
+            
 
         
-            <a class="breadcrumb" href="/categories/系统/">系统</a>
+
         
     </div>
 </nav>
 
+<article>
+    <div class="card">
+        <div class="card-content">
+            
+
+            <div class="article-title">
+                
+    
+        <h1>No title</h1>
+    
 
 
-    <div class="collection mt-0">
-        
-            <a href="/2017/07/02/Objective-c中的runtime学习记录/" class="collection-item grey-text text-darken-1">
-                <time datetime="2017-07-02T04:00:00.000Z">2017-07-02</time>
-                <span>&nbsp;&nbsp;&nbsp;</span>
-                Objective-c中的runtime学习记录
-            </a>
-        
-            <a href="/2017/07/02/GCD总结/" class="collection-item grey-text text-darken-1">
-                <time datetime="2017-07-02T03:00:00.000Z">2017-07-02</time>
-                <span>&nbsp;&nbsp;&nbsp;</span>
-                GCD概要
-            </a>
-        
+            </div>
+            <time class="pink-link-context" datetime="2017-07-20T16:07:16.000Z"><a href="/about/iD3.html">2017-07-21</a></time>
+
+            <span id="busuanzi_container_page_pv" class="read-times-container">
+    <i class="fa fa-eye"></i>
+    <span id="busuanzi_value_page_pv"></span>
+</span>
+
+            
+
+            <div class="toc pink-link-context hide-on-med-and-down">
+    <ol class="section table-of-contents"><li class="section table-of-contents-item section table-of-contents-level-3"><a class="section table-of-contents-link" href="#数据可视化项目"><span class="section table-of-contents-text">数据可视化项目</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#项目简介"><span class="section table-of-contents-text">项目简介</span></a></li><li class="section table-of-contents-item section table-of-contents-level-4"><a class="section table-of-contents-link" href="#项目内容和范例"><span class="section table-of-contents-text">项目内容和范例</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-5"><a class="section table-of-contents-link" href="#实现效果："><span class="section table-of-contents-text">实现效果：</span></a><ol class="section table-of-contents-child"><li class="section table-of-contents-item section table-of-contents-level-6"><a class="section table-of-contents-link" href="#JBrowser效果"><span class="section table-of-contents-text">JBrowser效果</span></a></li><li class="section table-of-contents-item section table-of-contents-level-6"><a class="section table-of-contents-link" href="#实现效果：-1"><span class="section table-of-contents-text">实现效果：</span></a></li></ol></li></ol></li></ol></li></ol>
+</div>
+
+
+            <div class="entry pink-link-context">
+                <h3 id="数据可视化项目"><a href="#数据可视化项目" class="headerlink" title="数据可视化项目"></a>数据可视化项目</h3><h4 id="项目简介"><a href="#项目简介" class="headerlink" title="项目简介"></a>项目简介</h4><p>这个大项目算是跨平台的数据可视化的一种尝试，最开始的初衷只是完成一个生物数据可视化的一部分，将数以亿计的基因碱基序列用图形的方法表示出来。</p>
+<p>参考了Web端多种开源的Genome Browser，重点在<a href="https://jbrowse.org/" target="_blank" rel="external">JBrowser</a>上。</p>
+<p>后来改换思路，参考js的可视化框架D3,先将其基本图形的实现在iOS本地完成，然后将封装好的绘制接口暴露出来供以后使用JS来调用。主要本地的工作是1）对输入数据进行解析；支持多种类型的输入数据包括json,csv等 2)用OpenGL ES或原生的core animation等工具将处理完的数据显示出来。</p>
+<h4 id="项目内容和范例"><a href="#项目内容和范例" class="headerlink" title="项目内容和范例"></a>项目内容和范例</h4><p>首先是Genome browser，我们的小组对JBrowser的源码进行了解析，多亏了前端的兄弟“翻译”了大量的javascript代码才让我们有头绪开始工作。</p>
+<p>首先是对基因数据进行处理，这些数据以bam这种格式存储在后台中，数以亿计的碱基对数据和蛋白质信息当然不可能是一次取完的，我们只能选择需要的片段来加载。这就要用到htslib这个第三方开源库，用来解析庞大的基因组数据。它会根据每段基因的索引文件计算出需要的片段的地址然后取出最适合的大小的片段。</p>
+<p>我们要做的是将这个C++的库编译为iOS的静态库才能调用，主要就是修改makrfile，还有在不同架构下有的函数需要被修改才能适用。</p>
+<p>后续可能会根据需求增加更多功能。</p>
+<h5 id="实现效果："><a href="#实现效果：" class="headerlink" title="实现效果："></a>实现效果：</h5><h6 id="JBrowser效果"><a href="#JBrowser效果" class="headerlink" title="JBrowser效果"></a>JBrowser效果</h6><p><img src="http://ot7rhf4gy.bkt.clouddn.com/17-7-20/35745446.jpg" alt="JBrowser"></p>
+<p>可以看到显示三种基因组数据：1.FASTA:单纯的DNA碱基序列 2.BAM:DNA测序结果序列 3.VCF: DNA测序检测出来的基因变异。</p>
+<h6 id="实现效果：-1"><a href="#实现效果：-1" class="headerlink" title="实现效果："></a>实现效果：</h6><p><img src="http://vanney9.com/lionheart/1707/atcg.gif" alt="FASTA"></p>
+<p><img src="http://vanney9.com/lionheart/1707/bam.gif" alt="BAM"></p>
+<p>这个项目iOS的部分也只是涉及了一些OpenGL绘制图形的内容，大部分工作其实都在查看JS代码，编译静态库，了解生物知识=。=</p>
+<p>后面我们又接着尝试将Web端注明的开源框架D3的功能在原生应用中实现。除了基本图形之外还有一些很经典的图形比如弦图和力图（点之间力的关系）</p>
+<p><img src="http://ot7rhf4gy.bkt.clouddn.com/17-7-20/54731463.jpg" alt="弦图"></p>
+<p><img src="http://ot7rhf4gy.bkt.clouddn.com/17-7-20/18907871.jpg" alt="力图"></p>
+<p>其他还有基本图形比如饼图、折线图还有各种自定义图形。</p>
+<p>由于D3主要用SVG来显示图形，所以原生代码基本只能参考数据处理部分，包括Json的解析还有各种容器封装。实际在绘制上实现都是用了OpenGL、core animation还有core graphics，并将它们进行封装。</p>
+
+                
+
+
+
+            </div>
+			
+        </div>
     </div>
+</article>
+
+
+
+
 
 
 </div>
