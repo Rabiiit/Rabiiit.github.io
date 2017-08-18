@@ -18,7 +18,7 @@
 通信序列化/反序列化模块
 UIKit相关
 
-实际上AFNetworking是对原生的NSURLSession进行的封装，上面所说的四个">
+实际上AFNetworking是对原生的NSURLSession进行的封装，上面所说的四个部分并不是并列的关系，所有请求逻辑全部交由AFURLSessionManager来处理，其他的网络监听，安全和序列化/反序列化全是为AFURLSessionManager服务或者说是以其为基础的。至于AFHTTPSessionManager本身也是继承自URLSessionManager的一层封装，本身并不干活，只是将请求逻辑分发给其父类去做。">
     
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -284,6 +284,7 @@ UIKit相关
 <li>UIKit相关</li>
 </ul>
 <p>实际上AFNetworking是对原生的NSURLSession进行的封装，上面所说的四个部分并不是并列的关系，所有请求逻辑全部交由AFURLSessionManager来处理，其他的网络监听，安全和序列化/反序列化全是为AFURLSessionManager服务或者说是以其为基础的。至于AFHTTPSessionManager本身也是继承自URLSessionManager的一层封装，本身并不干活，只是将请求逻辑分发给其父类去做。</p>
+<a id="more"></a>
 <p>如上所说，用户对接的其实是AFHTTPSessionManager类，当需要实例化网络请求的时候，一般使用下面的方法</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">+ (instancetype)manager;</div><div class="line">  - (instancetype)initWithBaseURL:(nullable NSURL *)url;</div><div class="line">  - (instancetype)initWithBaseURL:(nullable NSURL *)url</div><div class="line">             sessionConfiguration:(nullable NSURLSessionConfiguration</div><div class="line">  *)configuration;</div><div class="line">  </div><div class="line">其中</div><div class="line">- (instancetype)initWithBaseURL:(NSURL *)url</div><div class="line">           sessionConfiguration:(NSURLSessionConfiguration *)configuration</div><div class="line">&#123;</div><div class="line">    self = [super initWithSessionConfiguration:configuration];</div><div class="line">    if (!self) &#123;</div><div class="line">        return nil;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // 对传进来的url进行判断，判断结束是否有“/”</div><div class="line">    if ([[url path] length] &gt; 0 &amp;&amp; ![[url absoluteString] hasSuffix:@&quot;/&quot;]) &#123;</div><div class="line">        url = [url URLByAppendingPathComponent:@&quot;&quot;];</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    self.baseURL = url;</div><div class="line"></div><div class="line">    self.requestSerializer = [AFHTTPRequestSerializer serializer];</div><div class="line">    self.responseSerializer = [AFJSONResponseSerializer serializer];</div><div class="line"></div><div class="line">    return self;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>而其实这个初始化的调用，也是先调用了父类AFURLSessionManager的初始化方法,这个后面再说。</p>

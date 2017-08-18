@@ -10,7 +10,7 @@
     <title>AFNetworking的安全策略 | </title>
     <meta name="author" content="John Doe">
     
-    <meta name="description" content="上面我们说到，AFNetworking3.x是对NSURLSession的一层包装，包括delegate的实现和回调，还有请求接口的包装。不过这只是一部分基本功能，实际上还有一些同样很复杂并且重要的部分。比如现在我们看到的就是其中的安全策略。本质上AFNetworking的安全策略是根据https来">
+    <meta name="description" content="上面我们说到，AFNetworking3.x是对NSURLSession的一层包装，包括delegate的实现和回调，还有请求接口的包装。不过这只是一部分基本功能，实际上还有一些同样很复杂并且重要的部分。比如现在我们看到的就是其中的安全策略。本质上AFNetworking的安全策略是根据https来完成的。先简单讲讲https和http的差别：由于超文本传输协议http协议以明文的方法传送内容，不提供任何数据加密，所以很容易被攻击者截取到http传输的内容，在这个基础上，开发了新的https协议，即加入了SSL安全套接字方法，依靠证书来验证服务器的身份，这样在普通http传输的过程中传输的信息就是经过了证书加密之后的数据，提高了安全性。">
     
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -271,7 +271,9 @@
 
 
             <div class="entry pink-link-context">
-                <p>上面我们说到，AFNetworking3.x是对NSURLSession的一层包装，包括delegate的实现和回调，还有请求接口的包装。不过这只是一部分基本功能，实际上还有一些同样很复杂并且重要的部分。比如现在我们看到的就是其中的安全策略。<br>本质上AFNetworking的安全策略是根据https来完成的。先简单讲讲https和http的差别：<br>由于超文本传输协议http协议以明文的方法传送内容，不提供任何数据加密，所以很容易被攻击者截取到http传输的内容，在这个基础上，开发了新的https协议，即加入了SSL安全套接字方法，依靠证书来验证服务器的身份，这样在普通http传输的过程中传输的信息就是经过了证书加密之后的数据，提高了安全性。<br>简单总结一下就是：</p>
+                <p>上面我们说到，AFNetworking3.x是对NSURLSession的一层包装，包括delegate的实现和回调，还有请求接口的包装。不过这只是一部分基本功能，实际上还有一些同样很复杂并且重要的部分。比如现在我们看到的就是其中的安全策略。<br>本质上AFNetworking的安全策略是根据https来完成的。先简单讲讲https和http的差别：<br>由于超文本传输协议http协议以明文的方法传送内容，不提供任何数据加密，所以很容易被攻击者截取到http传输的内容，在这个基础上，开发了新的https协议，即加入了SSL安全套接字方法，依靠证书来验证服务器的身份，这样在普通http传输的过程中传输的信息就是经过了证书加密之后的数据，提高了安全性。</p>
+<a id="more"></a>
+<p>简单总结一下就是：</p>
 <ol>
 <li>用户发起请求，服务器响应并返回一个证书，包括基本信息和公钥</li>
 <li>用户拿到证书之后验证是否合法</li>

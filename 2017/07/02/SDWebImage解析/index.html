@@ -10,8 +10,7 @@
     <title>SDWebImage解析 | </title>
     <meta name="author" content="John Doe">
     
-    <meta name="description" content="SDWebImage是开发中常用的网络加载图片的库，使用频率高到令人发指。本身优秀的接口封装和底层的内存管理都让开发者免去了很多麻烦，那么作为一个开发者，有必要对这么一个每天都要打交道的库有一些更深入的了解。这里我记录下自己阅读源码的心得，算是做个笔记。
-12345sd_setImageWithUR">
+    <meta name="description" content="SDWebImage是开发中常用的网络加载图片的库，使用频率高到令人发指。本身优秀的接口封装和底层的内存管理都让开发者免去了很多麻烦，那么作为一个开发者，有必要对这么一个每天都要打交道的库有一些更深入的了解。这里我记录下自己阅读源码的心得，算是做个笔记。">
     
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -269,6 +268,7 @@
 
             <div class="entry pink-link-context">
                 <p>SDWebImage是开发中常用的网络加载图片的库，使用频率高到令人发指。本身优秀的接口封装和底层的内存管理都让开发者免去了很多麻烦，那么作为一个开发者，有必要对这么一个每天都要打交道的库有一些更深入的了解。这里我记录下自己阅读源码的心得，算是做个笔记。</p>
+<a id="more"></a>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sd_setImageWithURL:(nullable NSURL *)url</div><div class="line">          placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                   options:(SDWebImageOptions)options</div><div class="line">                  progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                 completed:(nullable SDExternalCompletionBlock)completedBlock</div></pre></td></tr></table></figure>
 <p>而这个方法里面是直接调用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sd_internalSetImageWithURL:(nullable NSURL *)url</div><div class="line">                  placeholderImage:(nullable UIImage *)placeholder</div><div class="line">                           options:(SDWebImageOptions)options</div><div class="line">                      operationKey:(nullable NSString *)operationKey</div><div class="line">                     setImageBlock:(nullable SDSetImageBlock)setImageBlock</div><div class="line">                          progress:(nullable SDWebImageDownloaderProgressBlock)progressBlock</div><div class="line">                         completed:(nullable SDExternalCompletionBlock)completedBlock</div></pre></td></tr></table></figure></p>
 <p>这个方法首先第一步就是检测是否用了相同的请求，在UIView的webCacheOperation category中，实现方法</p>

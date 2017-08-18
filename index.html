@@ -244,8 +244,16 @@
 
 
             
+                <div class="entry pink-link-context">
+                    <p>因为项目的要求所以先前研究了很久的OpenGL,用来完成超大图片的实现，本身用到OpenGL的部分有限，毕竟不涉及3D和光影等部分，但是自己初学OpenGL的时候可是花了不少力气，一整套从基础的三角到视角转换到高级特性全部溜了一遍，不过网上这样的教程实在是太多所以也没有专程写下来的必要=。=（主要是当时学的时候太弱智没有记录下来学习心得，现在再翻手写笔记太麻烦了）。<br>正好最近想看看滤镜和图片处理功能中OpenGL的使用，权当复习一下了，所以找到久负盛名的开源框架GPUImage，稍微看一下内容，然后整理一下OpenGL比较基础的使用方法把。</p>
+                </div>
+            
         </div>
 
+        
+        <div class="card-action pink-link-context">
+            <a href="/2017/07/03/GPUImage中的OpenGL/">READ MORE</a>
+        </ div>
         
     </div>
 </article>
@@ -275,8 +283,16 @@
 
 
             
+                <div class="entry pink-link-context">
+                    <p>作为iOS开发者，在使用objective-c进行编程的时候，最熟悉的就是各种类，对象，消息，但是实际上类和对象的本质是什么呢？消息在运行时如何实现？这些问题如果不稍稍深入探究一下可以说永远只是浮于表面，一个合格的程序员我想应该是有动力去探究这些内核机制的实现的。<br>所以这里就来说说关于OC对象，消息和运行期的事情（参考Effective Objective-c 2.0）</p>
+                </div>
+            
         </div>
 
+        
+        <div class="card-action pink-link-context">
+            <a href="/2017/07/02/Objective-c中的runtime学习记录/">READ MORE</a>
+        </ div>
         
     </div>
 </article>
@@ -306,8 +322,16 @@
 
 
             
+                <div class="entry pink-link-context">
+                    <p>SDWebImage是开发中常用的网络加载图片的库，使用频率高到令人发指。本身优秀的接口封装和底层的内存管理都让开发者免去了很多麻烦，那么作为一个开发者，有必要对这么一个每天都要打交道的库有一些更深入的了解。这里我记录下自己阅读源码的心得，算是做个笔记。</p>
+                </div>
+            
         </div>
 
+        
+        <div class="card-action pink-link-context">
+            <a href="/2017/07/02/SDWebImage解析/">READ MORE</a>
+        </ div>
         
     </div>
 </article>
@@ -337,8 +361,16 @@
 
 
             
+                <div class="entry pink-link-context">
+                    <p>Grand Central Dispatch(GCD)是异步执行任务的技术之一。一般将应用程序中技术的线程管理中使用的代码在系统级实现。开发者只需要定义想执行的任务并追加到适当的Dispatch Queue中，GCD就能生成必要的线程并计划执行任务（以上摘自苹果官方说明）。也就是说GCD给用户提供了一个非常方便的方法来实现本身非常复杂的线程管理。</p>
+                </div>
+            
         </div>
 
+        
+        <div class="card-action pink-link-context">
+            <a href="/2017/07/02/GCD总结/">READ MORE</a>
+        </ div>
         
     </div>
 </article>
@@ -370,8 +402,16 @@
 
 
             
+                <div class="entry pink-link-context">
+                    <p>想要全部了解CocoaAsyncSocket的代码实在是一件太过于繁重的工作=。=毕竟代码量放在那里，尝试着看一下其源码，了解底层socket API的调用，从某个具体的功能开始一个个来看吧</p>
+                </div>
+            
         </div>
 
+        
+        <div class="card-action pink-link-context">
+            <a href="/2017/07/01/CocoaAsyncSocket部分功能解析/">READ MORE</a>
+        </ div>
         
     </div>
 </article>
@@ -401,8 +441,24 @@
 
 
             
+                <div class="entry pink-link-context">
+                    <p>AFNetworking主要分为5个模块</p>
+<ul>
+<li>通信模块（AFURLSessionManager, AFHTTPSessionManager）</li>
+<li>网络状态监听</li>
+<li>安全模块 </li>
+<li>通信序列化/反序列化模块</li>
+<li>UIKit相关</li>
+</ul>
+<p>实际上AFNetworking是对原生的NSURLSession进行的封装，上面所说的四个部分并不是并列的关系，所有请求逻辑全部交由AFURLSessionManager来处理，其他的网络监听，安全和序列化/反序列化全是为AFURLSessionManager服务或者说是以其为基础的。至于AFHTTPSessionManager本身也是继承自URLSessionManager的一层封装，本身并不干活，只是将请求逻辑分发给其父类去做。</p>
+                </div>
+            
         </div>
 
+        
+        <div class="card-action pink-link-context">
+            <a href="/2017/07/01/AFNetworking基本模块/">READ MORE</a>
+        </ div>
         
     </div>
 </article>
@@ -436,8 +492,16 @@
 
 
             
+                <div class="entry pink-link-context">
+                    <p>上面我们说到，AFNetworking3.x是对NSURLSession的一层包装，包括delegate的实现和回调，还有请求接口的包装。不过这只是一部分基本功能，实际上还有一些同样很复杂并且重要的部分。比如现在我们看到的就是其中的安全策略。<br>本质上AFNetworking的安全策略是根据https来完成的。先简单讲讲https和http的差别：<br>由于超文本传输协议http协议以明文的方法传送内容，不提供任何数据加密，所以很容易被攻击者截取到http传输的内容，在这个基础上，开发了新的https协议，即加入了SSL安全套接字方法，依靠证书来验证服务器的身份，这样在普通http传输的过程中传输的信息就是经过了证书加密之后的数据，提高了安全性。</p>
+                </div>
+            
         </div>
 
+        
+        <div class="card-action pink-link-context">
+            <a href="/2017/07/01/AFNetworking的安全策略/">READ MORE</a>
+        </ div>
         
     </div>
 </article>
@@ -469,8 +533,17 @@
 
 
             
+                <div class="entry pink-link-context">
+                    <p>日常的普通应用中如果不是对通讯的即时性有要求，基本上大家都会选择使用AFNetworking中的基于http/https的网络通信。但是有时候比如在线聊天，游戏中的数据交互等情况，对网络通信的即时性有非常高的要求（试想一下比如FPS游戏中，击中目标的数据如果不能及时传达到目标，那整个游戏的体验基本就是一塌糊涂），那么就会使用网络嵌套字socket编程，不同于http的单向的按次来算的信息发送，socket编程会要求客户端进程和服务器端进程建立起稳定的连接，然后不断进行数据交互，直到连接断开。</p>
+<p>这里先介绍一下socket编程的相关资料</p>
+                </div>
+            
         </div>
 
+        
+        <div class="card-action pink-link-context">
+            <a href="/2017/06/27/iOS socket简单说明/">READ MORE</a>
+        </ div>
         
     </div>
 </article>
